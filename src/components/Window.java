@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-import utils.Lang;
 import utils.Properties;
 
 /**
@@ -22,10 +21,10 @@ public class Window extends JFrame implements Internationalizable {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage((new ImageIcon("img/server-icon.png")).getImage());
-		setSize(820, 650);
-		setMinimumSize(new Dimension(800, 650));
+		setSize(600, 450);
+		setMinimumSize(new Dimension(600, 450));
 		setLocationRelativeTo(null);
-		Lang.setLine(this, "main_window_title");
+		setTitle("Cliente");
 	}
 
 	/**
