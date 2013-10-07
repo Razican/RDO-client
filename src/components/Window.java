@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import utils.Lang;
 import utils.Properties;
 
 /**
@@ -20,11 +21,12 @@ public class Window extends JFrame implements Internationalizable {
 	{
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setIconImage((new ImageIcon("img/server-icon.png")).getImage());
-		setSize(600, 450);
-		setMinimumSize(new Dimension(600, 450));
+		setIconImage((new ImageIcon("img/vital-signs-icon.png")).getImage());
+		setSize(300, 250);
+		setMinimumSize(new Dimension(300, 250));
 		setLocationRelativeTo(null);
-		setTitle("Cliente");
+		Lang.setLine(this, "application_name");
+
 		setDefaultLookAndFeelDecorated(true);
 	}
 
@@ -43,6 +45,7 @@ public class Window extends JFrame implements Internationalizable {
 	@Override
 	public void changeLanguage(String newText)
 	{
-		setTitle(newText + " " + Properties.getVersion() + "]");
+		setTitle(newText + " [" + Lang.getLine("version") + " "
+		+ Properties.getVersion() + "]");
 	}
 }

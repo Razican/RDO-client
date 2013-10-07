@@ -7,22 +7,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.BevelBorder;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 
@@ -34,6 +28,7 @@ import utils.StringUtils;
 import components.IButton;
 import components.ILabel;
 import components.IPPanel;
+import components.IPanel;
 import components.Window;
 
 /**
@@ -53,43 +48,21 @@ public class Start extends JPanel {
 	public Start()
 	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {0, 250, 0};
-		gridBagLayout.rowHeights = new int[] {0, 0};
-		gridBagLayout.columnWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[] {1.0, Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] {0, 250, 0, 0};
+		gridBagLayout.rowHeights = new int[] {0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[] {1.0, 0.0, 1.0,
+		Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[] {1.0, 0.0, 1.0,
+		Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBorder(new BevelBorder(BevelBorder.RAISED, null, null,
-		null, null));
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(10, 20, 20, 10);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
-		add(scrollPane, gbc_scrollPane);
-
-		JEditorPane editorPane = new JEditorPane();
-		editorPane.setEditable(false);
-		editorPane.setContentType("text/html");
-		try
-		{
-			editorPane.setPage(new File("data/index.html").toURI().toURL());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		editorPane.setBorder(null);
-		scrollPane.setViewportView(editorPane);
-
-		JPanel rightPanel = new JPanel();
+		IPanel rightPanel = new IPanel();
+		Lang.setLine(rightPanel, "login_pane");
 		GridBagConstraints gbc_rightPanel = new GridBagConstraints();
-		gbc_rightPanel.insets = new Insets(10, 10, 20, 20);
+		gbc_rightPanel.insets = new Insets(10, 10, 10, 10);
 		gbc_rightPanel.fill = GridBagConstraints.BOTH;
 		gbc_rightPanel.gridx = 1;
-		gbc_rightPanel.gridy = 0;
+		gbc_rightPanel.gridy = 1;
 		add(rightPanel, gbc_rightPanel);
 		GridBagLayout gbl_rightPanel = new GridBagLayout();
 		gbl_rightPanel.columnWidths = new int[] {0, 0, 0};
@@ -102,7 +75,7 @@ public class Start extends JPanel {
 		ILabel lblIP = new ILabel();
 		Lang.setLine(lblIP, "lbl_server_ip");
 		lblIP.setForeground(Color.BLACK);
-		lblIP.setFont(new Font("Calibri", Font.PLAIN, 14));
+		lblIP.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblIP = new GridBagConstraints();
 		gbc_lblIP.anchor = GridBagConstraints.WEST;
 		gbc_lblIP.insets = new Insets(5, 0, 5, 5);
@@ -121,7 +94,7 @@ public class Start extends JPanel {
 		ILabel lblUser = new ILabel();
 		Lang.setLine(lblUser, "lbl_user");
 		lblUser.setForeground(Color.BLACK);
-		lblUser.setFont(new Font("Calibri", Font.PLAIN, 14));
+		lblUser.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblUser = new GridBagConstraints();
 		gbc_lblUser.insets = new Insets(5, 0, 5, 5);
 		gbc_lblUser.anchor = GridBagConstraints.WEST;
@@ -131,7 +104,7 @@ public class Start extends JPanel {
 
 		textField_User = new JTextField();
 		textField_User.setForeground(Color.BLACK);
-		textField_User.setFont(new Font("Calibri", Font.PLAIN, 14));
+		textField_User.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_textField_User = new GridBagConstraints();
 		gbc_textField_User.insets = new Insets(5, 0, 5, 0);
 		gbc_textField_User.fill = GridBagConstraints.HORIZONTAL;
@@ -143,9 +116,9 @@ public class Start extends JPanel {
 		ILabel lblPassword = new ILabel();
 		Lang.setLine(lblPassword, "lbl_password");
 		lblPassword.setForeground(Color.BLACK);
-		lblPassword.setFont(new Font("Calibri", Font.PLAIN, 14));
+		lblPassword.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblPassword = new GridBagConstraints();
-		gbc_lblPassword.insets = new Insets(5, 0, 5, 5);
+		gbc_lblPassword.insets = new Insets(5, 0, 10, 5);
 		gbc_lblPassword.anchor = GridBagConstraints.WEST;
 		gbc_lblPassword.gridx = 0;
 		gbc_lblPassword.gridy = 2;
@@ -153,25 +126,13 @@ public class Start extends JPanel {
 
 		passwordField = new JPasswordField();
 		passwordField.setForeground(Color.BLACK);
-		passwordField.setFont(new Font("Calibri", Font.PLAIN, 14));
+		passwordField.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_passwordField = new GridBagConstraints();
-		gbc_passwordField.insets = new Insets(5, 0, 5, 0);
+		gbc_passwordField.insets = new Insets(5, 0, 10, 0);
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 1;
 		gbc_passwordField.gridy = 2;
 		rightPanel.add(passwordField, gbc_passwordField);
-
-		JTextArea textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setOpaque(false);
-		textArea.setForeground(Color.BLACK);
-		GridBagConstraints gbc_textArea = new GridBagConstraints();
-		gbc_textArea.gridwidth = 2;
-		gbc_textArea.insets = new Insets(5, 0, 5, 0);
-		gbc_textArea.fill = GridBagConstraints.BOTH;
-		gbc_textArea.gridx = 0;
-		gbc_textArea.gridy = 3;
-		rightPanel.add(textArea, gbc_textArea);
 
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -181,9 +142,9 @@ public class Start extends JPanel {
 		gbc_panel.gridy = 4;
 		rightPanel.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] {0, 0, 0};
+		gbl_panel.columnWidths = new int[] {0, 0, 0, 0};
 		gbl_panel.rowHeights = new int[] {0, 0};
-		gbl_panel.columnWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
+		gbl_panel.columnWeights = new double[] {1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 
@@ -191,7 +152,7 @@ public class Start extends JPanel {
 		btnPreferences.setFocusPainted(false);
 		Lang.setLine(btnPreferences, "preferences");
 		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 14));
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnPreferences.addActionListener(new ActionListener()
 		{
 
@@ -210,6 +171,8 @@ public class Start extends JPanel {
 				dialog.setLocationRelativeTo(Window.getInstance());
 				dialog.setResizable(false);
 				dialog.pack();
+				dialog.setIconImage(new ImageIcon("img/sett-icon.png")
+				.getImage());
 				dialog.setVisible(true);
 
 				if (pane.getValue() == options[0])
@@ -241,13 +204,14 @@ public class Start extends JPanel {
 						}
 					}
 					SwingUtilities.updateComponentTreeUI(Window.getInstance());
+					Window.getInstance().pack();
 				}
 				dialog.dispose();
 			}
 		});
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
-		gbc_btnPreferences.insets = new Insets(0, 0, 0, 15);
+		gbc_btnPreferences.insets = new Insets(0, 0, 0, 5);
 		gbc_btnPreferences.gridx = 0;
 		gbc_btnPreferences.gridy = 0;
 		panel.add(btnPreferences, gbc_btnPreferences);
@@ -296,13 +260,33 @@ public class Start extends JPanel {
 		});
 		Lang.setLine(btnEnter, "btn_enter");
 		btnEnter.setForeground(Color.BLACK);
-		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 14));
+		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-		gbc_btnEnter.insets = new Insets(0, 15, 0, 0);
+		gbc_btnEnter.insets = new Insets(0, 0, 0, 5);
 		gbc_btnEnter.fill = GridBagConstraints.BOTH;
 		gbc_btnEnter.gridx = 1;
 		gbc_btnEnter.gridy = 0;
 		panel.add(btnEnter, gbc_btnEnter);
+
+		IButton btnExit = new IButton();
+		btnExit.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				Window.getInstance().dispose();
+			}
+		});
+		Lang.setLine(btnExit, "btn_exit");
+		btnExit.setForeground(Color.BLACK);
+		btnExit.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnExit.setFocusPainted(false);
+		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnExit.gridx = 2;
+		gbc_btnExit.gridy = 0;
+		panel.add(btnExit, gbc_btnExit);
 	}
 
 	/**
@@ -345,6 +329,7 @@ public class Start extends JPanel {
 				Window.getInstance().setContentPane(st);
 				Window.getInstance().setVisible(true);
 				SwingUtilities.updateComponentTreeUI(Window.getInstance());
+				Window.getInstance().pack();
 			}
 		});
 	}
