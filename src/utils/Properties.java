@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.util.Locale;
 
 import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
 
 /**
  * @author Jordan Aranda Tejada
@@ -132,10 +131,7 @@ public class Properties implements Serializable {
 			init();
 		}
 
-		if (isLFAvailable(lf))
-		{
-			properties.lookAndFeelClass = lf;
-		}
+		properties.lookAndFeelClass = lf;
 		properties.update();
 	}
 
@@ -165,19 +161,6 @@ public class Properties implements Serializable {
 		properties.version = version;
 
 		properties.update();
-	}
-
-	private static boolean isLFAvailable(final String lf)
-	{
-		final LookAndFeelInfo lfs[] = UIManager.getInstalledLookAndFeels();
-		for (final LookAndFeelInfo lf2: lfs)
-		{
-			if (lf2.getClassName().equals(lf))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	/**

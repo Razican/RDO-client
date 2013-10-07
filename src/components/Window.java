@@ -25,6 +25,7 @@ public class Window extends JFrame implements Internationalizable {
 		setMinimumSize(new Dimension(600, 450));
 		setLocationRelativeTo(null);
 		setTitle("Cliente");
+		setDefaultLookAndFeelDecorated(true);
 	}
 
 	/**

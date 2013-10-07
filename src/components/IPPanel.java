@@ -58,6 +58,10 @@ public class IPPanel extends JPanel {
 				{
 					textField_2.requestFocus();
 				}
+				if (Integer.parseInt(textField_1.getText()) > 256)
+				{
+					textField_1.setText("256");
+				}
 			}
 		});
 
@@ -106,6 +110,10 @@ public class IPPanel extends JPanel {
 				{
 					e.consume();
 				}
+				if (Integer.parseInt(textField_2.getText()) > 256)
+				{
+					textField_2.setText("256");
+				}
 			}
 		});
 		textField_2.setHorizontalAlignment(SwingConstants.CENTER);
@@ -152,6 +160,10 @@ public class IPPanel extends JPanel {
 				{
 					e.consume();
 				}
+				if (Integer.parseInt(textField_3.getText()) > 256)
+				{
+					textField_3.setText("256");
+				}
 			}
 		});
 		textField_3.setHorizontalAlignment(SwingConstants.CENTER);
@@ -189,6 +201,15 @@ public class IPPanel extends JPanel {
 					e.consume();
 				}
 			}
+
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				if (Integer.parseInt(textField_4.getText().trim()) > 256)
+				{
+					textField_4.setText("256");
+				}
+			}
 		});
 		textField_4.setHorizontalAlignment(SwingConstants.CENTER);
 		textField_4.setFont(new Font("Calibri", Font.PLAIN, 14));
@@ -199,6 +220,50 @@ public class IPPanel extends JPanel {
 		gbc_textField.gridy = 0;
 		add(textField_4, gbc_textField);
 		textField_4.setColumns(2);
+	}
 
+	/**
+	 * @return IP Address
+	 */
+	public String getIpAddress()
+	{
+		String ip = "";
+
+		if (textField_1.getText().equals(""))
+		{
+			ip += "0.";
+		}
+		else
+		{
+			ip += textField_1.getText().trim() + ".";
+		}
+
+		if (textField_2.getText().equals(""))
+		{
+			ip += "0.";
+		}
+		else
+		{
+			ip += textField_2.getText().trim() + ".";
+		}
+
+		if (textField_3.getText().equals(""))
+		{
+			ip += "0.";
+		}
+		else
+		{
+			ip += textField_3.getText().trim() + ".";
+		}
+
+		if (textField_4.getText().equals(""))
+		{
+			ip += "0";
+		}
+		else
+		{
+			ip += textField_4.getText().trim();
+		}
+		return ip;
 	}
 }

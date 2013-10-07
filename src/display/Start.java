@@ -10,8 +10,10 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JComboBox;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -24,8 +26,10 @@ import javax.swing.border.BevelBorder;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 
+import utils.Client;
 import utils.Lang;
 import utils.Properties;
+import utils.StringUtils;
 
 import components.IButton;
 import components.ILabel;
@@ -38,9 +42,10 @@ import components.Window;
 public class Start extends JPanel {
 
 	private static final long	serialVersionUID	= - 6969744533822338215L;
+	private IPPanel				ip_panel;
 	private JTextField			textField_User;
 	private JPasswordField		passwordField;
-	private JComboBox<String>	comboBoxLanguage;
+	private Client				client;
 
 	/**
 	 * Create the panel.
@@ -105,7 +110,7 @@ public class Start extends JPanel {
 		gbc_lblIP.gridy = 0;
 		rightPanel.add(lblIP, gbc_lblIP);
 
-		IPPanel ip_panel = new IPPanel();
+		ip_panel = new IPPanel();
 		GridBagConstraints gbc_ip_panel = new GridBagConstraints();
 		gbc_ip_panel.insets = new Insets(5, 0, 5, 0);
 		gbc_ip_panel.fill = GridBagConstraints.BOTH;
@@ -178,38 +183,123 @@ public class Start extends JPanel {
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {0, 0, 0};
 		gbl_panel.rowHeights = new int[] {0, 0};
-		gbl_panel.columnWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.columnWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 
-		comboBoxLanguage = new JComboBox<String>(Lang.getCombableLocales());
-		comboBoxLanguage.addActionListener(new ActionListener()
+		IButton btnPreferences = new IButton();
+		btnPreferences.setFocusPainted(false);
+		Lang.setLine(btnPreferences, "preferences");
+		btnPreferences.setForeground(Color.BLACK);
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 14));
+		btnPreferences.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Properties.setLocale(Lang.getAvailableLocales().get(
-				comboBoxLanguage.getSelectedIndex()));
-				Lang.setLang(Lang.getAvailableLocales().get(
-				comboBoxLanguage.getSelectedIndex()));
+				final Preferences p = new Preferences();
+
+				final String[] options = {Lang.getLine("accept_option"),
+				Lang.getLine("cancel_option")};
+				JOptionPane pane = new JOptionPane(p,
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
+				options, options[1]);
+				final JDialog dialog = pane.createDialog(Lang
+				.getLine("preferences"));
+				dialog.setLocationRelativeTo(Window.getInstance());
+				dialog.setResizable(false);
+				dialog.pack();
+				dialog.setVisible(true);
+
+				if (pane.getValue() == options[0])
+				{
+					Properties.setLocale(Lang.getAvailableLocales().get(
+					p.getLocaleIndex()));
+					Lang.setLang(Lang.getAvailableLocales().get(
+					p.getLocaleIndex()));
+
+					Properties.setLookAndFeelClass(p.getLookAndFeel());
+					if (Properties.getLookAndFeel().substring(0, 3)
+					.equals("org"))
+					{
+						SubstanceLookAndFeel.setSkin(Properties
+						.getLookAndFeel());
+					}
+					else
+					{
+						try
+						{
+							UIManager.setLookAndFeel(Properties
+							.getLookAndFeel());
+						}
+						catch (ClassNotFoundException | InstantiationException
+						| IllegalAccessException
+						| UnsupportedLookAndFeelException e1)
+						{
+							e1.printStackTrace();
+						}
+					}
+					SwingUtilities.updateComponentTreeUI(Window.getInstance());
+				}
+				dialog.dispose();
 			}
 		});
-		comboBoxLanguage.setForeground(Color.BLACK);
-		comboBoxLanguage.setFont(new Font("Calibri", Font.PLAIN, 14));
-		comboBoxLanguage.setSelectedIndex(Lang.getCurrentLocaleKey());
-		GridBagConstraints gbc_comboBoxLanguage = new GridBagConstraints();
-		gbc_comboBoxLanguage.insets = new Insets(0, 0, 0, 5);
-		gbc_comboBoxLanguage.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBoxLanguage.gridx = 0;
-		gbc_comboBoxLanguage.gridy = 0;
-		panel.add(comboBoxLanguage, gbc_comboBoxLanguage);
+		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
+		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
+		gbc_btnPreferences.insets = new Insets(0, 0, 0, 15);
+		gbc_btnPreferences.gridx = 0;
+		gbc_btnPreferences.gridy = 0;
+		panel.add(btnPreferences, gbc_btnPreferences);
 
-		IButton btnEnter = new IButton("Entrar");
+		IButton btnEnter = new IButton();
+		btnEnter.setFocusPainted(false);
+		btnEnter.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				client = new Client(ip_panel.getIpAddress());
+				if (client.getClientSocket() != null)
+				{
+					client.sendData("USUARIO "
+					+ textField_User.getText().trim());
+					if (client.getInputCode() == 501
+					|| client.getInputCode() == 502)
+					{
+						JOptionPane.showMessageDialog(Window.getInstance(),
+						client.getInputDescription(), "Error",
+						JOptionPane.ERROR_MESSAGE, new ImageIcon(
+						"img/error-icon.png"));
+					}
+					else if (client.getInputCode() == 301)
+					{
+						client.sendData("CLAVE "
+						+ StringUtils.sha1(new String(passwordField
+						.getPassword())));
+						if (client.getInputCode() == 503
+						|| client.getInputCode() == 504)
+						{
+							JOptionPane.showMessageDialog(Window.getInstance(),
+							client.getInputDescription(), "Error",
+							JOptionPane.ERROR_MESSAGE, new ImageIcon(
+							"img/error-icon.png"));
+						}
+						else if (client.getInputCode() == 302)
+						{
+							// BIENVENIDO AL SISTEMA
+						}
+					}
+				}
+			}
+		});
 		Lang.setLine(btnEnter, "btn_enter");
 		btnEnter.setForeground(Color.BLACK);
 		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 14));
 		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
+		gbc_btnEnter.insets = new Insets(0, 15, 0, 0);
+		gbc_btnEnter.fill = GridBagConstraints.BOTH;
 		gbc_btnEnter.gridx = 1;
 		gbc_btnEnter.gridy = 0;
 		panel.add(btnEnter, gbc_btnEnter);
