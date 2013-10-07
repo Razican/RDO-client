@@ -7,6 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -26,10 +29,13 @@ import utils.Properties;
 import utils.StringUtils;
 
 import components.IButton;
+import components.IComboBox;
 import components.ILabel;
 import components.IPPanel;
 import components.IPanel;
 import components.Window;
+
+import entities.Server;
 
 /**
  * @author Jordan Aranda Tejada
@@ -37,9 +43,12 @@ import components.Window;
 public class Start extends JPanel {
 
 	private static final long	serialVersionUID	= - 6969744533822338215L;
+
 	private IPPanel				ip_panel;
+	private JTextField			textField_Port;
 	private JTextField			textField_User;
 	private JPasswordField		passwordField;
+	private IComboBox			comboBox_servers;
 	private Client				client;
 
 	/**
@@ -66,10 +75,10 @@ public class Start extends JPanel {
 		add(rightPanel, gbc_rightPanel);
 		GridBagLayout gbl_rightPanel = new GridBagLayout();
 		gbl_rightPanel.columnWidths = new int[] {0, 0, 0};
-		gbl_rightPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+		gbl_rightPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_rightPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
-		gbl_rightPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, 0.0,
-		Double.MIN_VALUE};
+		gbl_rightPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+		0.0, Double.MIN_VALUE};
 		rightPanel.setLayout(gbl_rightPanel);
 
 		ILabel lblIP = new ILabel();
@@ -91,6 +100,54 @@ public class Start extends JPanel {
 		gbc_ip_panel.gridy = 0;
 		rightPanel.add(ip_panel, gbc_ip_panel);
 
+		ILabel lblPORT = new ILabel();
+		Lang.setLine(lblPORT, "lbl_server_port");
+		lblPORT.setForeground(Color.BLACK);
+		lblPORT.setFont(new Font("Calibri", Font.PLAIN, 16));
+		GridBagConstraints gbc_lblPORT = new GridBagConstraints();
+		gbc_lblPORT.anchor = GridBagConstraints.WEST;
+		gbc_lblPORT.insets = new Insets(5, 0, 5, 5);
+		gbc_lblPORT.gridx = 0;
+		gbc_lblPORT.gridy = 1;
+		rightPanel.add(lblPORT, gbc_lblPORT);
+
+		textField_Port = new JTextField();
+		textField_Port.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car < '0' || car > '9') && car != 127)
+				{
+					e.consume();
+				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				System.out.println(textField_Port.getText().length());
+				if (textField_Port.getText().length() > 0)
+				{
+					if (Integer.parseInt(textField_Port.getText()) > 65535)
+					{
+						textField_Port.setText("65535");
+					}
+				}
+			}
+		});
+		textField_Port.setForeground(Color.BLACK);
+		textField_Port.setFont(new Font("Calibri", Font.PLAIN, 16));
+		textField_Port.setColumns(10);
+		GridBagConstraints gbc_textField_Port = new GridBagConstraints();
+		gbc_textField_Port.insets = new Insets(5, 0, 5, 0);
+		gbc_textField_Port.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textField_Port.gridx = 1;
+		gbc_textField_Port.gridy = 1;
+		rightPanel.add(textField_Port, gbc_textField_Port);
+
 		ILabel lblUser = new ILabel();
 		Lang.setLine(lblUser, "lbl_user");
 		lblUser.setForeground(Color.BLACK);
@@ -99,7 +156,7 @@ public class Start extends JPanel {
 		gbc_lblUser.insets = new Insets(5, 0, 5, 5);
 		gbc_lblUser.anchor = GridBagConstraints.WEST;
 		gbc_lblUser.gridx = 0;
-		gbc_lblUser.gridy = 1;
+		gbc_lblUser.gridy = 2;
 		rightPanel.add(lblUser, gbc_lblUser);
 
 		textField_User = new JTextField();
@@ -109,7 +166,7 @@ public class Start extends JPanel {
 		gbc_textField_User.insets = new Insets(5, 0, 5, 0);
 		gbc_textField_User.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_User.gridx = 1;
-		gbc_textField_User.gridy = 1;
+		gbc_textField_User.gridy = 2;
 		rightPanel.add(textField_User, gbc_textField_User);
 		textField_User.setColumns(10);
 
@@ -118,28 +175,58 @@ public class Start extends JPanel {
 		lblPassword.setForeground(Color.BLACK);
 		lblPassword.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_lblPassword = new GridBagConstraints();
-		gbc_lblPassword.insets = new Insets(5, 0, 10, 5);
+		gbc_lblPassword.insets = new Insets(5, 0, 5, 5);
 		gbc_lblPassword.anchor = GridBagConstraints.WEST;
 		gbc_lblPassword.gridx = 0;
-		gbc_lblPassword.gridy = 2;
+		gbc_lblPassword.gridy = 3;
 		rightPanel.add(lblPassword, gbc_lblPassword);
 
 		passwordField = new JPasswordField();
 		passwordField.setForeground(Color.BLACK);
 		passwordField.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_passwordField = new GridBagConstraints();
-		gbc_passwordField.insets = new Insets(5, 0, 10, 0);
+		gbc_passwordField.insets = new Insets(5, 0, 5, 0);
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 1;
-		gbc_passwordField.gridy = 2;
+		gbc_passwordField.gridy = 3;
 		rightPanel.add(passwordField, gbc_passwordField);
+
+		comboBox_servers = new IComboBox(getSavedServers());
+		comboBox_servers.addActionListener(new ActionListener()
+		{
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if (comboBox_servers.getSelectedIndex() > 0)
+				{
+					Server server = Properties.getServers().get(
+					comboBox_servers.getSelectedIndex() - 1);
+					textField_Port.setText(Integer.toString(server.getPORT()));
+					textField_User.setText(server.getUser());
+					passwordField.setText(server.getPassword());
+					ip_panel.setIpAddress(server.getIP());
+				}
+			}
+		});
+		Lang.setLine(comboBox_servers, "combobox_servers");
+		comboBox_servers.setForeground(Color.BLACK);
+		comboBox_servers.setFont(new Font("Calibri", Font.PLAIN, 16));
+		comboBox_servers.setVisible(Properties.isShowSavedServers());
+		GridBagConstraints gbc_comboBox_savedUsers = new GridBagConstraints();
+		gbc_comboBox_savedUsers.gridwidth = 2;
+		gbc_comboBox_savedUsers.insets = new Insets(5, 0, 10, 0);
+		gbc_comboBox_savedUsers.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBox_savedUsers.gridx = 0;
+		gbc_comboBox_savedUsers.gridy = 4;
+		rightPanel.add(comboBox_servers, gbc_comboBox_savedUsers);
 
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridwidth = 2;
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 4;
+		gbc_panel.gridy = 6;
 		rightPanel.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {0, 0, 0, 0};
@@ -149,6 +236,7 @@ public class Start extends JPanel {
 		panel.setLayout(gbl_panel);
 
 		IButton btnPreferences = new IButton();
+		btnPreferences.setText("Preferencias");
 		btnPreferences.setFocusPainted(false);
 		Lang.setLine(btnPreferences, "preferences");
 		btnPreferences.setForeground(Color.BLACK);
@@ -177,6 +265,8 @@ public class Start extends JPanel {
 
 				if (pane.getValue() == options[0])
 				{
+					Properties.setShowSavedServers(p.areServersVisible());
+					comboBox_servers.setVisible(p.areServersVisible());
 					Properties.setLocale(Lang.getAvailableLocales().get(
 					p.getLocaleIndex()));
 					Lang.setLang(Lang.getAvailableLocales().get(
@@ -204,7 +294,6 @@ public class Start extends JPanel {
 						}
 					}
 					SwingUtilities.updateComponentTreeUI(Window.getInstance());
-					Window.getInstance().pack();
 				}
 				dialog.dispose();
 			}
@@ -217,6 +306,7 @@ public class Start extends JPanel {
 		panel.add(btnPreferences, gbc_btnPreferences);
 
 		IButton btnEnter = new IButton();
+		btnEnter.setText("Entrar");
 		btnEnter.setFocusPainted(false);
 		btnEnter.addActionListener(new ActionListener()
 		{
@@ -224,7 +314,8 @@ public class Start extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				client = new Client(ip_panel.getIpAddress());
+				client = new Client(ip_panel.getIpAddress(), Integer
+				.parseInt(textField_Port.getText()));
 				if (client.getClientSocket() != null)
 				{
 					client.sendData("USUARIO "
@@ -269,6 +360,7 @@ public class Start extends JPanel {
 		panel.add(btnEnter, gbc_btnEnter);
 
 		IButton btnExit = new IButton();
+		btnExit.setText("Salir");
 		btnExit.addActionListener(new ActionListener()
 		{
 
@@ -287,6 +379,17 @@ public class Start extends JPanel {
 		gbc_btnExit.gridx = 2;
 		gbc_btnExit.gridy = 0;
 		panel.add(btnExit, gbc_btnExit);
+	}
+
+	private Vector<Object> getSavedServers()
+	{
+		Vector<Object> servers = new Vector<Object>();
+		servers.add(Lang.getLine("combobox_servers"));
+		for (int i = 0; i < Properties.getServers().size(); i++)
+		{
+			servers.add(Properties.getServers().get(i).toString());
+		}
+		return servers;
 	}
 
 	/**

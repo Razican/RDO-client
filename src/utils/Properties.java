@@ -8,8 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Vector;
 
 import javax.swing.UIManager;
+
+import entities.Server;
 
 /**
  * @author Jordan Aranda Tejada
@@ -23,12 +26,17 @@ public class Properties implements Serializable {
 
 	private Locale				locale;
 	private String				lookAndFeelClass;
+	private Vector<Server>		servers;
+	private boolean				showSavedServers;
 	private String				version;
 
-	private Properties(Locale locale, String lookAndFeelClass, String version)
+	private Properties(Locale locale, String lookAndFeelClass,
+	Vector<Server> servers, boolean showSavedServers, String version)
 	{
 		this.locale = locale;
 		this.lookAndFeelClass = lookAndFeelClass;
+		this.servers = servers;
+		this.showSavedServers = showSavedServers;
 		this.version = version;
 	}
 
@@ -46,7 +54,8 @@ public class Properties implements Serializable {
 		{
 			e.printStackTrace();
 			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), "1.0");
+			UIManager.getSystemLookAndFeelClassName(), new Vector<Server>(),
+			false, "1.0");
 		}
 	}
 
@@ -68,7 +77,8 @@ public class Properties implements Serializable {
 			}
 
 			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), "1.0");
+			UIManager.getSystemLookAndFeelClassName(), new Vector<Server>(),
+			false, "1.0");
 			properties.update();
 		}
 	}
@@ -136,6 +146,69 @@ public class Properties implements Serializable {
 	}
 
 	/**
+	 * @return Saved servers
+	 */
+	public static Vector<Server> getServers()
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		return properties.servers;
+	}
+
+	/**
+	 * @param servers New vector of servers
+	 */
+	public static void setServers(Vector<Server> servers)
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		properties.servers = servers;
+		properties.update();
+	}
+
+	/**
+	 * @param server The new server.
+	 */
+	public static void addServer(Server server)
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		properties.servers.add(server);
+		properties.update();
+	}
+
+	/**
+	 * @return if saved servers are visible
+	 */
+	public static boolean isShowSavedServers()
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		return properties.showSavedServers;
+	}
+
+	/**
+	 * @param showSavedServers Sets visible saved servers
+	 */
+	public static void setShowSavedServers(boolean showSavedServers)
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		properties.showSavedServers = showSavedServers;
+		properties.update();
+	}
+
+	/**
 	 * @return Version of application
 	 */
 	public static String getVersion()
@@ -170,8 +243,25 @@ public class Properties implements Serializable {
 	{
 		System.out.println("LECTURA DE DATOS");
 		System.out.println("LANGUAGE = " + Properties.getLocale().toString());
+		System.out.println("APPEARANCE = "
+		+ Properties.getLookAndFeel().toString());
+		System.out.println("SERVERS " + Properties.getServers().size());
+		for (int i = 0; i < Properties.getServers().size(); i++)
+		{
+			System.out.println(Properties.getServers().get(i).toString());
+		}
+		if (Properties.isShowSavedServers())
+		{
+			System.out.println("SERVERS VISIBLE");
+		}
+		else
+		{
+			System.out.println("SERVERS INVISIBLE");
+		}
 		System.out.println("VERSION = " + Properties.getVersion());
-		System.out.println("\nMODIFICACION DE DATOS");
 
+		System.out.println("\nMODIFICACION DE DATOS");
+		// Server s = new Server("127.0.0.1", 3000, "Jordan", "1234");
+		// Properties.addServer(s);
 	}
 }

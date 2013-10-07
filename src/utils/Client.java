@@ -20,7 +20,7 @@ import components.Window;
 public class Client {
 
 	private String				IP		= "";
-	private int					PORT	= 10800;
+	private int					PORT	= 0;
 
 	private Socket				clientSocket;
 	private DataOutputStream	output;
@@ -30,10 +30,12 @@ public class Client {
 	 * Default constructor
 	 * 
 	 * @param IP Server's ip
+	 * @param PORT Server's port
 	 */
-	public Client(String IP)
+	public Client(String IP, int PORT)
 	{
 		this.IP = IP;
+		this.PORT = PORT;
 
 		if (internetConnection())
 		{
@@ -177,7 +179,7 @@ public class Client {
 	 */
 	public static void main(String ... args)
 	{
-		Client cliente = new Client("127.0.0.1");
+		Client cliente = new Client("127.0.0.1", 10800);
 		cliente.sendData("HELLO");
 	}
 }
