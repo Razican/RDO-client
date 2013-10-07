@@ -49,17 +49,17 @@ public class Client {
 			catch (IOException excepcionES)
 			{
 				JOptionPane.showMessageDialog(Window.getInstance(),
-				"Error al conectar con la dirección: " + IP,
-				"Error en la conexión", JOptionPane.ERROR_MESSAGE,
+				Lang.getLine("connection_error_message") + " " + IP,
+				Lang.getLine("connection_error"), JOptionPane.ERROR_MESSAGE,
 				new ImageIcon("img/error-icon.png"));
 			}
 		}
 		else
 		{
 			JOptionPane.showMessageDialog(Window.getInstance(),
-			"No hay conexión a la red.", "Error de red",
-			JOptionPane.ERROR_MESSAGE, new ImageIcon("img/red-icon.png"));
-			System.out.println("No internet connection.");
+			Lang.getLine("network_error_message"),
+			Lang.getLine("network_error"), JOptionPane.ERROR_MESSAGE,
+			new ImageIcon("img/network-icon.png"));
 		}
 	}
 
