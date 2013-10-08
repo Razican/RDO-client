@@ -206,7 +206,7 @@ public class Start extends JPanel {
 				{
 					Server server = Properties.getServers().get(
 					comboBox_servers.getSelectedIndex() - 1);
-					textField_Port.setText(Integer.toString(server.getPORT()));
+					textField_Port.setText(Integer.toString(server.getPort()));
 					textField_User.setText(server.getUser());
 					passwordField.setText(server.getPassword());
 					ip_panel.setIpAddress(server.getIP());

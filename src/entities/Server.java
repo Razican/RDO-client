@@ -9,8 +9,8 @@ public class Server implements Serializable {
 
 	private static final long	serialVersionUID	= - 7186367905563055140L;
 
-	private String				IP;
-	private int					PORT;
+	private String				ip;
+	private int					port;
 	private String				user;
 	private String				password;
 
@@ -23,15 +23,15 @@ public class Server implements Serializable {
 	}
 
 	/**
-	 * @param IP Server ip
-	 * @param PORT Server port
+	 * @param ip Server ip
+	 * @param port Server port
 	 * @param user Server user
 	 * @param password Server password
 	 */
-	public Server(String IP, int PORT, String user, String password)
+	public Server(String ip, int port, String user, String password)
 	{
-		this.IP = IP;
-		this.PORT = PORT;
+		this.ip = ip;
+		this.port = port;
 		this.user = user;
 		this.password = password;
 	}
@@ -41,31 +41,31 @@ public class Server implements Serializable {
 	 */
 	public String getIP()
 	{
-		return IP;
+		return ip;
 	}
 
 	/**
-	 * @param IP Server new ip
+	 * @param ip Server new ip
 	 */
-	public void setIP(String IP)
+	public void setIp(String ip)
 	{
-		this.IP = IP;
+		this.ip = ip;
 	}
 
 	/**
 	 * @return Server port
 	 */
-	public int getPORT()
+	public int getPort()
 	{
-		return PORT;
+		return port;
 	}
 
 	/**
-	 * @param PORT Server new port
+	 * @param port Server new port
 	 */
-	public void setPORT(int PORT)
+	public void setPort(int port)
 	{
-		this.PORT = PORT;
+		this.port = port;
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class Server implements Serializable {
 	@Override
 	public String toString()
 	{
-		return IP + ":" + PORT + " - " + user;
+		return ip + ":" + port + " - " + user;
 	}
 
 }

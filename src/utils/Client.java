@@ -18,8 +18,8 @@ import components.Window;
  */
 public class Client {
 
-	private String				IP		= "";
-	private int					PORT	= 0;
+	private String				ip		= "";
+	private int					port	= 0;
 
 	private Socket				clientSocket;
 	private boolean				connected;
@@ -29,13 +29,13 @@ public class Client {
 	/**
 	 * Default constructor
 	 * 
-	 * @param IP Server's ip
-	 * @param PORT Server's port
+	 * @param ip Server's ip
+	 * @param port Server's port
 	 */
-	public Client(String IP, int PORT)
+	public Client(String ip, int port)
 	{
-		this.IP = IP;
-		this.PORT = PORT;
+		this.ip = ip;
+		this.port = port;
 
 		if (Utilities.internetConnection())
 		{
@@ -53,8 +53,8 @@ public class Client {
 			{
 				this.connected = false;
 				JOptionPane.showMessageDialog(Window.getInstance(),
-				Lang.getLine("connection_error_message") + " " + IP + ":"
-				+ PORT, Lang.getLine("connection_error"),
+				Lang.getLine("connection_error_message") + " " + ip + ":"
+				+ port, Lang.getLine("connection_error"),
 				JOptionPane.ERROR_MESSAGE, new ImageIcon("img/error-icon.png"));
 			}
 		}
@@ -69,7 +69,7 @@ public class Client {
 
 	private void connectToServer() throws UnknownHostException, IOException
 	{
-		clientSocket = new Socket(IP, PORT);
+		clientSocket = new Socket(ip, port);
 	}
 
 	private void getStreams() throws IOException

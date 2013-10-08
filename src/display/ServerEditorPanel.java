@@ -157,7 +157,7 @@ public class ServerEditorPanel extends JPanel {
 		if (server != null)
 		{
 			ip_panel.setIpAddress(server.getIP());
-			textField_Port.setText(Integer.toString(server.getPORT()));
+			textField_Port.setText(Integer.toString(server.getPort()));
 			textField_User.setText(server.getUser());
 			textField_Password.setText(server.getPassword());
 			panel

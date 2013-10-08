@@ -232,7 +232,7 @@ public class ServersPanel extends JPanel {
 		{
 			Server s = Properties.getServers().get(i);
 			content[i][0] = s.getIP();
-			content[i][1] = Integer.toString(s.getPORT());
+			content[i][1] = Integer.toString(s.getPort());
 			content[i][2] = s.getUser();
 			content[i][3] = s.getPassword();
 		}
