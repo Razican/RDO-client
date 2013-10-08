@@ -53,9 +53,9 @@ public class Client {
 			{
 				this.connected = false;
 				JOptionPane.showMessageDialog(Window.getInstance(),
-				Lang.getLine("connection_error_message") + " " + IP,
-				Lang.getLine("connection_error"), JOptionPane.ERROR_MESSAGE,
-				new ImageIcon("img/error-icon.png"));
+				Lang.getLine("connection_error_message") + " " + IP + ":"
+				+ PORT, Lang.getLine("connection_error"),
+				JOptionPane.ERROR_MESSAGE, new ImageIcon("img/error-icon.png"));
 			}
 		}
 		else

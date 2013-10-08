@@ -188,6 +188,19 @@ public class Properties implements Serializable {
 	}
 
 	/**
+	 * @param index The server index to remove.
+	 */
+	public static void removeServer(int index)
+	{
+		if (properties == null)
+		{
+			init();
+		}
+		properties.servers.remove(index);
+		properties.update();
+	}
+
+	/**
 	 * @return if saved servers are visible
 	 */
 	public static boolean isShowSavedServers()

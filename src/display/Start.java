@@ -233,9 +233,10 @@ public class Start extends JPanel {
 		gbc_panel.gridy = 6;
 		loginPanel.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] {0, 0, 0, 0};
+		gbl_panel.columnWidths = new int[] {0, 0, 0, 0, 0};
 		gbl_panel.rowHeights = new int[] {0, 0};
-		gbl_panel.columnWeights = new double[] {1.0, 1.0, 1.0, Double.MIN_VALUE};
+		gbl_panel.columnWeights = new double[] {1.0, 1.0, 1.0, 1.0,
+		Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 
@@ -355,36 +356,38 @@ public class Start extends JPanel {
 				}
 			}
 		});
-		Lang.setLine(btnEnter, "btn_enter");
-		btnEnter.setForeground(Color.BLACK);
-		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-		gbc_btnEnter.insets = new Insets(0, 0, 0, 5);
-		gbc_btnEnter.fill = GridBagConstraints.BOTH;
-		gbc_btnEnter.gridx = 1;
-		gbc_btnEnter.gridy = 0;
-		panel.add(btnEnter, gbc_btnEnter);
 
 		IButton btnExit = new IButton();
-		btnExit.setText("Salir");
+		btnExit.setText("Servers");
 		btnExit.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				Window.getInstance().dispose();
+				Window.getInstance().setContentPane(new ServersPanel());
+				((JPanel) Window.getInstance().getContentPane()).updateUI();
 			}
 		});
-		Lang.setLine(btnExit, "btn_exit");
+		Lang.setLine(btnExit, "btn_servers");
 		btnExit.setForeground(Color.BLACK);
 		btnExit.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnExit.setFocusPainted(false);
 		GridBagConstraints gbc_btnExit = new GridBagConstraints();
+		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
 		gbc_btnExit.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnExit.gridx = 2;
+		gbc_btnExit.gridx = 1;
 		gbc_btnExit.gridy = 0;
 		panel.add(btnExit, gbc_btnExit);
+		Lang.setLine(btnEnter, "btn_enter");
+		btnEnter.setForeground(Color.BLACK);
+		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 16));
+		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
+		gbc_btnEnter.insets = new Insets(0, 0, 0, 5);
+		gbc_btnEnter.fill = GridBagConstraints.BOTH;
+		gbc_btnEnter.gridx = 2;
+		gbc_btnEnter.gridy = 0;
+		panel.add(btnEnter, gbc_btnEnter);
 	}
 
 	private Vector<Object> getSavedServers()
