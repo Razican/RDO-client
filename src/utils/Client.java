@@ -6,8 +6,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -23,6 +22,7 @@ public class Client {
 	private int					PORT	= 0;
 
 	private Socket				clientSocket;
+	private boolean				connected;
 	private DataOutputStream	output;
 	private BufferedReader		input;
 
@@ -37,12 +37,13 @@ public class Client {
 		this.IP = IP;
 		this.PORT = PORT;
 
-		if (internetConnection())
+		if (Utilities.internetConnection())
 		{
 			try
 			{
 				connectToServer();
 				getStreams();
+				this.connected = true;
 			}
 			catch (EOFException excepcionEOF)
 			{
@@ -50,6 +51,7 @@ public class Client {
 			}
 			catch (IOException excepcionES)
 			{
+				this.connected = false;
 				JOptionPane.showMessageDialog(Window.getInstance(),
 				Lang.getLine("connection_error_message") + " " + IP,
 				Lang.getLine("connection_error"), JOptionPane.ERROR_MESSAGE,
@@ -65,7 +67,7 @@ public class Client {
 		}
 	}
 
-	private void connectToServer() throws IOException
+	private void connectToServer() throws UnknownHostException, IOException
 	{
 		clientSocket = new Socket(IP, PORT);
 	}
@@ -147,21 +149,6 @@ public class Client {
 		catch (IOException excepcionES)
 		{
 			excepcionES.printStackTrace();
-		}
-	}
-
-	private boolean internetConnection()
-	{
-		try
-		{
-			URL url = new URL("http://www.google.es");
-			URLConnection urlConnection = url.openConnection();
-			urlConnection.connect();
-			return true;
-		}
-		catch (Exception e)
-		{
-			return false;
 		}
 	}
 
