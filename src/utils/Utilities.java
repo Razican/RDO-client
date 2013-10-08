@@ -1,5 +1,7 @@
 package utils;
 
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,6 +62,24 @@ public class Utilities {
 		else
 		{
 			return "" + num;
+		}
+	}
+
+	/**
+	 * @return if has network connection
+	 */
+	public static boolean internetConnection()
+	{
+		try
+		{
+			URL url = new URL("http://www.google.es");
+			URLConnection urlConnection = url.openConnection();
+			urlConnection.connect();
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
 		}
 	}
 
