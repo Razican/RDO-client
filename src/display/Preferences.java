@@ -60,7 +60,7 @@ public class Preferences extends JPanel {
 		lblLanguage.setFont(new Font("Calibri", Font.PLAIN, 15));
 		final GridBagConstraints gbc_lblLanguage = new GridBagConstraints();
 		gbc_lblLanguage.anchor = GridBagConstraints.WEST;
-		gbc_lblLanguage.insets = new Insets(0, 2, 5, 5);
+		gbc_lblLanguage.insets = new Insets(0, 5, 5, 5);
 		gbc_lblLanguage.gridx = 1;
 		gbc_lblLanguage.gridy = 1;
 		panel.add(lblLanguage, gbc_lblLanguage);
@@ -83,7 +83,7 @@ public class Preferences extends JPanel {
 		lbLookandfeel.setFont(new Font("Calibri", Font.PLAIN, 15));
 		final GridBagConstraints gbc_lbLookandfeel = new GridBagConstraints();
 		gbc_lbLookandfeel.anchor = GridBagConstraints.WEST;
-		gbc_lbLookandfeel.insets = new Insets(5, 2, 5, 5);
+		gbc_lbLookandfeel.insets = new Insets(5, 5, 5, 5);
 		gbc_lbLookandfeel.gridx = 1;
 		gbc_lbLookandfeel.gridy = 2;
 		panel.add(lbLookandfeel, gbc_lbLookandfeel);
@@ -105,7 +105,7 @@ public class Preferences extends JPanel {
 		checkBoxSavedServers.setFont(new Font("Calibri", Font.PLAIN, 15));
 		checkBoxSavedServers.setSelected(Properties.isShowSavedServers());
 		GridBagConstraints gbc_checkBoxSavedServers = new GridBagConstraints();
-		gbc_checkBoxSavedServers.anchor = GridBagConstraints.WEST;
+		gbc_checkBoxSavedServers.fill = GridBagConstraints.BOTH;
 		gbc_checkBoxSavedServers.gridwidth = 2;
 		gbc_checkBoxSavedServers.insets = new Insets(5, 0, 5, 5);
 		gbc_checkBoxSavedServers.gridx = 1;
