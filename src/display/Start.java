@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.border.TitledBorder;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 
@@ -65,21 +66,24 @@ public class Start extends JPanel {
 		Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
-		IPanel rightPanel = new IPanel();
-		Lang.setLine(rightPanel, "login_pane");
-		GridBagConstraints gbc_rightPanel = new GridBagConstraints();
-		gbc_rightPanel.insets = new Insets(10, 10, 10, 10);
-		gbc_rightPanel.fill = GridBagConstraints.BOTH;
-		gbc_rightPanel.gridx = 1;
-		gbc_rightPanel.gridy = 1;
-		add(rightPanel, gbc_rightPanel);
-		GridBagLayout gbl_rightPanel = new GridBagLayout();
-		gbl_rightPanel.columnWidths = new int[] {0, 0, 0};
-		gbl_rightPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_rightPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
-		gbl_rightPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+		IPanel loginPanel = new IPanel();
+		loginPanel.setBorder(new TitledBorder(null, Lang.getLine("login_pane"),
+		TitledBorder.LEADING, TitledBorder.ABOVE_TOP, new Font("Calibri",
+		Font.ITALIC, 14), null));
+		Lang.setLine(loginPanel, "login_pane");
+		GridBagConstraints gbc_loginPanel = new GridBagConstraints();
+		gbc_loginPanel.insets = new Insets(10, 10, 10, 10);
+		gbc_loginPanel.fill = GridBagConstraints.BOTH;
+		gbc_loginPanel.gridx = 1;
+		gbc_loginPanel.gridy = 1;
+		add(loginPanel, gbc_loginPanel);
+		GridBagLayout gbl_loginPanel = new GridBagLayout();
+		gbl_loginPanel.columnWidths = new int[] {0, 0, 0};
+		gbl_loginPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_loginPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
+		gbl_loginPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
 		0.0, Double.MIN_VALUE};
-		rightPanel.setLayout(gbl_rightPanel);
+		loginPanel.setLayout(gbl_loginPanel);
 
 		ILabel lblIP = new ILabel();
 		Lang.setLine(lblIP, "lbl_server_ip");
@@ -90,7 +94,7 @@ public class Start extends JPanel {
 		gbc_lblIP.insets = new Insets(5, 0, 5, 5);
 		gbc_lblIP.gridx = 0;
 		gbc_lblIP.gridy = 0;
-		rightPanel.add(lblIP, gbc_lblIP);
+		loginPanel.add(lblIP, gbc_lblIP);
 
 		ip_panel = new IPPanel();
 		GridBagConstraints gbc_ip_panel = new GridBagConstraints();
@@ -98,7 +102,7 @@ public class Start extends JPanel {
 		gbc_ip_panel.fill = GridBagConstraints.BOTH;
 		gbc_ip_panel.gridx = 1;
 		gbc_ip_panel.gridy = 0;
-		rightPanel.add(ip_panel, gbc_ip_panel);
+		loginPanel.add(ip_panel, gbc_ip_panel);
 
 		ILabel lblPORT = new ILabel();
 		Lang.setLine(lblPORT, "lbl_server_port");
@@ -109,7 +113,7 @@ public class Start extends JPanel {
 		gbc_lblPORT.insets = new Insets(5, 0, 5, 5);
 		gbc_lblPORT.gridx = 0;
 		gbc_lblPORT.gridy = 1;
-		rightPanel.add(lblPORT, gbc_lblPORT);
+		loginPanel.add(lblPORT, gbc_lblPORT);
 
 		textField_Port = new JTextField();
 		textField_Port.addKeyListener(new KeyAdapter()
@@ -146,7 +150,7 @@ public class Start extends JPanel {
 		gbc_textField_Port.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_Port.gridx = 1;
 		gbc_textField_Port.gridy = 1;
-		rightPanel.add(textField_Port, gbc_textField_Port);
+		loginPanel.add(textField_Port, gbc_textField_Port);
 
 		ILabel lblUser = new ILabel();
 		Lang.setLine(lblUser, "lbl_user");
@@ -157,7 +161,7 @@ public class Start extends JPanel {
 		gbc_lblUser.anchor = GridBagConstraints.WEST;
 		gbc_lblUser.gridx = 0;
 		gbc_lblUser.gridy = 2;
-		rightPanel.add(lblUser, gbc_lblUser);
+		loginPanel.add(lblUser, gbc_lblUser);
 
 		textField_User = new JTextField();
 		textField_User.setForeground(Color.BLACK);
@@ -167,7 +171,7 @@ public class Start extends JPanel {
 		gbc_textField_User.fill = GridBagConstraints.HORIZONTAL;
 		gbc_textField_User.gridx = 1;
 		gbc_textField_User.gridy = 2;
-		rightPanel.add(textField_User, gbc_textField_User);
+		loginPanel.add(textField_User, gbc_textField_User);
 		textField_User.setColumns(10);
 
 		ILabel lblPassword = new ILabel();
@@ -179,7 +183,7 @@ public class Start extends JPanel {
 		gbc_lblPassword.anchor = GridBagConstraints.WEST;
 		gbc_lblPassword.gridx = 0;
 		gbc_lblPassword.gridy = 3;
-		rightPanel.add(lblPassword, gbc_lblPassword);
+		loginPanel.add(lblPassword, gbc_lblPassword);
 
 		passwordField = new JPasswordField();
 		passwordField.setForeground(Color.BLACK);
@@ -189,7 +193,7 @@ public class Start extends JPanel {
 		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
 		gbc_passwordField.gridx = 1;
 		gbc_passwordField.gridy = 3;
-		rightPanel.add(passwordField, gbc_passwordField);
+		loginPanel.add(passwordField, gbc_passwordField);
 
 		comboBox_servers = new IComboBox(getSavedServers());
 		comboBox_servers.addActionListener(new ActionListener()
@@ -219,7 +223,7 @@ public class Start extends JPanel {
 		gbc_comboBox_savedUsers.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox_savedUsers.gridx = 0;
 		gbc_comboBox_savedUsers.gridy = 4;
-		rightPanel.add(comboBox_servers, gbc_comboBox_savedUsers);
+		loginPanel.add(comboBox_servers, gbc_comboBox_savedUsers);
 
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -227,7 +231,7 @@ public class Start extends JPanel {
 		gbc_panel.fill = GridBagConstraints.BOTH;
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 6;
-		rightPanel.add(panel, gbc_panel);
+		loginPanel.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {0, 0, 0, 0};
 		gbl_panel.rowHeights = new int[] {0, 0};
@@ -314,9 +318,11 @@ public class Start extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				client = new Client(ip_panel.getIpAddress(), Integer
-				.parseInt(textField_Port.getText()));
-				if (client.getClientSocket() != null)
+				int port = getInputPort();
+				String ip = ip_panel.getIpAddress();
+
+				client = new Client(ip, port);
+				if (client.isConnected())
 				{
 					client.sendData("USUARIO "
 					+ textField_User.getText().trim());
@@ -392,6 +398,18 @@ public class Start extends JPanel {
 		return servers;
 	}
 
+	private int getInputPort()
+	{
+		if (textField_Port.getText().trim().equals(""))
+		{
+			return 0;
+		}
+		else
+		{
+			return Integer.parseInt(textField_Port.getText().trim());
+		}
+	}
+
 	/**
 	 * @param args Aplication arguments
 	 */
@@ -432,7 +450,6 @@ public class Start extends JPanel {
 				Window.getInstance().setContentPane(st);
 				Window.getInstance().setVisible(true);
 				SwingUtilities.updateComponentTreeUI(Window.getInstance());
-				Window.getInstance().pack();
 			}
 		});
 	}

@@ -162,6 +162,14 @@ public class Client {
 	}
 
 	/**
+	 * @return if socket is correctly connected
+	 */
+	public boolean isConnected()
+	{
+		return connected;
+	}
+
+	/**
 	 * @param args Application arguments.
 	 */
 	public static void main(String ... args)

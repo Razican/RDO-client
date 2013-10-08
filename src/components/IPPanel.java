@@ -273,22 +273,18 @@ public class IPPanel extends JPanel {
 	public void setIpAddress(String ip)
 	{
 		int p1 = pointIndex(ip, 0);
-		System.out.println("p1: " + p1);
 		textField_1.setText(ip.substring(0, p1));
 		p1++;
 
 		int p2 = pointIndex(ip, p1);
-		System.out.println("p2: " + p2);
 		textField_2.setText(ip.substring(p1, p2));
 		p2++;
 
 		int p3 = pointIndex(ip, p2);
-		System.out.println("p3: " + p3);
 		textField_3.setText(ip.substring(p2, p3));
 		p3++;
 
 		int p4 = pointIndex(ip, p3);
-		System.out.println("p4: " + p4);
 		textField_4.setText(ip.substring(p3, p4));
 	}
 
