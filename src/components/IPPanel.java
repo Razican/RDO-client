@@ -30,10 +30,10 @@ public class IPPanel extends JPanel {
 	public IPPanel()
 	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {20, 5, 20, 5, 20, 5, 20, 0};
+		gridBagLayout.columnWidths = new int[] {30, 5, 30, 5, 30, 5, 30, 0};
 		gridBagLayout.rowHeights = new int[] {10, 0};
-		gridBagLayout.columnWeights = new double[] {0.0, 1.0, 0.0, 1.0, 0.0,
-		1.0, 0.0, Double.MIN_VALUE};
+		gridBagLayout.columnWeights = new double[] {1.0, 0.0, 1.0, 0.0, 1.0,
+		0.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
@@ -69,7 +69,7 @@ public class IPPanel extends JPanel {
 		textField_1.setFont(new Font("Calibri", Font.PLAIN, 14));
 		textField_1.setForeground(Color.BLACK);
 		GridBagConstraints gbc_textField_1 = new GridBagConstraints();
-		gbc_textField_1.fill = GridBagConstraints.VERTICAL;
+		gbc_textField_1.fill = GridBagConstraints.BOTH;
 		gbc_textField_1.gridx = 0;
 		gbc_textField_1.gridy = 0;
 		add(textField_1, gbc_textField_1);
@@ -120,7 +120,7 @@ public class IPPanel extends JPanel {
 		textField_2.setFont(new Font("Calibri", Font.PLAIN, 14));
 		textField_2.setForeground(Color.BLACK);
 		GridBagConstraints gbc_textField_2 = new GridBagConstraints();
-		gbc_textField_2.fill = GridBagConstraints.VERTICAL;
+		gbc_textField_2.fill = GridBagConstraints.BOTH;
 		gbc_textField_2.gridx = 2;
 		gbc_textField_2.gridy = 0;
 		add(textField_2, gbc_textField_2);
@@ -170,7 +170,7 @@ public class IPPanel extends JPanel {
 		textField_3.setFont(new Font("Calibri", Font.PLAIN, 14));
 		textField_3.setForeground(Color.BLACK);
 		GridBagConstraints gbc_textField_3 = new GridBagConstraints();
-		gbc_textField_3.fill = GridBagConstraints.VERTICAL;
+		gbc_textField_3.fill = GridBagConstraints.BOTH;
 		gbc_textField_3.gridx = 4;
 		gbc_textField_3.gridy = 0;
 		add(textField_3, gbc_textField_3);
@@ -215,7 +215,7 @@ public class IPPanel extends JPanel {
 		textField_4.setFont(new Font("Calibri", Font.PLAIN, 14));
 		textField_4.setForeground(Color.BLACK);
 		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.fill = GridBagConstraints.VERTICAL;
+		gbc_textField.fill = GridBagConstraints.BOTH;
 		gbc_textField.gridx = 6;
 		gbc_textField.gridy = 0;
 		add(textField_4, gbc_textField);

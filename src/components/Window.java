@@ -22,8 +22,8 @@ public class Window extends JFrame implements Internationalizable {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage((new ImageIcon("img/vital-signs-icon.png")).getImage());
-		setSize(320, 250);
-		setMinimumSize(new Dimension(320, 250));
+		setSize(350, 350);
+		setMinimumSize(new Dimension(350, 350));
 		setLocationRelativeTo(null);
 		Lang.setLine(this, "application_name");
 
