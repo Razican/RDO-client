@@ -206,7 +206,8 @@ public class Start extends JPanel implements ActionListener {
 				rs.getString("city"), rs.getInt("zipCode"),
 				rs.getInt("telephone"), rs.getString("email"));
 
-				content[i][0] = Integer.toString(p.getDni());
+				content[i][0] = Integer.toString(p.getDni()) + "-"
+				+ Patient.getDniLetter(p);
 				content[i][1] = p.getName();
 				content[i][2] = p.getLastName();
 				content[i][3] = df.format(p.getBirthdate());

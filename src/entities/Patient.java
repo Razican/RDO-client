@@ -235,4 +235,15 @@ public class Patient implements Serializable {
 	{
 		this.email = email;
 	}
+
+	/**
+	 * @param patient The patient
+	 * @return The letter of the patient dni
+	 */
+	public static char getDniLetter(Patient patient)
+	{
+		String characters = "TRWAGMYFPDXBNJZSQVHLCKET";
+		int module = patient.dni % 23;
+		return characters.charAt(module);
+	}
 }
