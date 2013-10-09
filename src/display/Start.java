@@ -24,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.TableRowSorter;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 
@@ -31,6 +32,7 @@ import utils.Lang;
 import utils.Properties;
 
 import components.IButton;
+import components.ILabel;
 import components.TableModel;
 import components.Window;
 
@@ -64,52 +66,6 @@ public class Start extends JPanel implements ActionListener {
 		gridBagLayout.columnWeights = new double[] {1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-
-		final String[] header = {"DNI", "Nombre", "Apellidos",
-		"Fecha Nacimiento", "Telefono", "Email"};
-		final String[][] content = new String[DataBase.getInstance().count(
-		"PATIENT", null)][header.length];
-		loadContent(content);
-
-		tableModel = new TableModel();
-		tableModel.setDataVector(content, header);
-
-		table = new JTable(tableModel);
-		table.addMouseListener(new MouseAdapter()
-		{
-
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				if (e.getClickCount() == 2)
-				{
-					// TO DO
-				}
-			}
-		});
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setGridColor(Color.BLACK);
-		table.setShowGrid(true);
-		table.setDragEnabled(false);
-		table.setSelectionForeground(Color.WHITE);
-		table.setSelectionBackground(Color.BLUE);
-		table.setForeground(Color.BLACK);
-		table.setBackground(Color.WHITE);
-		table.setFont(new Font("Calibri", Font.PLAIN, 16));
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table.setRowHeight(30);
-
-		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
-
-		table.getColumnModel().getColumn(0).setMinWidth(100);
-		table.getColumnModel().getColumn(0).setMaxWidth(100);
-
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.insets = new Insets(20, 20, 10, 20);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 0;
-		add(new JScrollPane(table), gbc_scrollPane);
 
 		JPanel menu_panel = new JPanel();
 		GridBagConstraints gbc_menu_panel = new GridBagConstraints();
@@ -153,6 +109,7 @@ public class Start extends JPanel implements ActionListener {
 
 		btnEdit = new IButton();
 		btnEdit.addActionListener(this);
+		btnEdit.setEnabled(false);
 		Lang.setLine(btnEdit, "btn_edit_server");
 		btnEdit.setForeground(Color.BLACK);
 		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -166,6 +123,7 @@ public class Start extends JPanel implements ActionListener {
 
 		btnDelete = new IButton();
 		btnDelete.addActionListener(this);
+		btnDelete.setEnabled(false);
 		Lang.setLine(btnDelete, "btn_remove_server");
 		btnDelete.setForeground(Color.BLACK);
 		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -178,6 +136,8 @@ public class Start extends JPanel implements ActionListener {
 		menu_panel.add(btnDelete, gbc_btnDelete);
 
 		btnConnect = new IButton();
+		btnConnect.addActionListener(this);
+		btnConnect.setEnabled(false);
 		Lang.setLine(btnConnect, "btn_connect");
 		btnConnect.setForeground(Color.BLACK);
 		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -187,6 +147,75 @@ public class Start extends JPanel implements ActionListener {
 		gbc_btnEnter.gridx = 6;
 		gbc_btnEnter.gridy = 0;
 		menu_panel.add(btnConnect, gbc_btnEnter);
+
+		final String[] header = {"DNI", "Nombre", "Apellidos",
+		"Fecha Nacimiento", "Telefono", "Email"};
+		final String[][] content = new String[DataBase.getInstance().count(
+		"PATIENT", null)][header.length];
+		loadContent(content);
+
+		tableModel = new TableModel();
+		tableModel.setDataVector(content, header);
+
+		table = new JTable(tableModel);
+		table.addMouseListener(new MouseAdapter()
+		{
+
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				if (table.getSelectedRow() > - 1)
+				{
+					btnConnect.setEnabled(true);
+					btnEdit.setEnabled(true);
+					btnDelete.setEnabled(true);
+				}
+				else
+				{
+					btnConnect.setEnabled(false);
+					btnEdit.setEnabled(false);
+					btnDelete.setEnabled(false);
+				}
+			}
+		});
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setGridColor(Color.BLACK);
+		table.setShowGrid(true);
+		table.setDragEnabled(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(Color.BLUE);
+		table.setForeground(Color.BLACK);
+		table.setBackground(Color.WHITE);
+		table.setFont(new Font("Calibri", Font.PLAIN, 16));
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setRowHeight(30);
+
+		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
+
+		table.getColumnModel().getColumn(0).setMinWidth(100);
+		table.getColumnModel().getColumn(0).setMaxWidth(100);
+
+		TableRowSorter<TableModel> rowSorter = new TableRowSorter<TableModel>(
+		tableModel);
+		table.setRowSorter(rowSorter);
+
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.insets = new Insets(20, 20, 10, 20);
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 0;
+
+		if (DataBase.getInstance().count("PATIENT", null) != 0)
+		{
+			add(new JScrollPane(table), gbc_scrollPane);
+		}
+		else
+		{
+			ILabel lblNoPatients = new ILabel();
+			Lang.setLine(lblNoPatients, "lbl_no_patients");
+			lblNoPatients.setFont(new Font("Calibri", Font.ITALIC, 16));
+			add(lblNoPatients);
+		}
 	}
 
 	private void loadContent(final String[][] content)
@@ -213,6 +242,7 @@ public class Start extends JPanel implements ActionListener {
 				content[i][3] = df.format(p.getBirthdate());
 				content[i][4] = Integer.toString(p.getTelephone());
 				content[i][5] = p.getEmail();
+				i++;
 			}
 		}
 		catch (SQLException e)
@@ -272,6 +302,8 @@ public class Start extends JPanel implements ActionListener {
 		else if (e.getSource() == btnAdd)
 		{
 			// Button ADD
+			Window.getInstance().setContentPane(new PatientEditorPanel());
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (e.getSource() == btnEdit)
 		{
@@ -284,6 +316,13 @@ public class Start extends JPanel implements ActionListener {
 		else if (e.getSource() == btnConnect)
 		{
 			// Button ENTER
+			if (table.getSelectedRow() == - 1)
+			{
+				JOptionPane.showMessageDialog(Window.getInstance(),
+				"Selecciona un paciente con el que deseas conectar.",
+				"Paciente no seleccionado", JOptionPane.ERROR_MESSAGE,
+				new ImageIcon("img/error-icon.png"));
+			}
 		}
 	}
 
