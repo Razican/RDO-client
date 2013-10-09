@@ -174,7 +174,7 @@ public class Client {
 	 */
 	public static void main(String ... args)
 	{
-		Client cliente = new Client("127.0.0.1", 10800);
+		Client cliente = new Client("127.0.0.1", 3000);
 		cliente.sendData("HELLO");
 	}
 }

@@ -7,50 +7,51 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.Vector;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.border.TitledBorder;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 
-import utils.Client;
 import utils.Lang;
 import utils.Properties;
-import utils.StringUtils;
 
 import components.IButton;
-import components.IComboBox;
-import components.ILabel;
-import components.IPPanel;
-import components.IPanel;
+import components.TableModel;
 import components.Window;
 
-import entities.Server;
+import database.DataBase;
+import entities.Patient;
 
 /**
  * @author Jordan Aranda Tejada
  */
-public class Start extends JPanel {
+public class Start extends JPanel implements ActionListener {
 
-	private static final long	serialVersionUID	= - 6969744533822338215L;
+	private static final long	serialVersionUID	= 4557875777913232705L;
 
-	private IPPanel				ip_panel;
-	private JTextField			textField_Port;
-	private JTextField			textField_User;
-	private JPasswordField		passwordField;
-	private IComboBox			comboBox_servers;
-	private Client				client;
+	private JTable				table;
+	private final TableModel	tableModel;
+
+	private IButton				btnPreferences;
+	private IButton				btnAdd;
+	private IButton				btnEdit;
+	private IButton				btnDelete;
+	private IButton				btnConnect;
 
 	/**
 	 * Create the panel.
@@ -58,358 +59,230 @@ public class Start extends JPanel {
 	public Start()
 	{
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {0, 250, 0, 0};
-		gridBagLayout.rowHeights = new int[] {0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[] {1.0, 0.0, 1.0,
-		Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[] {1.0, 0.0, 1.0,
-		Double.MIN_VALUE};
+		gridBagLayout.columnWidths = new int[] {0, 0};
+		gridBagLayout.rowHeights = new int[] {0, 0, 0};
+		gridBagLayout.columnWeights = new double[] {1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
-		IPanel loginPanel = new IPanel();
-		loginPanel.setBorder(new TitledBorder(null, Lang.getLine("login_pane"),
-		TitledBorder.LEADING, TitledBorder.ABOVE_TOP, new Font("Calibri",
-		Font.ITALIC, 14), null));
-		Lang.setLine(loginPanel, "login_pane");
-		GridBagConstraints gbc_loginPanel = new GridBagConstraints();
-		gbc_loginPanel.insets = new Insets(10, 10, 10, 10);
-		gbc_loginPanel.fill = GridBagConstraints.BOTH;
-		gbc_loginPanel.gridx = 1;
-		gbc_loginPanel.gridy = 1;
-		add(loginPanel, gbc_loginPanel);
-		GridBagLayout gbl_loginPanel = new GridBagLayout();
-		gbl_loginPanel.columnWidths = new int[] {0, 0, 0};
-		gbl_loginPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_loginPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
-		gbl_loginPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-		0.0, Double.MIN_VALUE};
-		loginPanel.setLayout(gbl_loginPanel);
+		final String[] header = {"DNI", "Nombre", "Apellidos",
+		"Fecha Nacimiento", "Telefono", "Email"};
+		final String[][] content = new String[DataBase.getInstance().count(
+		"PATIENT", null)][header.length];
+		loadContent(content);
 
-		ILabel lblIP = new ILabel();
-		Lang.setLine(lblIP, "lbl_server_ip");
-		lblIP.setForeground(Color.BLACK);
-		lblIP.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_lblIP = new GridBagConstraints();
-		gbc_lblIP.anchor = GridBagConstraints.WEST;
-		gbc_lblIP.insets = new Insets(5, 0, 5, 5);
-		gbc_lblIP.gridx = 0;
-		gbc_lblIP.gridy = 0;
-		loginPanel.add(lblIP, gbc_lblIP);
+		tableModel = new TableModel();
+		tableModel.setDataVector(content, header);
 
-		ip_panel = new IPPanel();
-		GridBagConstraints gbc_ip_panel = new GridBagConstraints();
-		gbc_ip_panel.insets = new Insets(5, 0, 5, 0);
-		gbc_ip_panel.fill = GridBagConstraints.BOTH;
-		gbc_ip_panel.gridx = 1;
-		gbc_ip_panel.gridy = 0;
-		loginPanel.add(ip_panel, gbc_ip_panel);
-
-		ILabel lblPORT = new ILabel();
-		Lang.setLine(lblPORT, "lbl_server_port");
-		lblPORT.setForeground(Color.BLACK);
-		lblPORT.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_lblPORT = new GridBagConstraints();
-		gbc_lblPORT.anchor = GridBagConstraints.WEST;
-		gbc_lblPORT.insets = new Insets(5, 0, 5, 5);
-		gbc_lblPORT.gridx = 0;
-		gbc_lblPORT.gridy = 1;
-		loginPanel.add(lblPORT, gbc_lblPORT);
-
-		textField_Port = new JTextField();
-		textField_Port.addKeyListener(new KeyAdapter()
+		table = new JTable(tableModel);
+		table.addMouseListener(new MouseAdapter()
 		{
 
 			@Override
-			public void keyTyped(KeyEvent e)
+			public void mouseClicked(MouseEvent e)
 			{
-				char car = e.getKeyChar();
-				if ((car < '0' || car > '9') && car != 127)
+				if (e.getClickCount() == 2)
 				{
-					e.consume();
-				}
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e)
-			{
-				System.out.println(textField_Port.getText().length());
-				if (textField_Port.getText().length() > 0)
-				{
-					if (Integer.parseInt(textField_Port.getText()) > 65535)
-					{
-						textField_Port.setText("65535");
-					}
+					// TO DO
 				}
 			}
 		});
-		textField_Port.setForeground(Color.BLACK);
-		textField_Port.setFont(new Font("Calibri", Font.PLAIN, 16));
-		textField_Port.setColumns(10);
-		GridBagConstraints gbc_textField_Port = new GridBagConstraints();
-		gbc_textField_Port.insets = new Insets(5, 0, 5, 0);
-		gbc_textField_Port.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_Port.gridx = 1;
-		gbc_textField_Port.gridy = 1;
-		loginPanel.add(textField_Port, gbc_textField_Port);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setGridColor(Color.BLACK);
+		table.setShowGrid(true);
+		table.setDragEnabled(false);
+		table.setSelectionForeground(Color.WHITE);
+		table.setSelectionBackground(Color.BLUE);
+		table.setForeground(Color.BLACK);
+		table.setBackground(Color.WHITE);
+		table.setFont(new Font("Calibri", Font.PLAIN, 16));
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setRowHeight(30);
 
-		ILabel lblUser = new ILabel();
-		Lang.setLine(lblUser, "lbl_user");
-		lblUser.setForeground(Color.BLACK);
-		lblUser.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_lblUser = new GridBagConstraints();
-		gbc_lblUser.insets = new Insets(5, 0, 5, 5);
-		gbc_lblUser.anchor = GridBagConstraints.WEST;
-		gbc_lblUser.gridx = 0;
-		gbc_lblUser.gridy = 2;
-		loginPanel.add(lblUser, gbc_lblUser);
+		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
 
-		textField_User = new JTextField();
-		textField_User.setForeground(Color.BLACK);
-		textField_User.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_textField_User = new GridBagConstraints();
-		gbc_textField_User.insets = new Insets(5, 0, 5, 0);
-		gbc_textField_User.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField_User.gridx = 1;
-		gbc_textField_User.gridy = 2;
-		loginPanel.add(textField_User, gbc_textField_User);
-		textField_User.setColumns(10);
+		table.getColumnModel().getColumn(0).setMinWidth(100);
+		table.getColumnModel().getColumn(0).setMaxWidth(100);
 
-		ILabel lblPassword = new ILabel();
-		Lang.setLine(lblPassword, "lbl_password");
-		lblPassword.setForeground(Color.BLACK);
-		lblPassword.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_lblPassword = new GridBagConstraints();
-		gbc_lblPassword.insets = new Insets(5, 0, 5, 5);
-		gbc_lblPassword.anchor = GridBagConstraints.WEST;
-		gbc_lblPassword.gridx = 0;
-		gbc_lblPassword.gridy = 3;
-		loginPanel.add(lblPassword, gbc_lblPassword);
+		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+		gbc_scrollPane.insets = new Insets(20, 20, 10, 20);
+		gbc_scrollPane.fill = GridBagConstraints.BOTH;
+		gbc_scrollPane.gridx = 0;
+		gbc_scrollPane.gridy = 0;
+		add(new JScrollPane(table), gbc_scrollPane);
 
-		passwordField = new JPasswordField();
-		passwordField.setForeground(Color.BLACK);
-		passwordField.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_passwordField = new GridBagConstraints();
-		gbc_passwordField.insets = new Insets(5, 0, 5, 0);
-		gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_passwordField.gridx = 1;
-		gbc_passwordField.gridy = 3;
-		loginPanel.add(passwordField, gbc_passwordField);
+		JPanel menu_panel = new JPanel();
+		GridBagConstraints gbc_menu_panel = new GridBagConstraints();
+		gbc_menu_panel.insets = new Insets(0, 20, 10, 20);
+		gbc_menu_panel.fill = GridBagConstraints.BOTH;
+		gbc_menu_panel.gridx = 0;
+		gbc_menu_panel.gridy = 1;
+		add(menu_panel, gbc_menu_panel);
+		GridBagLayout gbl_menu_panel = new GridBagLayout();
+		gbl_menu_panel.columnWidths = new int[] {70, 70, 70, 70, 70, 70, 70, 0};
+		gbl_menu_panel.rowHeights = new int[] {27, 0};
+		gbl_menu_panel.columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0,
+		1.0, 0.0, Double.MIN_VALUE};
+		gbl_menu_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
+		menu_panel.setLayout(gbl_menu_panel);
 
-		comboBox_servers = new IComboBox(getSavedServers());
-		comboBox_servers.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if (comboBox_servers.getSelectedIndex() > 0)
-				{
-					Server server = Properties.getServers().get(
-					comboBox_servers.getSelectedIndex() - 1);
-					textField_Port.setText(Integer.toString(server.getPort()));
-					textField_User.setText(server.getUser());
-					passwordField.setText(server.getPassword());
-					ip_panel.setIpAddress(server.getIP());
-				}
-			}
-		});
-		Lang.setLine(comboBox_servers, "combobox_servers");
-		comboBox_servers.setForeground(Color.BLACK);
-		comboBox_servers.setFont(new Font("Calibri", Font.PLAIN, 16));
-		comboBox_servers.setVisible(Properties.isShowSavedServers());
-		GridBagConstraints gbc_comboBox_savedUsers = new GridBagConstraints();
-		gbc_comboBox_savedUsers.gridwidth = 2;
-		gbc_comboBox_savedUsers.insets = new Insets(5, 0, 10, 0);
-		gbc_comboBox_savedUsers.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_savedUsers.gridx = 0;
-		gbc_comboBox_savedUsers.gridy = 4;
-		loginPanel.add(comboBox_servers, gbc_comboBox_savedUsers);
-
-		JPanel panel = new JPanel();
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.gridwidth = 2;
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 0;
-		gbc_panel.gridy = 6;
-		loginPanel.add(panel, gbc_panel);
-		GridBagLayout gbl_panel = new GridBagLayout();
-		gbl_panel.columnWidths = new int[] {0, 0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[] {0, 0};
-		gbl_panel.columnWeights = new double[] {1.0, 1.0, 1.0, 1.0,
-		Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
-		panel.setLayout(gbl_panel);
-
-		IButton btnPreferences = new IButton();
-		btnPreferences.setText("Preferencias");
-		btnPreferences.setFocusPainted(false);
-		Lang.setLine(btnPreferences, "preferences");
+		btnPreferences = new IButton();
+		btnPreferences.addActionListener(this);
 		btnPreferences.setForeground(Color.BLACK);
 		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnPreferences.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				final Preferences p = new Preferences();
-
-				final String[] options = {Lang.getLine("accept_option"),
-				Lang.getLine("cancel_option")};
-				JOptionPane pane = new JOptionPane(p,
-				JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
-				options, options[1]);
-				final JDialog dialog = pane.createDialog(Lang
-				.getLine("preferences"));
-				dialog.setLocationRelativeTo(Window.getInstance());
-				dialog.setResizable(false);
-				dialog.pack();
-				dialog.setIconImage(new ImageIcon("img/sett-icon.png")
-				.getImage());
-				dialog.setVisible(true);
-
-				if (pane.getValue() == options[0])
-				{
-					Properties.setShowSavedServers(p.areServersVisible());
-					comboBox_servers.setVisible(p.areServersVisible());
-					Properties.setLocale(Lang.getAvailableLocales().get(
-					p.getLocaleIndex()));
-					Lang.setLang(Lang.getAvailableLocales().get(
-					p.getLocaleIndex()));
-
-					Properties.setLookAndFeelClass(p.getLookAndFeel());
-					if (Properties.getLookAndFeel().substring(0, 3)
-					.equals("org"))
-					{
-						SubstanceLookAndFeel.setSkin(Properties
-						.getLookAndFeel());
-					}
-					else
-					{
-						try
-						{
-							UIManager.setLookAndFeel(Properties
-							.getLookAndFeel());
-						}
-						catch (ClassNotFoundException | InstantiationException
-						| IllegalAccessException
-						| UnsupportedLookAndFeelException e1)
-						{
-							e1.printStackTrace();
-						}
-					}
-					SwingUtilities.updateComponentTreeUI(Window.getInstance());
-				}
-				dialog.dispose();
-			}
-		});
+		Lang.setLine(btnPreferences, "preferences");
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
 		gbc_btnPreferences.insets = new Insets(0, 0, 0, 5);
 		gbc_btnPreferences.gridx = 0;
 		gbc_btnPreferences.gridy = 0;
-		panel.add(btnPreferences, gbc_btnPreferences);
+		menu_panel.add(btnPreferences, gbc_btnPreferences);
 
-		IButton btnEnter = new IButton();
-		btnEnter.setText("Entrar");
-		btnEnter.setFocusPainted(false);
-		btnEnter.addActionListener(new ActionListener()
+		btnAdd = new IButton();
+		btnAdd.addActionListener(this);
+		Lang.setLine(btnAdd, "btn_add_server");
+		btnAdd.setForeground(Color.BLACK);
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnAdd.setFocusPainted(false);
+		GridBagConstraints gbc_btnInsert = new GridBagConstraints();
+		gbc_btnInsert.fill = GridBagConstraints.BOTH;
+		gbc_btnInsert.insets = new Insets(0, 0, 0, 5);
+		gbc_btnInsert.gridx = 2;
+		gbc_btnInsert.gridy = 0;
+		menu_panel.add(btnAdd, gbc_btnInsert);
+
+		btnEdit = new IButton();
+		btnEdit.addActionListener(this);
+		Lang.setLine(btnEdit, "btn_edit_server");
+		btnEdit.setForeground(Color.BLACK);
+		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnEdit.setFocusPainted(false);
+		GridBagConstraints gbc_btnModify = new GridBagConstraints();
+		gbc_btnModify.fill = GridBagConstraints.BOTH;
+		gbc_btnModify.insets = new Insets(0, 0, 0, 5);
+		gbc_btnModify.gridx = 3;
+		gbc_btnModify.gridy = 0;
+		menu_panel.add(btnEdit, gbc_btnModify);
+
+		btnDelete = new IButton();
+		btnDelete.addActionListener(this);
+		Lang.setLine(btnDelete, "btn_remove_server");
+		btnDelete.setForeground(Color.BLACK);
+		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnDelete.setFocusPainted(false);
+		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
+		gbc_btnDelete.fill = GridBagConstraints.BOTH;
+		gbc_btnDelete.insets = new Insets(0, 0, 0, 5);
+		gbc_btnDelete.gridx = 4;
+		gbc_btnDelete.gridy = 0;
+		menu_panel.add(btnDelete, gbc_btnDelete);
+
+		btnConnect = new IButton();
+		Lang.setLine(btnConnect, "btn_connect");
+		btnConnect.setForeground(Color.BLACK);
+		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnConnect.setFocusPainted(false);
+		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
+		gbc_btnEnter.fill = GridBagConstraints.BOTH;
+		gbc_btnEnter.gridx = 6;
+		gbc_btnEnter.gridy = 0;
+		menu_panel.add(btnConnect, gbc_btnEnter);
+	}
+
+	private void loadContent(final String[][] content)
+	{
+		ResultSet rs = DataBase.getInstance().consult("SELECT * FROM PATIENT");
+		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		int i = 0;
+		try
 		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
+			while (rs.next())
 			{
-				int port = getInputPort();
-				String ip = ip_panel.getIpAddress();
+				Patient p;
+				p = new Patient(rs.getInt("dni"), rs.getString("ip_address"),
+				rs.getInt("port"), rs.getString("name"),
+				rs.getString("lastname"), new Date(
+				rs.getInt("birthdate") * 1000), rs.getString("address"),
+				rs.getString("city"), rs.getInt("zipCode"),
+				rs.getInt("telephone"), rs.getString("email"));
 
-				client = new Client(ip, port);
-				if (client.isConnected())
+				content[i][0] = Integer.toString(p.getDni());
+				content[i][1] = p.getName();
+				content[i][2] = p.getLastName();
+				content[i][3] = df.format(p.getBirthdate());
+				content[i][4] = Integer.toString(p.getTelephone());
+				content[i][5] = p.getEmail();
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if (e.getSource() == btnPreferences)
+		{
+			final Preferences p = new Preferences();
+
+			final String[] options = {Lang.getLine("accept_option"),
+			Lang.getLine("cancel_option")};
+			JOptionPane pane = new JOptionPane(p, JOptionPane.PLAIN_MESSAGE,
+			JOptionPane.OK_CANCEL_OPTION, null, options, options[1]);
+			final JDialog dialog = pane.createDialog(Lang
+			.getLine("preferences"));
+			dialog.setLocationRelativeTo(Window.getInstance());
+			dialog.setResizable(false);
+			dialog.pack();
+			dialog.setIconImage(new ImageIcon("img/sett-icon.png").getImage());
+			dialog.setVisible(true);
+
+			if (pane.getValue() == options[0])
+			{
+				Properties.setLocale(Lang.getAvailableLocales().get(
+				p.getLocaleIndex()));
+				Lang
+				.setLang(Lang.getAvailableLocales().get(p.getLocaleIndex()));
+
+				Properties.setLookAndFeelClass(p.getLookAndFeel());
+				if (Properties.getLookAndFeel().substring(0, 3).equals("org"))
 				{
-					client.sendData("USUARIO "
-					+ textField_User.getText().trim());
-					if (client.getInputCode() == 501
-					|| client.getInputCode() == 502)
+					SubstanceLookAndFeel.setSkin(Properties.getLookAndFeel());
+				}
+				else
+				{
+					try
 					{
-						JOptionPane.showMessageDialog(Window.getInstance(),
-						client.getInputDescription(), "Error",
-						JOptionPane.ERROR_MESSAGE, new ImageIcon(
-						"img/error-icon.png"));
+						UIManager.setLookAndFeel(Properties.getLookAndFeel());
 					}
-					else if (client.getInputCode() == 301)
+					catch (ClassNotFoundException | InstantiationException
+					| IllegalAccessException | UnsupportedLookAndFeelException e1)
 					{
-						client.sendData("CLAVE "
-						+ StringUtils.sha1(new String(passwordField
-						.getPassword())));
-						if (client.getInputCode() == 503
-						|| client.getInputCode() == 504)
-						{
-							JOptionPane.showMessageDialog(Window.getInstance(),
-							client.getInputDescription(), "Error",
-							JOptionPane.ERROR_MESSAGE, new ImageIcon(
-							"img/error-icon.png"));
-						}
-						else if (client.getInputCode() == 302)
-						{
-							// BIENVENIDO AL SISTEMA
-						}
+						e1.printStackTrace();
 					}
 				}
+				SwingUtilities.updateComponentTreeUI(Window.getInstance());
 			}
-		});
-
-		IButton btnExit = new IButton();
-		btnExit.setText("Servers");
-		btnExit.addActionListener(new ActionListener()
-		{
-
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				Window.getInstance().setContentPane(new ServersPanel());
-				((JPanel) Window.getInstance().getContentPane()).updateUI();
-			}
-		});
-		Lang.setLine(btnExit, "btn_servers");
-		btnExit.setForeground(Color.BLACK);
-		btnExit.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnExit.setFocusPainted(false);
-		GridBagConstraints gbc_btnExit = new GridBagConstraints();
-		gbc_btnExit.insets = new Insets(0, 0, 0, 5);
-		gbc_btnExit.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnExit.gridx = 1;
-		gbc_btnExit.gridy = 0;
-		panel.add(btnExit, gbc_btnExit);
-		Lang.setLine(btnEnter, "btn_enter");
-		btnEnter.setForeground(Color.BLACK);
-		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 16));
-		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-		gbc_btnEnter.insets = new Insets(0, 0, 0, 5);
-		gbc_btnEnter.fill = GridBagConstraints.BOTH;
-		gbc_btnEnter.gridx = 2;
-		gbc_btnEnter.gridy = 0;
-		panel.add(btnEnter, gbc_btnEnter);
-	}
-
-	private Vector<Object> getSavedServers()
-	{
-		Vector<Object> servers = new Vector<Object>();
-		servers.add(Lang.getLine("combobox_servers"));
-		for (int i = 0; i < Properties.getServers().size(); i++)
-		{
-			servers.add(Properties.getServers().get(i).toString());
+			dialog.dispose();
 		}
-		return servers;
-	}
-
-	private int getInputPort()
-	{
-		if (textField_Port.getText().trim().equals(""))
+		else if (e.getSource() == btnAdd)
 		{
-			return 0;
+			// Button ADD
 		}
-		else
+		else if (e.getSource() == btnEdit)
 		{
-			return Integer.parseInt(textField_Port.getText().trim());
+			// Button EDIT
+		}
+		else if (e.getSource() == btnDelete)
+		{
+			// Button DELETE
+		}
+		else if (e.getSource() == btnConnect)
+		{
+			// Button ENTER
 		}
 	}
 
@@ -456,5 +329,4 @@ public class Start extends JPanel {
 			}
 		});
 	}
-
 }

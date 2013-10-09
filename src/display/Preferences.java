@@ -22,9 +22,6 @@ import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.api.skin.SkinInfo;
 
 import utils.Lang;
-import utils.Properties;
-
-import components.ICheckBox;
 
 /**
  * @author Razican (Iban Eguia)
@@ -35,7 +32,6 @@ public class Preferences extends JPanel {
 	private final JComboBox<String>	langCombo, lookNFeelCombo;
 	private HashMap<String, String>	lookNFeelHashMap;
 	private String					currentLookAndFeel;
-	private ICheckBox				checkBoxSavedServers;
 
 	/**
 	 * Create the panel.
@@ -48,10 +44,10 @@ public class Preferences extends JPanel {
 		add(panel, BorderLayout.CENTER);
 		final GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {0, 78, 32, 0, 0};
-		gbl_panel.rowHeights = new int[] {10, 24, 0, 0, 10, 0};
+		gbl_panel.rowHeights = new int[] {10, 24, 0, 10, 0};
 		gbl_panel.columnWeights = new double[] {1.0, 0.0, 1.0, 1.0,
 		Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 1.0,
+		gbl_panel.rowWeights = new double[] {1.0, 0.0, 0.0, 1.0,
 		Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
 
@@ -83,7 +79,7 @@ public class Preferences extends JPanel {
 		lbLookandfeel.setFont(new Font("Calibri", Font.PLAIN, 15));
 		final GridBagConstraints gbc_lbLookandfeel = new GridBagConstraints();
 		gbc_lbLookandfeel.anchor = GridBagConstraints.WEST;
-		gbc_lbLookandfeel.insets = new Insets(5, 5, 5, 5);
+		gbc_lbLookandfeel.insets = new Insets(5, 5, 0, 5);
 		gbc_lbLookandfeel.gridx = 1;
 		gbc_lbLookandfeel.gridy = 2;
 		panel.add(lbLookandfeel, gbc_lbLookandfeel);
@@ -94,23 +90,10 @@ public class Preferences extends JPanel {
 		lookNFeelCombo.setSelectedItem(currentLookAndFeel);
 		final GridBagConstraints gbc_lfCombo = new GridBagConstraints();
 		gbc_lfCombo.fill = GridBagConstraints.HORIZONTAL;
-		gbc_lfCombo.insets = new Insets(5, 0, 5, 5);
+		gbc_lfCombo.insets = new Insets(5, 0, 0, 5);
 		gbc_lfCombo.gridx = 2;
 		gbc_lfCombo.gridy = 2;
 		panel.add(lookNFeelCombo, gbc_lfCombo);
-
-		checkBoxSavedServers = new ICheckBox(
-		Lang.getLine("checkbox_show_saved_servers"));
-		checkBoxSavedServers.setForeground(Color.BLACK);
-		checkBoxSavedServers.setFont(new Font("Calibri", Font.PLAIN, 15));
-		checkBoxSavedServers.setSelected(Properties.isShowSavedServers());
-		GridBagConstraints gbc_checkBoxSavedServers = new GridBagConstraints();
-		gbc_checkBoxSavedServers.fill = GridBagConstraints.BOTH;
-		gbc_checkBoxSavedServers.gridwidth = 2;
-		gbc_checkBoxSavedServers.insets = new Insets(5, 0, 5, 5);
-		gbc_checkBoxSavedServers.gridx = 1;
-		gbc_checkBoxSavedServers.gridy = 3;
-		panel.add(checkBoxSavedServers, gbc_checkBoxSavedServers);
 	}
 
 	/**
@@ -162,13 +145,5 @@ public class Preferences extends JPanel {
 			}
 		}
 		return v;
-	}
-
-	/**
-	 * @return if Servers are visible
-	 */
-	public boolean areServersVisible()
-	{
-		return checkBoxSavedServers.isSelected();
 	}
 }
