@@ -192,7 +192,7 @@ public class Start extends JPanel implements ActionListener {
 	private void loadContent(final String[][] content)
 	{
 		ResultSet rs = DataBase.getInstance().consult("SELECT * FROM PATIENT");
-		DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		DateFormat df = DateFormat.getDateInstance();
 		int i = 0;
 		try
 		{
