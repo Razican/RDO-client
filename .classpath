@@ -4,8 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/substance-6.1.jar"/>
 	<classpathentry kind="lib" path="lib/trident.jar"/>
-	<classpathentry kind="lib" path="E:/Java/Librerias/sqlite-jdbc-3.7.2.jar"/>
-	<classpathentry kind="lib" path="E:/Java/Librerias/utilities.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/utilities.jar"/>
 	<classpathentry kind="lib" path="lib/jcalendar.jar"/>
