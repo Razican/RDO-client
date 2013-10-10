@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="E:/Java/Librerias/utilities.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite-jdbc-3.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/utilities.jar"/>
+	<classpathentry kind="lib" path="lib/jcalendar.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

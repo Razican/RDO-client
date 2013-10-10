@@ -17,8 +17,6 @@ public class Patient implements Serializable {
 	private String				lastName;
 	private Date				birthdate;
 	private String				address;
-	private String				city;
-	private int					zipCode;
 	private int					telephone;
 	private String				email;
 
@@ -38,14 +36,12 @@ public class Patient implements Serializable {
 	 * @param lastName Patient last name
 	 * @param birthdate Patient birth date
 	 * @param address Patient address
-	 * @param city Patient city
 	 * @param zipCode Patient zip code
 	 * @param telephone Patient telephone number
 	 * @param email Patient email
 	 */
 	public Patient(int dni, String ip, int port, String name, String lastName,
-	Date birthdate, String address, String city, int zipCode, int telephone,
-	String email)
+	Date birthdate, String address, int telephone, String email)
 	{
 		this.dni = dni;
 		this.ip = ip;
@@ -54,8 +50,6 @@ public class Patient implements Serializable {
 		this.lastName = lastName;
 		this.birthdate = birthdate;
 		this.address = address;
-		this.city = city;
-		this.zipCode = zipCode;
 		this.telephone = telephone;
 		this.email = email;
 	}
@@ -170,38 +164,6 @@ public class Patient implements Serializable {
 	public void setAddress(String address)
 	{
 		this.address = address;
-	}
-
-	/**
-	 * @return Patient city
-	 */
-	public String getCity()
-	{
-		return city;
-	}
-
-	/**
-	 * @param city New patient city
-	 */
-	public void setCity(String city)
-	{
-		this.city = city;
-	}
-
-	/**
-	 * @return Patient zip code
-	 */
-	public int getZipCode()
-	{
-		return zipCode;
-	}
-
-	/**
-	 * @param zipCode New patient zip code
-	 */
-	public void setZipCode(int zipCode)
-	{
-		this.zipCode = zipCode;
 	}
 
 	/**

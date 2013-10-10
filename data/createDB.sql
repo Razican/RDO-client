@@ -6,8 +6,6 @@ CREATE TABLE PATIENT (
 	"lastname" TEXT NOT NULL,
 	"birthdate" INTEGER NOT NULL,
 	"address" TEXT NOT NULL,
-	"city" TEXT NOT NULL,
-	"zipCode" INTEGER NOT NULL,
 	"telephone" INTEGER NOT NULL,
 	"email" TEXT NOT NULL
 );

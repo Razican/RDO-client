@@ -1,9 +1,13 @@
 package utils;
 
+import java.awt.Image;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * @author Jordan Aranda Tejada
@@ -81,6 +85,18 @@ public class Utilities {
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * @param width Image width
+	 * @param height Image height
+	 * @param image Original image
+	 * @return Image scaled
+	 */
+	public static Icon getScaledImage(int width, int height, ImageIcon image)
+	{
+		return new ImageIcon(image.getImage().getScaledInstance(width, height,
+		Image.SCALE_SMOOTH));
 	}
 
 	/**

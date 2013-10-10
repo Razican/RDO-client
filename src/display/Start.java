@@ -85,7 +85,7 @@ public class Start extends JPanel implements ActionListener {
 		btnPreferences = new IButton();
 		btnPreferences.addActionListener(this);
 		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 18));
 		Lang.setLine(btnPreferences, "preferences");
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
@@ -98,7 +98,7 @@ public class Start extends JPanel implements ActionListener {
 		btnAdd.addActionListener(this);
 		Lang.setLine(btnAdd, "btn_add_server");
 		btnAdd.setForeground(Color.BLACK);
-		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnAdd.setFocusPainted(false);
 		GridBagConstraints gbc_btnInsert = new GridBagConstraints();
 		gbc_btnInsert.fill = GridBagConstraints.BOTH;
@@ -112,7 +112,7 @@ public class Start extends JPanel implements ActionListener {
 		btnEdit.setEnabled(false);
 		Lang.setLine(btnEdit, "btn_edit_server");
 		btnEdit.setForeground(Color.BLACK);
-		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnEdit.setFocusPainted(false);
 		GridBagConstraints gbc_btnModify = new GridBagConstraints();
 		gbc_btnModify.fill = GridBagConstraints.BOTH;
@@ -126,7 +126,7 @@ public class Start extends JPanel implements ActionListener {
 		btnDelete.setEnabled(false);
 		Lang.setLine(btnDelete, "btn_remove_server");
 		btnDelete.setForeground(Color.BLACK);
-		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnDelete.setFocusPainted(false);
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.fill = GridBagConstraints.BOTH;
@@ -140,7 +140,7 @@ public class Start extends JPanel implements ActionListener {
 		btnConnect.setEnabled(false);
 		Lang.setLine(btnConnect, "btn_connect");
 		btnConnect.setForeground(Color.BLACK);
-		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnConnect.setFocusPainted(false);
 		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
 		gbc_btnEnter.fill = GridBagConstraints.BOTH;
@@ -232,7 +232,6 @@ public class Start extends JPanel implements ActionListener {
 				rs.getInt("port"), rs.getString("name"),
 				rs.getString("lastname"), new Date(
 				rs.getInt("birthdate") * 1000), rs.getString("address"),
-				rs.getString("city"), rs.getInt("zipCode"),
 				rs.getInt("telephone"), rs.getString("email"));
 
 				content[i][0] = Integer.toString(p.getDni()) + "-"
