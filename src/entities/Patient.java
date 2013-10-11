@@ -199,6 +199,16 @@ public class Patient implements Serializable {
 	}
 
 	/**
+	 * @return The patient dni letter
+	 */
+	public char getDniLetter()
+	{
+		String characters = "TRWAGMYFPDXBNJZSQVHLCKET";
+		int module = dni % 23;
+		return characters.charAt(module);
+	}
+
+	/**
 	 * @param patient The patient
 	 * @return The letter of the patient dni
 	 */

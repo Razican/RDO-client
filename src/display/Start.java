@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.util.Date;
 
 import javax.swing.ImageIcon;
@@ -85,7 +84,7 @@ public class Start extends JPanel implements ActionListener {
 		btnPreferences = new IButton();
 		btnPreferences.addActionListener(this);
 		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
 		Lang.setLine(btnPreferences, "preferences");
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
@@ -98,7 +97,7 @@ public class Start extends JPanel implements ActionListener {
 		btnAdd.addActionListener(this);
 		Lang.setLine(btnAdd, "btn_add_server");
 		btnAdd.setForeground(Color.BLACK);
-		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnAdd.setFocusPainted(false);
 		GridBagConstraints gbc_btnInsert = new GridBagConstraints();
 		gbc_btnInsert.fill = GridBagConstraints.BOTH;
@@ -112,7 +111,7 @@ public class Start extends JPanel implements ActionListener {
 		btnEdit.setEnabled(false);
 		Lang.setLine(btnEdit, "btn_edit_server");
 		btnEdit.setForeground(Color.BLACK);
-		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnEdit.setFocusPainted(false);
 		GridBagConstraints gbc_btnModify = new GridBagConstraints();
 		gbc_btnModify.fill = GridBagConstraints.BOTH;
@@ -126,7 +125,7 @@ public class Start extends JPanel implements ActionListener {
 		btnDelete.setEnabled(false);
 		Lang.setLine(btnDelete, "btn_remove_server");
 		btnDelete.setForeground(Color.BLACK);
-		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnDelete.setFocusPainted(false);
 		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
 		gbc_btnDelete.fill = GridBagConstraints.BOTH;
@@ -140,7 +139,7 @@ public class Start extends JPanel implements ActionListener {
 		btnConnect.setEnabled(false);
 		Lang.setLine(btnConnect, "btn_connect");
 		btnConnect.setForeground(Color.BLACK);
-		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 16));
 		btnConnect.setFocusPainted(false);
 		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
 		gbc_btnEnter.fill = GridBagConstraints.BOTH;
@@ -148,8 +147,8 @@ public class Start extends JPanel implements ActionListener {
 		gbc_btnEnter.gridy = 0;
 		menu_panel.add(btnConnect, gbc_btnEnter);
 
-		final String[] header = {"DNI", "Nombre", "Apellidos",
-		"Fecha Nacimiento", "Telefono", "Email"};
+		final String[] header = {"DNI", "Nombre", "Apellidos", "Telefono",
+		"Email"};
 		final String[][] content = new String[DataBase.getInstance().count(
 		"PATIENT", null)][header.length];
 		loadContent(content);
@@ -192,8 +191,8 @@ public class Start extends JPanel implements ActionListener {
 
 		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
 
-		table.getColumnModel().getColumn(0).setMinWidth(100);
-		table.getColumnModel().getColumn(0).setMaxWidth(100);
+		table.getColumnModel().getColumn(0).setMinWidth(120);
+		table.getColumnModel().getColumn(0).setMaxWidth(120);
 
 		TableRowSorter<TableModel> rowSorter = new TableRowSorter<TableModel>(
 		tableModel);
@@ -221,7 +220,6 @@ public class Start extends JPanel implements ActionListener {
 	private void loadContent(final String[][] content)
 	{
 		ResultSet rs = DataBase.getInstance().consult("SELECT * FROM PATIENT");
-		DateFormat df = DateFormat.getDateInstance();
 		int i = 0;
 		try
 		{
@@ -238,9 +236,8 @@ public class Start extends JPanel implements ActionListener {
 				+ Patient.getDniLetter(p);
 				content[i][1] = p.getName();
 				content[i][2] = p.getLastName();
-				content[i][3] = df.format(p.getBirthdate());
-				content[i][4] = Integer.toString(p.getTelephone());
-				content[i][5] = p.getEmail();
+				content[i][3] = Integer.toString(p.getTelephone());
+				content[i][4] = p.getEmail();
 				i++;
 			}
 		}
@@ -301,12 +298,35 @@ public class Start extends JPanel implements ActionListener {
 		else if (e.getSource() == btnAdd)
 		{
 			// Button ADD
-			Window.getInstance().setContentPane(new PatientEditorPanel());
+			Window.getInstance().setContentPane(new PatientEditorPanel(null));
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (e.getSource() == btnEdit)
 		{
 			// Button EDIT
+			Patient p = null;
+			String selectedPatient = ((String) table.getValueAt(
+			table.getSelectedRow(), 0)).substring(0, 8);
+			ResultSet rs = DataBase.getInstance().consult(
+			"SELECT * FROM PATIENT WHERE DNI="
+			+ Integer.parseInt(selectedPatient));
+			try
+			{
+				while (rs.next())
+				{
+					p = new Patient(rs.getInt("dni"),
+					rs.getString("ip_address"), rs.getInt("port"),
+					rs.getString("name"), rs.getString("lastname"), new Date(
+					rs.getInt("birthdate") * 1000), rs.getString("address"),
+					rs.getInt("telephone"), rs.getString("email"));
+				}
+			}
+			catch (SQLException e1)
+			{
+				e1.printStackTrace();
+			}
+			Window.getInstance().setContentPane(new PatientEditorPanel(p));
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (e.getSource() == btnDelete)
 		{
