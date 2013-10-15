@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.ResultSet;
@@ -51,9 +50,6 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 
 	private IButton				btnPreferences;
 	private IButton				btnAdd;
-	private IButton				btnEdit;
-	private IButton				btnDelete;
-	private IButton				btnConnect;
 
 	/**
 	 * Create the panel.
@@ -75,17 +71,18 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		gbc_menu_panel.gridy = 1;
 		add(menu_panel, gbc_menu_panel);
 		GridBagLayout gbl_menu_panel = new GridBagLayout();
-		gbl_menu_panel.columnWidths = new int[] {70, 70, 70, 70, 70, 70, 70, 0};
+		gbl_menu_panel.columnWidths = new int[] {70, 70, 70, 0};
 		gbl_menu_panel.rowHeights = new int[] {27, 0};
-		gbl_menu_panel.columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0,
-		1.0, 0.0, Double.MIN_VALUE};
+		gbl_menu_panel.columnWeights = new double[] {0.0, 1.0, 0.0,
+		Double.MIN_VALUE};
 		gbl_menu_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		menu_panel.setLayout(gbl_menu_panel);
 
 		btnPreferences = new IButton();
+		btnPreferences.setFocusPainted(false);
 		btnPreferences.addActionListener(this);
 		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 18));
 		Lang.setLine(btnPreferences, "preferences");
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
@@ -95,58 +92,16 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		menu_panel.add(btnPreferences, gbc_btnPreferences);
 
 		btnAdd = new IButton();
+		btnAdd.setFocusPainted(false);
 		btnAdd.addActionListener(this);
 		Lang.setLine(btnAdd, "btn_add_server");
 		btnAdd.setForeground(Color.BLACK);
-		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnAdd.setFocusPainted(false);
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnInsert = new GridBagConstraints();
 		gbc_btnInsert.fill = GridBagConstraints.BOTH;
-		gbc_btnInsert.insets = new Insets(0, 0, 0, 5);
 		gbc_btnInsert.gridx = 2;
 		gbc_btnInsert.gridy = 0;
 		menu_panel.add(btnAdd, gbc_btnInsert);
-
-		btnEdit = new IButton();
-		btnEdit.addActionListener(this);
-		btnEdit.setEnabled(false);
-		Lang.setLine(btnEdit, "btn_edit_server");
-		btnEdit.setForeground(Color.BLACK);
-		btnEdit.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnEdit.setFocusPainted(false);
-		GridBagConstraints gbc_btnModify = new GridBagConstraints();
-		gbc_btnModify.fill = GridBagConstraints.BOTH;
-		gbc_btnModify.insets = new Insets(0, 0, 0, 5);
-		gbc_btnModify.gridx = 3;
-		gbc_btnModify.gridy = 0;
-		menu_panel.add(btnEdit, gbc_btnModify);
-
-		btnDelete = new IButton();
-		btnDelete.addActionListener(this);
-		btnDelete.setEnabled(false);
-		Lang.setLine(btnDelete, "btn_remove_server");
-		btnDelete.setForeground(Color.BLACK);
-		btnDelete.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnDelete.setFocusPainted(false);
-		GridBagConstraints gbc_btnDelete = new GridBagConstraints();
-		gbc_btnDelete.fill = GridBagConstraints.BOTH;
-		gbc_btnDelete.insets = new Insets(0, 0, 0, 5);
-		gbc_btnDelete.gridx = 4;
-		gbc_btnDelete.gridy = 0;
-		menu_panel.add(btnDelete, gbc_btnDelete);
-
-		btnConnect = new IButton();
-		btnConnect.addActionListener(this);
-		btnConnect.setEnabled(false);
-		Lang.setLine(btnConnect, "btn_connect");
-		btnConnect.setForeground(Color.BLACK);
-		btnConnect.setFont(new Font("Calibri", Font.PLAIN, 16));
-		btnConnect.setFocusPainted(false);
-		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-		gbc_btnEnter.fill = GridBagConstraints.BOTH;
-		gbc_btnEnter.gridx = 6;
-		gbc_btnEnter.gridy = 0;
-		menu_panel.add(btnConnect, gbc_btnEnter);
 
 		final String[] header = {"DNI", "Nombre", "Apellidos", "Telefono",
 		"Email"};
@@ -158,26 +113,6 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		tableModel.setDataVector(content, header);
 
 		table = new JTable(tableModel);
-		table.addMouseListener(new MouseAdapter()
-		{
-
-			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				if (table.getSelectedRow() > - 1)
-				{
-					btnConnect.setEnabled(true);
-					btnEdit.setEnabled(true);
-					btnDelete.setEnabled(true);
-				}
-				else
-				{
-					btnConnect.setEnabled(false);
-					btnEdit.setEnabled(false);
-					btnDelete.setEnabled(false);
-				}
-			}
-		});
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setGridColor(Color.BLACK);
 		table.setShowGrid(true);
@@ -186,11 +121,11 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		table.setSelectionBackground(Color.BLUE);
 		table.setForeground(Color.BLACK);
 		table.setBackground(Color.WHITE);
-		table.setFont(new Font("Calibri", Font.PLAIN, 16));
+		table.setFont(new Font("Calibri", Font.PLAIN, 18));
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setRowHeight(30);
 
-		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
+		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 18));
 
 		table.getColumnModel().getColumn(0).setMinWidth(120);
 		table.getColumnModel().getColumn(0).setMaxWidth(120);
@@ -306,34 +241,6 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 			pep.getTextField_dni().requestFocus();
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
-		else if (e.getSource() == btnEdit)
-		{
-			// Button EDIT
-			PatientEditorPanel pep = new PatientEditorPanel(
-			getTableSelectedPatient());
-			Window.getInstance().setContentPane(pep);
-			pep.getTextField_dni().requestFocus();
-			((JPanel) Window.getInstance().getContentPane()).updateUI();
-		}
-		else if (e.getSource() == btnDelete)
-		{
-			// Button DELETE
-		}
-		else if (e.getSource() == btnConnect)
-		{
-			// Button ENTER
-			if (table.getSelectedRow() == - 1)
-			{
-				JOptionPane.showMessageDialog(Window.getInstance(),
-				"Selecciona un paciente con el que deseas conectar.",
-				"Paciente no seleccionado", JOptionPane.ERROR_MESSAGE,
-				new ImageIcon("img/error-icon.png"));
-			}
-		}
-		else if (e.getSource() == table)
-		{
-
-		}
 	}
 
 	private Patient getTableSelectedPatient()
@@ -414,16 +321,11 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 			table.getSelectionModel().setSelectionInterval(r, r);
 			if (e.getButton() == MouseEvent.BUTTON3)
 			{
-				System.out.println("Click derecho");
 				PatientTablePopup popup = new PatientTablePopup(
 				getTableSelectedPatient());
 				popup.show(table, e.getX(), e.getY());
 			}
-			btnConnect.setEnabled(true);
-			btnEdit.setEnabled(true);
-			btnDelete.setEnabled(true);
 		}
-
 	}
 
 	@Override
