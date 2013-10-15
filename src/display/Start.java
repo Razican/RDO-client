@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
@@ -41,7 +42,7 @@ import entities.Patient;
 /**
  * @author Jordan Aranda Tejada
  */
-public class Start extends JPanel implements ActionListener {
+public class Start extends JPanel implements ActionListener, MouseListener {
 
 	private static final long	serialVersionUID	= 4557875777913232705L;
 
@@ -198,6 +199,8 @@ public class Start extends JPanel implements ActionListener {
 		tableModel);
 		table.setRowSorter(rowSorter);
 
+		table.addMouseListener(this);
+
 		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
 		gbc_scrollPane.fill = GridBagConstraints.BOTH;
 		gbc_scrollPane.insets = new Insets(20, 20, 10, 20);
@@ -298,34 +301,18 @@ public class Start extends JPanel implements ActionListener {
 		else if (e.getSource() == btnAdd)
 		{
 			// Button ADD
-			Window.getInstance().setContentPane(new PatientEditorPanel(null));
+			PatientEditorPanel pep = new PatientEditorPanel(null);
+			Window.getInstance().setContentPane(pep);
+			pep.getTextField_dni().requestFocus();
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (e.getSource() == btnEdit)
 		{
 			// Button EDIT
-			Patient p = null;
-			String selectedPatient = ((String) table.getValueAt(
-			table.getSelectedRow(), 0)).substring(0, 8);
-			ResultSet rs = DataBase.getInstance().consult(
-			"SELECT * FROM PATIENT WHERE DNI="
-			+ Integer.parseInt(selectedPatient));
-			try
-			{
-				while (rs.next())
-				{
-					p = new Patient(rs.getInt("dni"),
-					rs.getString("ip_address"), rs.getInt("port"),
-					rs.getString("name"), rs.getString("lastname"), new Date(
-					rs.getInt("birthdate") * 1000), rs.getString("address"),
-					rs.getInt("telephone"), rs.getString("email"));
-				}
-			}
-			catch (SQLException e1)
-			{
-				e1.printStackTrace();
-			}
-			Window.getInstance().setContentPane(new PatientEditorPanel(p));
+			PatientEditorPanel pep = new PatientEditorPanel(
+			getTableSelectedPatient());
+			Window.getInstance().setContentPane(pep);
+			pep.getTextField_dni().requestFocus();
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (e.getSource() == btnDelete)
@@ -343,6 +330,35 @@ public class Start extends JPanel implements ActionListener {
 				new ImageIcon("img/error-icon.png"));
 			}
 		}
+		else if (e.getSource() == table)
+		{
+
+		}
+	}
+
+	private Patient getTableSelectedPatient()
+	{
+		Patient p = null;
+		String selectedPatient = ((String) table.getValueAt(
+		table.getSelectedRow(), 0)).substring(0, 8);
+		ResultSet rs = DataBase.getInstance().consult(
+		"SELECT * FROM PATIENT WHERE DNI=" + Integer.parseInt(selectedPatient));
+		try
+		{
+			while (rs.next())
+			{
+				p = new Patient(rs.getInt("dni"), rs.getString("ip_address"),
+				rs.getInt("port"), rs.getString("name"),
+				rs.getString("lastname"), new Date(
+				rs.getInt("birthdate") * 1000), rs.getString("address"),
+				rs.getInt("telephone"), rs.getString("email"));
+			}
+		}
+		catch (SQLException e1)
+		{
+			e1.printStackTrace();
+		}
+		return p;
 	}
 
 	/**
@@ -387,5 +403,52 @@ public class Start extends JPanel implements ActionListener {
 				SwingUtilities.updateComponentTreeUI(Window.getInstance());
 			}
 		});
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		if (e.getSource() == table)
+		{
+			int r = table.rowAtPoint(e.getPoint());
+			table.getSelectionModel().setSelectionInterval(r, r);
+			if (e.getButton() == MouseEvent.BUTTON3)
+			{
+				System.out.println("Click derecho");
+				PatientTablePopup popup = new PatientTablePopup(
+				getTableSelectedPatient());
+				popup.show(table, e.getX(), e.getY());
+			}
+			btnConnect.setEnabled(true);
+			btnEdit.setEnabled(true);
+			btnDelete.setEnabled(true);
+		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+		// TODO Auto-generated method stub
+
 	}
 }

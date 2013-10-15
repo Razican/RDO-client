@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.text.DateFormat;
 
 import javax.swing.ImageIcon;
@@ -53,11 +55,17 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 	private JButton				btnCleanAll;
 	private JButton				btnSave;
 
+	private Patient				patient;
+
 	/**
 	 * Create the panel.
+	 * 
+	 * @param patient The patient to edit (null if its a new patient)
 	 */
 	public PatientEditorPanel(Patient patient)
 	{
+		this.patient = patient;
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0, 0};
 		gridBagLayout.rowHeights = new int[] {0, 0, 0};
@@ -95,6 +103,23 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		leftPanel.add(lblDni, gbc_lblDni);
 
 		textField_dni = new JTextField();
+		textField_dni.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car < '0' || car > '9') && car != 127)
+				{
+					e.consume();
+				}
+				if (textField_dni.getText().length() == 8)
+				{
+					e.consume();
+				}
+			}
+		});
 		textField_dni.setForeground(Color.BLACK);
 		textField_dni.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_textField_dni = new GridBagConstraints();
@@ -117,6 +142,36 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		leftPanel.add(lbl, gbc_lbl);
 
 		textField_letter = new JTextField();
+		textField_letter.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car < 'A' || car > 'Z') && (car < 'a' || car > 'z'))
+				{
+					e.consume();
+				}
+				if (textField_letter.getText().length() == 1)
+				{
+					e.consume();
+				}
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car >= 'a' && car <= 'z'))
+				{
+					String mayus = textField_letter.getText().trim()
+					.toUpperCase();
+					textField_letter.setText(mayus);
+				}
+			}
+		});
 		textField_letter.setHorizontalAlignment(SwingConstants.CENTER);
 		textField_letter.setForeground(Color.BLACK);
 		textField_letter.setFont(new Font("Calibri", Font.PLAIN, 16));
@@ -235,6 +290,23 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		leftPanel.add(lblTelephone, gbc_lblTelephone);
 
 		textField_telephone = new JTextField();
+		textField_telephone.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car < '0' || car > '9') && car != 127)
+				{
+					e.consume();
+				}
+				if (textField_telephone.getText().length() == 9)
+				{
+					e.consume();
+				}
+			}
+		});
 		textField_telephone.setForeground(Color.BLACK);
 		textField_telephone.setFont(new Font("Calibri", Font.PLAIN, 16));
 		textField_telephone.setColumns(10);
@@ -297,6 +369,24 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		leftPanel.add(lblPort, gbc_lblPort);
 
 		textField_port = new JTextField();
+		textField_port.addKeyListener(new KeyAdapter()
+		{
+
+			@Override
+			public void keyTyped(KeyEvent e)
+			{
+				char car = e.getKeyChar();
+				if ((car < '0' || car > '9') && car != 127)
+				{
+					e.consume();
+				}
+				if (textField_port.getText().length() > 0
+				&& Integer.parseInt(textField_port.getText().trim()) > 65535)
+				{
+					textField_port.setText("65535");
+				}
+			}
+		});
 		textField_port.setForeground(Color.BLACK);
 		textField_port.setFont(new Font("Calibri", Font.PLAIN, 16));
 		textField_port.setColumns(15);
@@ -365,12 +455,25 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * @return Patient editor dni textfield
+	 */
+	public JTextField getTextField_dni()
+	{
+		return textField_dni;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (btnCalendar == e.getSource())
 		{
 			calendar = new JCalendar();
+
+			if (patient != null)
+			{
+				calendar.setDate(patient.getBirthdate());
+			}
 			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
 
 			String[] options = {Lang.getLine("accept_option"),
