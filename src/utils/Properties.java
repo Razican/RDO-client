@@ -1,6 +1,5 @@
 package utils;
 
-import java.awt.Dimension;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,15 +23,12 @@ public class Properties implements Serializable {
 
 	private Locale				locale;
 	private String				lookAndFeelClass;
-	private Dimension			windowSize;
 	private String				version;
 
-	private Properties(Locale locale, String lookAndFeelClass,
-	Dimension windowSize, String version)
+	private Properties(Locale locale, String lookAndFeelClass, String version)
 	{
 		this.locale = locale;
 		this.lookAndFeelClass = lookAndFeelClass;
-		this.windowSize = windowSize;
 		this.version = version;
 	}
 
@@ -50,8 +46,7 @@ public class Properties implements Serializable {
 		{
 			e.printStackTrace();
 			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), new Dimension(350, 350),
-			"1.0");
+			UIManager.getSystemLookAndFeelClassName(), "1.0");
 		}
 	}
 
@@ -73,8 +68,7 @@ public class Properties implements Serializable {
 			}
 
 			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), new Dimension(350, 350),
-			"1.0");
+			UIManager.getSystemLookAndFeelClassName(), "1.0");
 			properties.update();
 		}
 	}
@@ -139,32 +133,6 @@ public class Properties implements Serializable {
 
 		properties.lookAndFeelClass = lf;
 		properties.update();
-	}
-
-	/**
-	 * @return Window size
-	 */
-	public static Dimension getWindowSize()
-	{
-		if (properties == null)
-		{
-			init();
-		}
-		return properties.windowSize;
-	}
-
-	/**
-	 * @param windowSize New window's size
-	 */
-	public static void setWindowSize(Dimension windowSize)
-	{
-		if (properties == null)
-		{
-			init();
-		}
-		properties.windowSize = windowSize;
-		properties.update();
-		;
 	}
 
 	/**

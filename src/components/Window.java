@@ -1,7 +1,6 @@
 package components;
 
 import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -23,21 +22,11 @@ public class Window extends JFrame implements Internationalizable {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setIconImage((new ImageIcon("img/vital-signs-icon.png")).getImage());
-		setSize(Properties.getWindowSize());
+		setSize(new Dimension(600, 450));
 		setMinimumSize(new Dimension(600, 450));
 		setLocationRelativeTo(null);
 		Lang.setLine(this, "application_name");
 		setDefaultLookAndFeelDecorated(true);
-
-		addComponentListener(new ComponentAdapter()
-		{
-
-			@Override
-			public void componentResized(java.awt.event.ComponentEvent e)
-			{
-				Properties.setWindowSize(getSize());
-			}
-		});
 	}
 
 	/**

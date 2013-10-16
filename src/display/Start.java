@@ -82,7 +82,7 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		btnPreferences.setFocusPainted(false);
 		btnPreferences.addActionListener(this);
 		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
 		Lang.setLine(btnPreferences, "preferences");
 		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
 		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
@@ -96,7 +96,7 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		btnAdd.addActionListener(this);
 		Lang.setLine(btnAdd, "btn_add_server");
 		btnAdd.setForeground(Color.BLACK);
-		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnAdd.setFont(new Font("Calibri", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnInsert = new GridBagConstraints();
 		gbc_btnInsert.fill = GridBagConstraints.BOTH;
 		gbc_btnInsert.gridx = 2;
@@ -121,11 +121,11 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 		table.setSelectionBackground(Color.BLUE);
 		table.setForeground(Color.BLACK);
 		table.setBackground(Color.WHITE);
-		table.setFont(new Font("Calibri", Font.PLAIN, 18));
+		table.setFont(new Font("Calibri", Font.PLAIN, 16));
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setRowHeight(30);
 
-		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 18));
+		table.getTableHeader().setFont(new Font("Calibri", Font.PLAIN, 16));
 
 		table.getColumnModel().getColumn(0).setMinWidth(120);
 		table.getColumnModel().getColumn(0).setMaxWidth(120);

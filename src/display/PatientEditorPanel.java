@@ -483,11 +483,10 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
 			options, options[1]);
 
-			final JDialog dialog = pane.createDialog(Lang
-			.getLine("preferences"));
+			final JDialog dialog = pane.createDialog("Selecciona la fecha");
 			dialog.setLocationRelativeTo(Window.getInstance());
 			dialog.setResizable(false);
-			dialog.pack();
+			dialog.setSize(300, 300);
 			dialog.setIconImage(new ImageIcon("img/calendar-icon.png")
 			.getImage());
 			dialog.setVisible(true);
