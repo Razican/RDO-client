@@ -3,6 +3,8 @@ package entities;
 import java.io.Serializable;
 import java.util.Date;
 
+import database.DataBase;
+
 /**
  * @author Jordan Aranda Tejada
  */
@@ -10,6 +12,7 @@ public class Patient implements Serializable {
 
 	private static final long	serialVersionUID	= - 7186367905563055140L;
 
+	private int					id;
 	private int					dni;
 	private String				ip;
 	private int					port;
@@ -19,6 +22,7 @@ public class Patient implements Serializable {
 	private String				address;
 	private int					telephone;
 	private String				email;
+	private int					idUser;
 
 	/**
 	 * Default contructor
@@ -29,6 +33,7 @@ public class Patient implements Serializable {
 	}
 
 	/**
+	 * @param id Patient id
 	 * @param dni Patient identification number
 	 * @param ip Patient ip
 	 * @param port Patient port
@@ -39,10 +44,13 @@ public class Patient implements Serializable {
 	 * @param zipCode Patient zip code
 	 * @param telephone Patient telephone number
 	 * @param email Patient email
+	 * @param idUser Users id
 	 */
-	public Patient(int dni, String ip, int port, String name, String lastName,
-	Date birthdate, String address, int telephone, String email)
+	public Patient(int id, int dni, String ip, int port, String name,
+	String lastName, Date birthdate, String address, int telephone,
+	String email, int idUser)
 	{
+		this.id = id;
 		this.dni = dni;
 		this.ip = ip;
 		this.port = port;
@@ -52,6 +60,15 @@ public class Patient implements Serializable {
 		this.address = address;
 		this.telephone = telephone;
 		this.email = email;
+		this.idUser = idUser;
+	}
+
+	/**
+	 * @return Patient id.
+	 */
+	public int getId()
+	{
+		return id;
 	}
 
 	/**
@@ -199,6 +216,14 @@ public class Patient implements Serializable {
 	}
 
 	/**
+	 * @return Patient user id.
+	 */
+	public int getIdUser()
+	{
+		return idUser;
+	}
+
+	/**
 	 * @return The patient dni letter
 	 */
 	public char getDniLetter()
@@ -209,13 +234,52 @@ public class Patient implements Serializable {
 	}
 
 	/**
-	 * @param patient The patient
+	 * @param dni The patient dni number.
 	 * @return The letter of the patient dni
 	 */
-	public static char getDniLetter(Patient patient)
+	public static char getDniLetter(int dni)
 	{
 		String characters = "TRWAGMYFPDXBNJZSQVHLCKET";
-		int module = patient.dni % 23;
+		int module = dni % 23;
 		return characters.charAt(module);
+	}
+
+	/**
+	 * @param dni Patient dni.
+	 * @param name Patient name.
+	 * @param lastname Patient lastname.
+	 * @param birthdate Patient birthdate.
+	 * @param address Patient address.
+	 * @param telephone Patient telephone.
+	 * @param email Patient email.
+	 * @param ipAddress Patient ip address.
+	 * @param port Patient port.
+	 * @param idUser Patient user id.
+	 */
+	public static void create(final int dni, final String name,
+	final String lastname, final Date birthdate, final String address,
+	final int telephone, final String email, final String ipAddress,
+	final int port, final int idUser)
+	{
+		if ( ! existsPatient(dni, idUser))
+		{
+
+		}
+	}
+
+	public void save()
+	{
+		String update = "UPDATE PATIENT SET dni=" + dni + ", name='" + name
+		+ "', lastname='" + lastName + "', birthdate=" + birthdate.getTime()
+		+ ", address='" + address + "', telephone=" + telephone + ", email='"
+		+ email + ", ip_address='" + ip + "', port='" + port + ", id_user="
+		+ idUser + "WHERE id=" + id;
+		DataBase.getInstance().update(update);
+	}
+
+	private static boolean existsPatient(final int dni, final int idUser)
+	{
+		return DataBase.getInstance().count("PATIENT",
+		"dni=" + dni + ", AND id_user=" + idUser) != 0;
 	}
 }

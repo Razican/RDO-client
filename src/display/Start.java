@@ -171,7 +171,7 @@ public class Start extends JPanel implements ActionListener, MouseListener {
 				rs.getInt("telephone"), rs.getString("email"));
 
 				content[i][0] = Integer.toString(p.getDni()) + "-"
-				+ Patient.getDniLetter(p);
+				+ p.getDniLetter();
 				content[i][1] = p.getName();
 				content[i][2] = p.getLastName();
 				content[i][3] = Integer.toString(p.getTelephone());

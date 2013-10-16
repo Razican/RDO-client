@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.DateFormat;
+import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +30,7 @@ import utils.Lang;
 import components.IPPanel;
 import components.Window;
 
+import database.DataBase;
 import entities.Patient;
 
 /**
@@ -443,6 +445,8 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		gbc_btnSave.gridy = 0;
 		btnsPanel.add(btnSave, gbc_btnSave);
 
+		calendar = new JCalendar();
+
 		if (patient != null)
 		{
 			textField_dni.setText(Integer.toString(patient.getDni()));
@@ -451,6 +455,7 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			textField_lastnames.setText(patient.getLastName());
 			lblSelectedDate.setText(DateFormat.getDateInstance(DateFormat.LONG)
 			.format(patient.getBirthdate()));
+			calendar.setDate(patient.getBirthdate());
 
 		}
 	}
@@ -468,12 +473,6 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 	{
 		if (btnCalendar == e.getSource())
 		{
-			calendar = new JCalendar();
-
-			if (patient != null)
-			{
-				calendar.setDate(patient.getBirthdate());
-			}
 			DateFormat df = DateFormat.getDateInstance(DateFormat.LONG);
 
 			String[] options = {Lang.getLine("accept_option"),
@@ -486,7 +485,7 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			final JDialog dialog = pane.createDialog("Selecciona la fecha");
 			dialog.setLocationRelativeTo(Window.getInstance());
 			dialog.setResizable(false);
-			dialog.setSize(300, 300);
+			dialog.pack();
 			dialog.setIconImage(new ImageIcon("img/calendar-icon.png")
 			.getImage());
 			dialog.setVisible(true);
@@ -497,10 +496,62 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			}
 			dialog.dispose();
 		}
+		else if (btnCleanAll == e.getSource())
+		{
+			textField_dni.setText("");
+			textField_letter.setText("");
+			textField_name.setText("");
+			textField_lastnames.setText("");
+			textField_email.setText("");
+			textField_telephone.setText("");
+			textField_port.setText("");
+			textField_address.setText("");
+			lblSelectedDate.setText("");
+			calendar.setDate(new Date());
+		}
 		else if (btnReturn == e.getSource())
 		{
 			Window.getInstance().setContentPane(new Start());
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
+		}
+		else if (btnSave == e.getSource())
+		{
+			if (patient == null)
+			{
+				// New patient
+				int dni = Integer.parseInt(textField_dni.getText());
+				if (DataBase.getInstance().count("PATIENT", "dni=" + dni) == 0)
+				{
+					if (textField_letter.getText().equals(
+					Patient.getDniLetter(dni)))
+					{
+						String update = "INSERT INTO PATIENT VALUES (" + dni
+						+ ", '" + ip_panel.getIpAddress() + "' , "
+						+ Integer.parseInt(textField_port.getText()) + ", '"
+						+ textField_name.getText().trim() + "', '"
+						+ textField_lastnames.getText().trim() + "', "
+						+ calendar.getDate().getTime() + ", '"
+						+ textField_address.getText().trim() + "', "
+						+ Integer.parseInt(textField_telephone.getText())
+						+ ", '" + textField_email.getText().trim() + "')";
+						DataBase.getInstance().update(update);
+						JOptionPane.showMessageDialog(Window.getInstance(),
+						"El paciente: " + textField_name.getText().trim() + " "
+						+ textField_lastnames.getText().trim()
+						+ " se ha añadido correctamente.");
+					}
+					else
+					{
+						// El dni es incorrecto.
+					}
+
+				}
+				else
+				{
+					// Existe el paciente con dni:...
+				}
+
+			}
 		}
 
 	}

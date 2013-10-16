@@ -1,11 +1,22 @@
+CREATE TABLE USER (
+	"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"username" TEXT NOT NULL,
+	"password" TEXT NOT NULL,
+	"email" TEXT,
+	"email_password" TEXT,
+	"remember" INTEGER NOT NULL
+);
+
 CREATE TABLE PATIENT (
-	"dni" INTEGER PRIMARY KEY NOT NULL,
-	"ip_address" TEXT NOT NULL,
-	"port" INTEGER NOT NULL,
+	"id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	"dni" INTEGER NOT NULL,
 	"name" TEXT NOT NULL,
 	"lastname" TEXT NOT NULL,
 	"birthdate" INTEGER NOT NULL,
 	"address" TEXT NOT NULL,
 	"telephone" INTEGER NOT NULL,
-	"email" TEXT NOT NULL
+	"email" TEXT NOT NULL,
+	"ip_address" TEXT NOT NULL,
+	"port" INTEGER NOT NULL,
+	"id_user" INTEGER REFERENCES USER(id) ON DELETE CASCADE
 );

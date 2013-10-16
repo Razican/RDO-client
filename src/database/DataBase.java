@@ -170,7 +170,7 @@ public class DataBase {
 	public static void main(String[] args)
 	{
 		@SuppressWarnings ("deprecation")
-		String update = "INSERT INTO PATIENT VALUES (22756155, '127.0.0.1', 3000, 'Jordan', 'Aranda Tejada', "
+		String update = "INSERT INTO PATIENT VALUES (22756156, '127.0.0.1', 3000, 'Jordan', 'Aranda Tejada', "
 		+ (new Date(1992, 12, 10).getTime() / 1000)
 		+ ", 'Luis de castresana nº9, 13ºF, Barakaldo', 676909011, 'jordan.aranda@me.com')";
 		DataBase.getInstance().update(update);
