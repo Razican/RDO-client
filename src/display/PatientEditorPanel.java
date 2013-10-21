@@ -511,7 +511,7 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 		}
 		else if (btnReturn == e.getSource())
 		{
-			Window.getInstance().setContentPane(new Start());
+			Window.getInstance().setContentPane(new MainPanel());
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (btnSave == e.getSource())
@@ -520,6 +520,7 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			{
 				// New patient
 				int dni = Integer.parseInt(textField_dni.getText());
+				System.out.println("Dni: " + dni);
 				if (DataBase.getInstance().count("PATIENT", "dni=" + dni) == 0)
 				{
 					if (textField_letter.getText().equals(
@@ -542,12 +543,14 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 					}
 					else
 					{
+						System.out.println("Dni incorrecto");
 						// El dni es incorrecto.
 					}
 
 				}
 				else
 				{
+					System.out.println("Ya existe el paciente");
 					// Existe el paciente con dni:...
 				}
 

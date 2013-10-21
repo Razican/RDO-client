@@ -72,6 +72,14 @@ public class Patient implements Serializable {
 	}
 
 	/**
+	 * @param id New patient id.
+	 */
+	public void setId(int id)
+	{
+		this.id = id;
+	}
+
+	/**
 	 * @return Patient identification number
 	 */
 	public int getDni()
@@ -224,6 +232,14 @@ public class Patient implements Serializable {
 	}
 
 	/**
+	 * @param idUser New id user.
+	 */
+	public void setIdUser(int idUser)
+	{
+		this.idUser = idUser;
+	}
+
+	/**
 	 * @return The patient dni letter
 	 */
 	public char getDniLetter()
@@ -267,6 +283,9 @@ public class Patient implements Serializable {
 		}
 	}
 
+	/**
+	 * Save the patient data.
+	 */
 	public void save()
 	{
 		String update = "UPDATE PATIENT SET dni=" + dni + ", name='" + name

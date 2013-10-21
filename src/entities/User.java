@@ -2,6 +2,7 @@ package entities;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Vector;
 
 import utilities.StringUtils;
@@ -31,6 +32,7 @@ public class User {
 		this.email = email;
 		this.emailPassword = emailPassword;
 		this.remember = remember;
+		this.patients = new Vector<Patient>();
 	}
 
 	/**
@@ -123,7 +125,6 @@ public class User {
 	public void setRemember(boolean remember)
 	{
 		this.remember = remember;
-		save();
 	}
 
 	/**
@@ -151,7 +152,7 @@ public class User {
 			+ "', '"
 			+ StringUtils.sha1(password)
 			+ "', '"
-			+ email + "', '" + emailPassword + "', 0)";
+			+ email + "', '" + emailPassword + "', 0);";
 
 			DataBase.getInstance().update(update);
 		}
@@ -165,12 +166,14 @@ public class User {
 	public static void load(final String username, final String password)
 	{
 		user = null;
-		if (DataBase.getInstance().count("USER",
-		"username=" + username + ", password=" + StringUtils.sha1(password)) == 1)
+		if (DataBase.getInstance().count(
+		"USER",
+		"username='" + username + "' AND password='"
+		+ StringUtils.sha1(password) + "'") == 1)
 		{
-			String statement = "SELECT * FROM USER WHERE username='" + username
-			+ "' AND password='" + StringUtils.sha1(password) + "'";
-			ResultSet rs = DataBase.getInstance().consult(statement);
+			String query = "SELECT * FROM USER WHERE username='" + username
+			+ "' AND password='" + StringUtils.sha1(password) + "';";
+			ResultSet rs = DataBase.getInstance().consult(query);
 
 			try
 			{
@@ -182,6 +185,26 @@ public class User {
 					if (rs.getInt("remember") == 1)
 					{
 						user.setRemember(true);
+					}
+
+					String query2 = "SELECT * FROM PATIENT WHERE id_user="
+					+ user.id;
+					ResultSet rs2 = DataBase.getInstance().consult(query2);
+					while (rs2.next())
+					{
+						Patient p = new Patient();
+						p.setId(rs2.getInt("id"));
+						p.setDni(rs2.getInt("dni"));
+						p.setName(rs2.getString("name"));
+						p.setLastName(rs2.getString("lastname"));
+						p.setBirthdate(new Date(rs2.getInt("birthdate")));
+						p.setAddress(rs2.getString("address"));
+						p.setTelephone(rs2.getInt("telephone"));
+						p.setEmail(rs2.getString("email"));
+						p.setIp(rs2.getString("ip_address"));
+						p.setPort(rs2.getInt("port"));
+						p.setIdUser(user.getId());
+						user.getPatients().add(p);
 					}
 				}
 			}
@@ -197,10 +220,20 @@ public class User {
 	 */
 	public void save()
 	{
-		String update = "UPDATE USER SET username='" + username
-		+ "', password='" + password + "', email='" + email
-		+ "', email_password='" + emailPassword + "', remember=0 WHERE id = "
-		+ id;
+		String update = "";
+		if (user.remember)
+		{
+			update = "UPDATE USER SET username='" + username + "', password='"
+			+ password + "', email='" + email + "', email_password='"
+			+ emailPassword + "', remember=1 WHERE id = " + id;
+		}
+		else
+		{
+			update = "UPDATE USER SET username='" + username + "', password='"
+			+ password + "', email='" + email + "', email_password='"
+			+ emailPassword + "', remember=0 WHERE id = " + id;
+		}
+
 		DataBase.getInstance().update(update);
 
 		for (int i = 0; i < patients.size(); i++)
@@ -209,7 +242,11 @@ public class User {
 		}
 	}
 
-	private static boolean existsUser(final String username)
+	/**
+	 * @param username The user name.
+	 * @return if user exist.
+	 */
+	public static boolean existsUser(final String username)
 	{
 		return DataBase.getInstance().count("USER",
 		"username='" + username + "'") != 0;
@@ -221,5 +258,27 @@ public class User {
 	public static User getCurrent()
 	{
 		return user;
+	}
+
+	/**
+	 * Load the remembered user
+	 */
+	public static void loadRememberUser()
+	{
+		String query = "SELECT * FROM USER WHERE REMEMBER=1";
+		ResultSet rs = DataBase.getInstance().consult(query);
+		try
+		{
+			while (rs.next())
+			{
+				user = new User(rs.getInt("id"), rs.getString("username"),
+				rs.getString("password"), rs.getString("email"),
+				rs.getString("email_password"), true);
+			}
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
