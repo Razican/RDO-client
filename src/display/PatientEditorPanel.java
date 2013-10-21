@@ -520,12 +520,16 @@ public class PatientEditorPanel extends JPanel implements ActionListener {
 			{
 				// New patient
 				int dni = Integer.parseInt(textField_dni.getText());
+				char letter = textField_letter.getText().charAt(0);
+
 				System.out.println("Dni: " + dni);
+				System.out.println("Letra: " + letter);
+
 				if (DataBase.getInstance().count("PATIENT", "dni=" + dni) == 0)
 				{
-					if (textField_letter.getText().equals(
-					Patient.getDniLetter(dni)))
+					if (letter == Patient.getDniLetter(dni))
 					{
+
 						String update = "INSERT INTO PATIENT VALUES (" + dni
 						+ ", '" + ip_panel.getIpAddress() + "' , "
 						+ Integer.parseInt(textField_port.getText()) + ", '"

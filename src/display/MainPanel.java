@@ -20,15 +20,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.TableRowSorter;
 
-import org.pushingpixels.substance.api.SubstanceLookAndFeel;
-
+import utilities.StringUtils;
 import utils.Lang;
-import utils.Properties;
 
 import components.IButton;
 import components.ILabel;
@@ -49,7 +44,7 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
 	private JTable				table;
 	private final TableModel	tableModel;
 
-	private IButton				btnPreferences;
+	private IButton				btnOptions;
 	private IButton				btnAdd;
 	private IButton				btnExit;
 
@@ -58,10 +53,6 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
 	 */
 	public MainPanel()
 	{
-		Window.getInstance().setTitle(
-		Window.getInstance().getTitle() + "User: "
-		+ User.getCurrent().getUsername());
-
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0};
 		gridBagLayout.rowHeights = new int[] {0, 0, 0};
@@ -84,18 +75,17 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
 		gbl_menu_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		menu_panel.setLayout(gbl_menu_panel);
 
-		btnPreferences = new IButton();
-		btnPreferences.setFocusPainted(false);
-		btnPreferences.addActionListener(this);
-		btnPreferences.setForeground(Color.BLACK);
-		btnPreferences.setFont(new Font("Calibri", Font.PLAIN, 16));
-		Lang.setLine(btnPreferences, "preferences");
-		GridBagConstraints gbc_btnPreferences = new GridBagConstraints();
-		gbc_btnPreferences.fill = GridBagConstraints.BOTH;
-		gbc_btnPreferences.insets = new Insets(0, 0, 0, 5);
-		gbc_btnPreferences.gridx = 0;
-		gbc_btnPreferences.gridy = 0;
-		menu_panel.add(btnPreferences, gbc_btnPreferences);
+		btnOptions = new IButton("Opciones");
+		btnOptions.setFocusPainted(false);
+		btnOptions.addActionListener(this);
+		btnOptions.setForeground(Color.BLACK);
+		btnOptions.setFont(new Font("Calibri", Font.PLAIN, 16));
+		GridBagConstraints gbc_btnOptions = new GridBagConstraints();
+		gbc_btnOptions.fill = GridBagConstraints.BOTH;
+		gbc_btnOptions.insets = new Insets(0, 0, 0, 5);
+		gbc_btnOptions.gridx = 0;
+		gbc_btnOptions.gridy = 0;
+		menu_panel.add(btnOptions, gbc_btnOptions);
 
 		btnAdd = new IButton();
 		btnAdd.setFocusPainted(false);
@@ -209,53 +199,74 @@ public class MainPanel extends JPanel implements ActionListener, MouseListener {
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (e.getSource() == btnPreferences)
+		if (e.getSource() == btnOptions)
 		{
-			final Preferences p = new Preferences();
-
+			boolean correct = false;
+			String value = "";
 			final String[] options = {Lang.getLine("accept_option"),
 			Lang.getLine("cancel_option")};
-			JOptionPane pane = new JOptionPane(p, JOptionPane.PLAIN_MESSAGE,
-			JOptionPane.OK_CANCEL_OPTION, null, options, options[1]);
-			final JDialog dialog = pane.createDialog(Lang
-			.getLine("preferences"));
-			dialog.setLocationRelativeTo(Window.getInstance());
-			dialog.setResizable(false);
-			dialog.pack();
-			dialog.setIconImage(new ImageIcon("img/sett-icon.png").getImage());
-			dialog.setVisible(true);
 
-			if (pane.getValue() == options[0])
+			do
 			{
-				Properties.setLocale(Lang.getAvailableLocales().get(
-				p.getLocaleIndex()));
-				Lang
-				.setLang(Lang.getAvailableLocales().get(p.getLocaleIndex()));
+				InputPasswordPanel ipd = new InputPasswordPanel("Contraseña");
 
-				Properties.setLookAndFeelClass(p.getLookAndFeel());
-				if (Properties.getLookAndFeel().substring(0, 3).equals("org"))
+				JOptionPane pane = new JOptionPane(ipd,
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
+				options, options[1]);
+				final JDialog dialog = pane.createDialog("Opciones");
+				dialog.setLocationRelativeTo(Window.getInstance());
+				dialog.setResizable(false);
+				dialog.pack();
+				dialog.setIconImage(new ImageIcon("img/sett-icon.png")
+				.getImage());
+				dialog.setVisible(true);
+
+				value = (String) pane.getValue();
+
+				if (value == options[0])
 				{
-					SubstanceLookAndFeel.setSkin(Properties.getLookAndFeel());
-				}
-				else
-				{
-					try
+					if (StringUtils.sha1(ipd.getPassword()).equals(
+					User.getCurrent().getPassword()))
 					{
-						UIManager.setLookAndFeel(Properties.getLookAndFeel());
+						correct = true;
 					}
-					catch (ClassNotFoundException | InstantiationException
-					| IllegalAccessException | UnsupportedLookAndFeelException e1)
+					else
 					{
-						e1.printStackTrace();
+						JOptionPane.showMessageDialog(Window.getInstance(),
+						"Contraseña incorrecta", "Error",
+						JOptionPane.ERROR_MESSAGE, new ImageIcon(
+						"img/error-icon.png"));
 					}
 				}
-				SwingUtilities.updateComponentTreeUI(Window.getInstance());
+				dialog.dispose();
 			}
-			dialog.dispose();
+			while ( ! correct && value == options[0]);
+
+			if (correct)
+			{
+				final UserOptions p = new UserOptions();
+
+				JOptionPane pane = new JOptionPane(p,
+				JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
+				options, options[1]);
+				final JDialog dialog = pane.createDialog("Opciones");
+				dialog.setLocationRelativeTo(Window.getInstance());
+				dialog.setResizable(false);
+				dialog.pack();
+				dialog.setIconImage(new ImageIcon("img/sett-icon.png")
+				.getImage());
+				dialog.setVisible(true);
+
+				if (pane.getValue() == options[0])
+				{
+
+				}
+				dialog.dispose();
+			}
+
 		}
 		else if (e.getSource() == btnAdd)
 		{
-			// Button ADD
 			PatientEditorPanel pep = new PatientEditorPanel(null);
 			Window.getInstance().setContentPane(pep);
 			pep.getTextField_dni().requestFocus();
