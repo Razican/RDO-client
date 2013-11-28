@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 
-import javax.swing.UIManager;
+import entities.User;
 
 /**
  * @author Jordan Aranda Tejada
@@ -18,17 +18,15 @@ import javax.swing.UIManager;
 public class Properties implements Serializable {
 
 	private static final long	serialVersionUID	= 4780308659003926926L;
-
 	private static Properties	properties;
-
 	private Locale				locale;
-	private String				lookAndFeelClass;
 	private String				version;
+	private User				rememberedUser;
 
-	private Properties(Locale locale, String lookAndFeelClass, String version)
+	private Properties(Locale locale, User rememberedUser, String version)
 	{
 		this.locale = locale;
-		this.lookAndFeelClass = lookAndFeelClass;
+		this.rememberedUser = rememberedUser;
 		this.version = version;
 	}
 
@@ -45,8 +43,7 @@ public class Properties implements Serializable {
 		catch (final IOException e)
 		{
 			e.printStackTrace();
-			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), "1.0");
+			properties = new Properties(Locale.getDefault(), null, "1.0");
 		}
 	}
 
@@ -66,9 +63,7 @@ public class Properties implements Serializable {
 			{
 				e.printStackTrace();
 			}
-
-			properties = new Properties(Locale.getDefault(),
-			UIManager.getSystemLookAndFeelClassName(), "1.0");
+			properties = new Properties(Locale.getDefault(), null, "1.0");
 			properties.update();
 		}
 	}
@@ -82,7 +77,6 @@ public class Properties implements Serializable {
 		{
 			init();
 		}
-
 		return properties.locale;
 	}
 
@@ -95,7 +89,6 @@ public class Properties implements Serializable {
 		{
 			init();
 		}
-
 		if (Lang.getAvailableLocales().contains(l))
 		{
 			properties.locale = l;
@@ -104,34 +97,31 @@ public class Properties implements Serializable {
 		{
 			properties.locale = Lang.getDefaultLocale();
 		}
-
 		properties.update();
 	}
 
 	/**
-	 * @return Current look and feel
+	 * @return Remembered User
 	 */
-	public static String getLookAndFeel()
+	public static User getRememberedUser()
 	{
 		if (properties == null)
 		{
 			init();
 		}
-
-		return properties.lookAndFeelClass;
+		return properties.rememberedUser;
 	}
 
 	/**
-	 * @param lf The new Look and feel to set
+	 * @param user User to set as remembered
 	 */
-	public static void setLookAndFeelClass(final String lf)
+	public static void setRememberedUser(final User user)
 	{
 		if (properties == null)
 		{
 			init();
 		}
-
-		properties.lookAndFeelClass = lf;
+		properties.rememberedUser = user;
 		properties.update();
 	}
 
@@ -144,7 +134,6 @@ public class Properties implements Serializable {
 		{
 			init();
 		}
-
 		return properties.version;
 	}
 
@@ -157,9 +146,7 @@ public class Properties implements Serializable {
 		{
 			init();
 		}
-
 		properties.version = version;
-
 		properties.update();
 	}
 
@@ -170,9 +157,6 @@ public class Properties implements Serializable {
 	{
 		System.out.println("LECTURA DE DATOS");
 		System.out.println("LANGUAGE = " + Properties.getLocale().toString());
-		System.out.println("APPEARANCE = "
-		+ Properties.getLookAndFeel().toString());
-
 		System.out.println("VERSION = " + Properties.getVersion());
 
 		// System.out.println("\nMODIFICACION DE DATOS");
