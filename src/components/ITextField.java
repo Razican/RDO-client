@@ -33,7 +33,7 @@ Internationalizable {
 		this.hint = hint;
 		this.showingHint = true;
 		this.setForeground(Color.LIGHT_GRAY);
-		this.setFont(new Font("Calibri", Font.ITALIC, 18));
+		this.setFont(new Font("Calibri", Font.PLAIN, 18));
 		super.addFocusListener(this);
 		this.icon = icon;
 	}
@@ -89,6 +89,5 @@ Internationalizable {
 		{
 			setBorder(new EmptyBorder(3, 10, 0, 2));
 		}
-
 	}
 }
