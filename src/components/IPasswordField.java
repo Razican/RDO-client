@@ -15,7 +15,8 @@ import javax.swing.border.EmptyBorder;
 public class IPasswordField extends JPasswordField {
 
 	private Icon				icon;
-
+	private Icon				errorIcon;
+	private boolean				showError;
 	private static final long	serialVersionUID	= 5728251792417526726L;
 
 	/**
@@ -25,9 +26,26 @@ public class IPasswordField extends JPasswordField {
 	{
 		super();
 		this.setForeground(Color.BLACK);
-		this.setFont(new Font("Calibri", Font.PLAIN, 18));
+		this.setFont(new Font("Calibri", Font.PLAIN, 20));
 		this.setMargin(new Insets(0, 3, 0, 0));
 		this.icon = icon;
+		this.showError = false;
+	}
+
+	/**
+	 * @param icon The error icon to be displayed
+	 */
+	public void setErrorIcon(Icon icon)
+	{
+		this.errorIcon = icon;
+	}
+
+	/**
+	 * Method to display error icon
+	 */
+	public void showError()
+	{
+		this.showError = true;
 	}
 
 	@Override
@@ -35,10 +53,44 @@ public class IPasswordField extends JPasswordField {
 	{
 		super.paintComponent(g);
 
-		int iconHeight = icon.getIconHeight();
-		int iconWidth = icon.getIconWidth();
-		int y = (this.getHeight() - iconHeight) / 2;
-		icon.paintIcon(this, g, 5, y);
-		setBorder(new EmptyBorder(3, iconWidth + 20, 0, 2));
+		if (showError && errorIcon != null)
+		{
+			if (icon != null)
+			{
+				int iconHeight = icon.getIconHeight();
+				int iconWidth = icon.getIconWidth();
+				int iconHeight2 = errorIcon.getIconHeight();
+				int iconWidth2 = errorIcon.getIconWidth();
+				int y = (this.getHeight() - iconHeight) / 2;
+				int y2 = (this.getHeight() - iconHeight2) / 2;
+
+				icon.paintIcon(this, g, 5, y);
+				errorIcon.paintIcon(this, g, this.getWidth() - iconWidth2 - 5,
+				y2);
+
+				setBorder(new EmptyBorder(3, iconWidth + 20, 0, iconWidth2 + 15));
+			}
+			else
+			{
+				int iconHeight = errorIcon.getIconHeight();
+				int iconWidth = errorIcon.getIconWidth();
+				int y = (this.getHeight() - iconHeight) / 2;
+				errorIcon.paintIcon(this, g,
+				this.getWidth() - errorIcon.getIconWidth(), y);
+				setBorder(new EmptyBorder(3, 10, 0, iconWidth + 15));
+			}
+		}
+		else if (icon != null)
+		{
+			int iconHeight = icon.getIconHeight();
+			int iconWidth = icon.getIconWidth();
+			int y = (this.getHeight() - iconHeight) / 2;
+			icon.paintIcon(this, g, 5, y);
+			setBorder(new EmptyBorder(3, iconWidth + 20, 0, 2));
+		}
+		else
+		{
+			setBorder(new EmptyBorder(3, 10, 0, 2));
+		}
 	}
 }

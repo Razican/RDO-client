@@ -9,8 +9,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Locale;
 
-import entities.User;
-
 /**
  * @author Jordan Aranda Tejada
  */
@@ -21,12 +19,10 @@ public class Properties implements Serializable {
 	private static Properties	properties;
 	private Locale				locale;
 	private String				version;
-	private User				rememberedUser;
 
-	private Properties(Locale locale, User rememberedUser, String version)
+	private Properties(Locale locale, String version)
 	{
 		this.locale = locale;
-		this.rememberedUser = rememberedUser;
 		this.version = version;
 	}
 
@@ -43,7 +39,7 @@ public class Properties implements Serializable {
 		catch (final IOException e)
 		{
 			e.printStackTrace();
-			properties = new Properties(Locale.getDefault(), null, "1.0");
+			properties = new Properties(Locale.getDefault(), "1.0");
 		}
 	}
 
@@ -63,7 +59,7 @@ public class Properties implements Serializable {
 			{
 				e.printStackTrace();
 			}
-			properties = new Properties(Locale.getDefault(), null, "1.0");
+			properties = new Properties(Locale.getDefault(), "1.0");
 			properties.update();
 		}
 	}
@@ -97,31 +93,6 @@ public class Properties implements Serializable {
 		{
 			properties.locale = Lang.getDefaultLocale();
 		}
-		properties.update();
-	}
-
-	/**
-	 * @return Remembered User
-	 */
-	public static User getRememberedUser()
-	{
-		if (properties == null)
-		{
-			init();
-		}
-		return properties.rememberedUser;
-	}
-
-	/**
-	 * @param user User to set as remembered
-	 */
-	public static void setRememberedUser(final User user)
-	{
-		if (properties == null)
-		{
-			init();
-		}
-		properties.rememberedUser = user;
 		properties.update();
 	}
 
