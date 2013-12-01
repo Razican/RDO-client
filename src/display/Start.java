@@ -257,7 +257,8 @@ public class Start extends IPanel implements ActionListener {
 					e.printStackTrace();
 				}
 
-				Window.getInstance().setContentPane(new Start());
+				Window.getInstance().setContentPane(new UserPanel());
+				Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
 				Window.getInstance().setVisible(true);
 				SwingUtilities.updateComponentTreeUI(Window.getInstance());
 			}

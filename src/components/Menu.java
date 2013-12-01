@@ -14,10 +14,6 @@ import javax.swing.JMenuItem;
 
 import utils.Lang;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
-import entities.User;
-
 /**
  * @author Jordan Aranda Tejada
  */
@@ -41,8 +37,7 @@ public class Menu extends JMenuBar implements ActionListener {
 		this.color = color;
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
 
-		user = new JMenu(
-		StringUtils.capitalize(User.getCurrent().getUsername()));
+		user = new JMenu("Admin");
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
 		user.setForeground(Color.GREEN);
 		user.setMargin(new Insets(5, 5, 5, 10));
