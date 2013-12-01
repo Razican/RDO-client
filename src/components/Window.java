@@ -21,7 +21,8 @@ public class Window extends JFrame implements Internationalizable {
 		super();
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(new Dimension(800, 600));
-		setResizable(false);
+		setMinimumSize(new Dimension(800, 600));
+		setResizable(true);
 		setLocationRelativeTo(null);
 		Lang.setLine(this, "application_name");
 	}

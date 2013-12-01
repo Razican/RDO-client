@@ -1,6 +1,6 @@
 package entities;
 
-import utilities.StringUtils;
+import utils.Client;
 
 /**
  * @author Jordan Aranda Tejada
@@ -9,23 +9,13 @@ public class User {
 
 	private static User	user;
 
-	private int			id;
 	private String		username;
-	private String		password;
+	private Client		client;
 
-	private User(int id, String username, String password)
+	private User(String username, Client client)
 	{
-		this.id = id;
 		this.username = username;
-		this.password = password;
-	}
-
-	/**
-	 * @return User id.
-	 */
-	public int getId()
-	{
-		return id;
+		this.client = client;
 	}
 
 	/**
@@ -45,19 +35,20 @@ public class User {
 	}
 
 	/**
-	 * @return User password in SHA-1
+	 * @return User client
 	 */
-	public String getPassword()
+	public Client getClient()
 	{
-		return password;
+		return client;
 	}
 
 	/**
-	 * @param password New user password.
+	 * @param username The username
+	 * @param client The user client
 	 */
-	public void setPassword(String password)
+	public static void load(String username, Client client)
 	{
-		this.password = StringUtils.sha1(password);
+		user = new User(username, client);
 	}
 
 	/**

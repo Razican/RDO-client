@@ -2,27 +2,40 @@ package display;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import utilities.StringUtils;
+import utils.Client;
 import utils.Lang;
+import utils.Properties;
 
+import components.IButton;
+import components.ILabel;
+import components.IPanel;
 import components.IPasswordField;
 import components.ITextField;
+import components.Menu;
 import components.Window;
+
+import entities.User;
 
 /**
  * @author Jordan Aranda Tejada
  */
-public class Start extends JPanel {
+public class Start extends IPanel implements ActionListener {
 
 	private static final long	serialVersionUID	= - 3019955922941567348L;
 
@@ -30,75 +43,196 @@ public class Start extends JPanel {
 	private ITextField			textField_user;
 	private IPasswordField		passwordField;
 	private ITextField			textField_ip_port;
-	private JButton				btnEnter;
+	private IButton				btnEnter;
+	private Client				client;
 
 	/**
 	 * Constructor
 	 */
 	public Start()
 	{
-		setBackground(Color.BLACK);
-		setLayout(null);
+		setBackgroundImage(new ImageIcon("img/background.jpg"));
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] {225, 350, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[] {50, 159, 50, 50, 50, 50, 115, 25,
+		0};
+		gridBagLayout.columnWeights = new double[] {1.0, 0.0, 1.0, 0.0,
+		Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 0.0,
+		1.0, 0.0, Double.MIN_VALUE};
+		setLayout(gridBagLayout);
 
 		comboBox_lang = new JComboBox<String>(Lang.getCombableLocales());
-		comboBox_lang.setOpaque(true);
-		comboBox_lang.setBackground(Color.BLACK);
-		comboBox_lang.setBorder(null);
-		comboBox_lang.setForeground(Color.GREEN);
-		comboBox_lang.setFont(new Font("Calibri", Font.PLAIN, 16));
-		comboBox_lang.setBounds(225, 390, 180, 40);
-		add(comboBox_lang);
-
-		textField_user = new ITextField("Usuario", new ImageIcon(
-		"img/user-icon.png"));
-		textField_user.setErrorIcon(new ImageIcon("img/error-icon.png"));
-		textField_user.setBounds(225, 210, 350, 45);
-		add(textField_user);
-		textField_user.setColumns(15);
-
-		passwordField = new IPasswordField(new ImageIcon("img/key-icon.png"));
-		passwordField.setErrorIcon(new ImageIcon("img/error-icon.png"));
-		passwordField.setBounds(225, 270, 350, 45);
-		passwordField.setColumns(15);
-		add(passwordField);
-
-		textField_ip_port = new ITextField("IP:PORT", null);
-		textField_ip_port.setErrorIcon(new ImageIcon("img/error-icon.png"));
-		textField_ip_port.setColumns(15);
-		textField_ip_port.setBounds(225, 330, 350, 45);
-		add(textField_ip_port);
-
-		btnEnter = new JButton("Entrar");
-		btnEnter.addActionListener(new ActionListener()
+		comboBox_lang.addActionListener(new ActionListener()
 		{
 
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
-				String regex = "^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).){3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(102[4-9]|10[3-9][0-9]|1[1-9][0-9]{2}|[2-9][0-9]{3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$";
-
-				String ip = textField_ip_port.getText().trim();
-				textField_user.showError();
-				passwordField.showError();
-
-				if ( ! ip.matches(regex))
-				{
-					textField_ip_port.showError();
-				}
-				else
-				{
-					textField_ip_port.hideError();
-				}
+				Properties.setLocale(Lang.getAvailableLocales().get(
+				comboBox_lang.getSelectedIndex()));
+				Lang.setLang(Lang.getAvailableLocales().get(
+				comboBox_lang.getSelectedIndex()));
 			}
 		});
+		comboBox_lang.setOpaque(false);
+		comboBox_lang.setBackground(Color.BLACK);
+		comboBox_lang.setBorder(null);
+		comboBox_lang.setForeground(Color.GREEN);
+		comboBox_lang.setFont(new Font("Calibri", Font.PLAIN, 16));
+		comboBox_lang.setSelectedIndex(Lang.getCurrentLocaleKey());
+		GridBagConstraints gbc_comboBox_lang = new GridBagConstraints();
+		gbc_comboBox_lang.fill = GridBagConstraints.BOTH;
+		gbc_comboBox_lang.insets = new Insets(10, 0, 5, 10);
+		gbc_comboBox_lang.gridx = 3;
+		gbc_comboBox_lang.gridy = 0;
+		add(comboBox_lang, gbc_comboBox_lang);
+
+		btnEnter = new IButton();
+		Lang.setLine(btnEnter, "start_btn_connect");
+		btnEnter.addActionListener(this);
+
+		textField_ip_port = new ITextField("", new ImageIcon(
+		"img/network-icon.png"));
+		Lang.setLine(textField_ip_port, "start_textfield_ip_port");
+		textField_ip_port.setErrorIcon(new ImageIcon("img/error-icon.png"));
+		textField_ip_port.setColumns(15);
+		GridBagConstraints gbc_textField_ip_port = new GridBagConstraints();
+		gbc_textField_ip_port.fill = GridBagConstraints.BOTH;
+		gbc_textField_ip_port.insets = new Insets(0, 0, 10, 5);
+		gbc_textField_ip_port.gridx = 1;
+		gbc_textField_ip_port.gridy = 2;
+		add(textField_ip_port, gbc_textField_ip_port);
+
+		textField_user = new ITextField("", new ImageIcon("img/user-icon.png"));
+		Lang.setLine(textField_user, "start_textfield_user");
+		textField_user.setErrorIcon(new ImageIcon("img/error-icon.png"));
+		GridBagConstraints gbc_textField_user = new GridBagConstraints();
+		gbc_textField_user.fill = GridBagConstraints.BOTH;
+		gbc_textField_user.insets = new Insets(0, 0, 10, 5);
+		gbc_textField_user.gridx = 1;
+		gbc_textField_user.gridy = 3;
+		add(textField_user, gbc_textField_user);
+		textField_user.setColumns(15);
+
+		passwordField = new IPasswordField(new ImageIcon("img/key-icon.png"));
+		passwordField.setErrorIcon(new ImageIcon("img/error-icon.png"));
+		passwordField.setColumns(15);
+		GridBagConstraints gbc_passwordField = new GridBagConstraints();
+		gbc_passwordField.fill = GridBagConstraints.BOTH;
+		gbc_passwordField.insets = new Insets(0, 0, 10, 5);
+		gbc_passwordField.gridx = 1;
+		gbc_passwordField.gridy = 4;
+		add(passwordField, gbc_passwordField);
 		btnEnter.setBorder(null);
 		btnEnter.setBackground(Color.BLACK);
 		btnEnter.setFocusPainted(false);
 		btnEnter.setBorderPainted(false);
 		btnEnter.setForeground(Color.GREEN);
 		btnEnter.setFont(new Font("Calibri", Font.PLAIN, 20));
-		btnEnter.setBounds(425, 390, 150, 40);
-		add(btnEnter);
+		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
+		gbc_btnEnter.anchor = GridBagConstraints.EAST;
+		gbc_btnEnter.fill = GridBagConstraints.VERTICAL;
+		gbc_btnEnter.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEnter.gridx = 1;
+		gbc_btnEnter.gridy = 5;
+		add(btnEnter, gbc_btnEnter);
+
+		ILabel lblVersion = new ILabel();
+		lblVersion.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblVersion.setText("Version " + Properties.getVersion());
+		lblVersion.setFont(new Font("Calibri", Font.PLAIN, 14));
+		lblVersion.setForeground(Color.GREEN);
+		GridBagConstraints gbc_lblVersion = new GridBagConstraints();
+		gbc_lblVersion.insets = new Insets(0, 0, 10, 10);
+		gbc_lblVersion.anchor = GridBagConstraints.EAST;
+		gbc_lblVersion.fill = GridBagConstraints.VERTICAL;
+		gbc_lblVersion.gridx = 3;
+		gbc_lblVersion.gridy = 7;
+		add(lblVersion, gbc_lblVersion);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if (btnEnter == e.getSource())
+		{
+			String ip = "88.2.185.40:1099"; // CHANGE
+
+			String regex = "^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).)"
+			+ "{3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(10"
+			+ "2[4-9]|10[3-9][0-9]|1[1-9][0-9]{2}|[2-9][0-9]{3}|[1"
+			+ "-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2]["
+			+ "0-9]|6553[0-5])$";
+
+			if (ip.equals("") || ! ip.matches(regex))
+			{
+				textField_ip_port.showError();
+
+				if (ip.equals(""))
+				{
+					JOptionPane.showMessageDialog(this,
+					"Introduce la dirección IP y el puerto.", "Error",
+					JOptionPane.ERROR_MESSAGE);
+				}
+				else if ( ! ip.matches(regex))
+				{
+					JOptionPane.showMessageDialog(this, "", "Error",
+					JOptionPane.ERROR_MESSAGE);
+				}
+			}
+			else
+			{
+				String name = "admin"; // CHANGE
+				char[] password = new char[] {'1', '2', '3', '4', '5'}; // CHANGE
+
+				String[] array = ip.split(":");
+
+				client = new Client(array[0], Integer.parseInt(array[1]));
+
+				// Envio usuario
+				client.sendData("USUARIO " + name);
+				int code1 = client.getInputCode();
+				if (code1 == 501)
+				{
+					JOptionPane.showMessageDialog(this,
+					"Falta el nombre de usuario", "Error",
+					JOptionPane.ERROR_MESSAGE);
+				}
+				else if (code1 == 301)
+				{
+					// Envio contraseña
+					client.sendData("CLAVE " + StringUtils.sha1(password));
+					int code2 = client.getInputCode();
+					if (code2 == 502)
+					{
+						JOptionPane.showMessageDialog(this,
+						"La contraseña es incorrecta.", "Error",
+						JOptionPane.ERROR_MESSAGE);
+					}
+					else if (code2 == 503)
+					{
+						JOptionPane.showMessageDialog(this, "Falta la clave.",
+						"Error", JOptionPane.ERROR_MESSAGE);
+					}
+					else if (code2 == 302)
+					{
+						User.load(name, client);
+						Window.getInstance().setContentPane(new UserPanel());
+						Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
+						((JPanel) Window.getInstance().getContentPane())
+						.updateUI();
+					}
+				}
+
+				// Cierro conexion
+				// client.sendData("SALIR");
+				// if (client.getInputCode() == 318)
+				// {
+				// client.closeConnection();
+				// }
+			}
+		}
 	}
 
 	/**

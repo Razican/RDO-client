@@ -18,11 +18,10 @@ import components.Window;
  */
 public class Client {
 
-	private String				ip		= "";
-	private int					port	= 0;
+	private String				ip;
+	private int					port;
 
 	private Socket				clientSocket;
-	private boolean				connected;
 	private DataOutputStream	output;
 	private BufferedReader		input;
 
@@ -43,7 +42,6 @@ public class Client {
 			{
 				connectToServer();
 				getStreams();
-				this.connected = true;
 			}
 			catch (EOFException excepcionEOF)
 			{
@@ -51,7 +49,6 @@ public class Client {
 			}
 			catch (IOException excepcionES)
 			{
-				this.connected = false;
 				JOptionPane.showMessageDialog(Window.getInstance(),
 				Lang.getLine("connection_error_message") + " " + ip + ":"
 				+ port, Lang.getLine("connection_error"),
@@ -89,7 +86,7 @@ public class Client {
 	{
 		try
 		{
-			output.writeBytes(command);
+			output.writeBytes(command + "\n");
 		}
 		catch (IOException excepcionES)
 		{
@@ -162,19 +159,17 @@ public class Client {
 	}
 
 	/**
-	 * @return if socket is correctly connected
-	 */
-	public boolean isConnected()
-	{
-		return connected;
-	}
-
-	/**
 	 * @param args Application arguments.
 	 */
 	public static void main(String ... args)
 	{
-		Client cliente = new Client("127.0.0.1", 3000);
-		cliente.sendData("HELLO");
+		Client client = new Client("88.2.185.40", 1099);
+		client.sendData("USUARIO ");
+		String result = client.getInputData();
+		System.out.println("Respuesta: " + result);
+
+		client.sendData("SALIR");
+		String result2 = client.getInputData();
+		System.out.println("Respuesta: " + result2);
 	}
 }

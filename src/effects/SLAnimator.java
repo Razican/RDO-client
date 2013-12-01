@@ -1,67 +1,103 @@
 package effects;
 
-import aurelienribon.tweenengine.Tween;
-import aurelienribon.tweenengine.TweenAccessor;
-import aurelienribon.tweenengine.TweenManager;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+
+import aurelienribon.tweenengine.Tween;
+import aurelienribon.tweenengine.TweenAccessor;
+import aurelienribon.tweenengine.TweenManager;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
  */
 public class SLAnimator {
-	private static final List<TweenManager> tweenManagers = new ArrayList<TweenManager>();
-	private static boolean running = false;
 
-	static {
+	private static final List<TweenManager>	tweenManagers	= new ArrayList<TweenManager>();
+	private static boolean					running			= false;
+
+	static
+	{
 		Tween.registerAccessor(JComponent.class, new ComponentAccessor());
 		Tween.setCombinedAttributesLimit(4);
 	}
 
-	public static TweenManager createTweenManager() {
+	public static TweenManager createTweenManager()
+	{
 		TweenManager tm = new TweenManager();
 		tweenManagers.add(tm);
 		return tm;
 	}
 
-	public static void start() {
+	public static void start()
+	{
 		running = true;
 
-		Runnable runnable = new Runnable() {@Override public void run() {
-			long lastMillis = System.currentTimeMillis();
-			long deltaLastMillis = System.currentTimeMillis();
+		Runnable runnable = new Runnable()
+		{
 
-			while (running) {
-				long newMillis = System.currentTimeMillis();
-				long sleep = 15 - (newMillis - lastMillis);
-				lastMillis = newMillis;
+			@Override
+			public void run()
+			{
+				long lastMillis = System.currentTimeMillis();
+				long deltaLastMillis = System.currentTimeMillis();
 
-				if (sleep > 1)
-					try {Thread.sleep(sleep);} catch (InterruptedException ex) {}
+				while (running)
+				{
+					long newMillis = System.currentTimeMillis();
+					long sleep = 15 - (newMillis - lastMillis);
+					lastMillis = newMillis;
 
-				long deltaNewMillis = System.currentTimeMillis();
-				final float delta = (deltaNewMillis - deltaLastMillis) / 1000f;
+					if (sleep > 1)
+					{
+						try
+						{
+							Thread.sleep(sleep);
+						}
+						catch (InterruptedException ex)
+						{
+						}
+					}
 
-				try {
-					SwingUtilities.invokeAndWait(new Runnable() {@Override public void run() {
-						for (int i=0, n=tweenManagers.size(); i<n; i++) tweenManagers.get(i).update(delta);
-					}});
-				} catch (InterruptedException ex) {
-				} catch (InvocationTargetException ex) {
+					long deltaNewMillis = System.currentTimeMillis();
+					final float delta = (deltaNewMillis - deltaLastMillis) / 1000f;
+
+					try
+					{
+						SwingUtilities.invokeAndWait(new Runnable()
+						{
+
+							@Override
+							public void run()
+							{
+								for (int i = 0, n = tweenManagers.size(); i < n; i++)
+								{
+									tweenManagers.get(i).update(delta);
+								}
+							}
+						});
+					}
+					catch (InterruptedException ex)
+					{
+					}
+					catch (InvocationTargetException ex)
+					{
+					}
+
+					deltaLastMillis = newMillis;
 				}
-
-				deltaLastMillis = newMillis;
 			}
-		}};
+		};
 
 		new Thread(runnable).start();
 	}
 
-	public static void stop() {
+	public static void stop()
+	{
 		running = false;
 	}
 
@@ -70,17 +106,21 @@ public class SLAnimator {
 	// -------------------------------------------------------------------------
 
 	public static class ComponentAccessor implements TweenAccessor<Component> {
-		public static final int X = 1;
-		public static final int Y = 2;
-		public static final int XY = 3;
-		public static final int W = 4;
-		public static final int H = 5;
-		public static final int WH = 6;
-		public static final int XYWH = 7;
+
+		public static final int	X		= 1;
+		public static final int	Y		= 2;
+		public static final int	XY		= 3;
+		public static final int	W		= 4;
+		public static final int	H		= 5;
+		public static final int	WH		= 6;
+		public static final int	XYWH	= 7;
 
 		@Override
-		public int getValues(Component target, int tweenType, float[] returnValues) {
-			switch (tweenType) {
+		public int getValues(Component target, int tweenType,
+		float[] returnValues)
+		{
+			switch (tweenType)
+			{
 				case X:
 					returnValues[0] = target.getX();
 					return 1;
@@ -107,38 +147,46 @@ public class SLAnimator {
 					returnValues[2] = target.getWidth();
 					returnValues[3] = target.getHeight();
 					return 4;
-				default: return -1;
+				default:
+					return - 1;
 			}
 		}
 
 		@Override
-		public void setValues(Component target, int tweenType, float[] newValues) {
-			switch (tweenType) {
+		public void setValues(Component target, int tweenType, float[] newValues)
+		{
+			switch (tweenType)
+			{
 				case X:
 					target.setLocation(Math.round(newValues[0]), target.getY());
-					break;
+				break;
 				case Y:
 					target.setLocation(target.getX(), Math.round(newValues[0]));
-					break;
+				break;
 				case XY:
-					target.setLocation(Math.round(newValues[0]), Math.round(newValues[1]));
-					break;
+					target.setLocation(Math.round(newValues[0]),
+					Math.round(newValues[1]));
+				break;
 				case W:
-					target.setSize(Math.round(newValues[0]), target.getHeight());
+					target
+					.setSize(Math.round(newValues[0]), target.getHeight());
 					target.validate();
-					break;
+				break;
 				case H:
 					target.setSize(target.getWidth(), Math.round(newValues[0]));
 					target.validate();
-					break;
+				break;
 				case WH:
-					target.setSize(Math.round(newValues[0]), Math.round(newValues[1]));
+					target.setSize(Math.round(newValues[0]),
+					Math.round(newValues[1]));
 					target.validate();
-					break;
+				break;
 				case XYWH:
-					target.setBounds(Math.round(newValues[0]), Math.round(newValues[1]), Math.round(newValues[2]), Math.round(newValues[3]));
+					target.setBounds(Math.round(newValues[0]),
+					Math.round(newValues[1]), Math.round(newValues[2]),
+					Math.round(newValues[3]));
 					target.validate();
-					break;
+				break;
 			}
 		}
 	}

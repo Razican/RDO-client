@@ -73,7 +73,9 @@ Internationalizable {
 	@Override
 	public void changeLanguage(String newText)
 	{
+
 		this.hint = newText;
+		super.setText(hint);
 	}
 
 	/**
