@@ -13,6 +13,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import utils.Lang;
+import entities.Patient;
 
 /**
  * @author Jordan Aranda Tejada
@@ -71,6 +72,16 @@ public class Menu extends JMenuBar implements ActionListener {
 		sensors.setFont(new Font("Calibri", Font.PLAIN, 18));
 		sensors.setForeground(Color.GREEN);
 		sensors.setMargin(new Insets(5, 5, 5, 10));
+
+		for (int i = 0; i < Patient.getSensors().size(); i++)
+		{
+			JMenuItem sensorItem = new JMenuItem(Patient.getSensors().get(i)
+			.getDescription());
+			sensorItem.addActionListener(this);
+			sensorItem.setMargin(new Insets(5, 5, 5, 5));
+			sensorsItems[i] = sensorItem;
+			sensors.add(sensorItem);
+		}
 
 		devices = new JMenu("Dispositivos");
 		devices.setFont(new Font("Calibri", Font.PLAIN, 18));

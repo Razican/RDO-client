@@ -1,5 +1,6 @@
 package entities;
 
+import utilities.StringUtils;
 import utils.Client;
 
 /**
@@ -48,7 +49,32 @@ public class User {
 	 */
 	public static void load(String username, Client client)
 	{
+		if (user != null)
+		{
+			client.closeConnection();
+		}
 		user = new User(username, client);
+	}
+
+	/**
+	 * @return Server response code
+	 */
+	public static int checkUser()
+	{
+		user.client.sendData("USUARIO " + user.username);
+		String response = user.client.getInputData();
+		return user.client.getInputCode(response);
+	}
+
+	/**
+	 * @param password The user password
+	 * @return Server response code
+	 */
+	public static int checkPassword(char[] password)
+	{
+		user.client.sendData("CLAVE " + StringUtils.sha1(password));
+		String response = user.client.getInputData();
+		return user.client.getInputCode(response);
 	}
 
 	/**

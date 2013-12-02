@@ -50,9 +50,9 @@ public class Client {
 			catch (IOException excepcionES)
 			{
 				JOptionPane.showMessageDialog(Window.getInstance(),
-				Lang.getLine("connection_error_message") + " " + ip + ":"
-				+ port, Lang.getLine("connection_error"),
-				JOptionPane.ERROR_MESSAGE, new ImageIcon("img/error-icon.png"));
+				"No se ha podido conectar con el servidor " + ip + ":" + port,
+				"Fallo en la conexión", JOptionPane.ERROR_MESSAGE,
+				new ImageIcon("img/error-icon.png"));
 			}
 		}
 		else
@@ -85,14 +85,17 @@ public class Client {
 	 */
 	public void sendData(String command)
 	{
-		try
+		if (clientSocket != null)
 		{
-			output.writeBytes(command + "\n");
-		}
-		catch (IOException excepcionES)
-		{
-			System.out
-			.println("Error sending data: " + command + " to server.");
+			try
+			{
+				output.writeBytes(command + "\n");
+			}
+			catch (IOException excepcionES)
+			{
+				System.out.println("Error sending data: " + command
+				+ " to server.");
+			}
 		}
 	}
 
@@ -147,21 +150,23 @@ public class Client {
 	}
 
 	/**
+	 * @param data The imput data
 	 * @return Input data code
 	 */
 
-	public int getInputCode()
+	public int getInputCode(String data)
 	{
-		return Integer.parseInt(getInputData().substring(0, 3));
+		return Integer.parseInt(data.substring(0, 3));
 	}
 
 	/**
+	 * @param data The imput data
 	 * @return Input data description
 	 */
 
-	public String getInputDescription()
+	public String getInputDescription(String data)
 	{
-		return getInputData().substring(3, getInputData().length());
+		return getInputData().substring(3, data.length());
 	}
 
 	/**

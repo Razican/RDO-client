@@ -3,6 +3,8 @@ package entities;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+
 /**
  * @author Jordan Aranda Tejada
  */
@@ -59,12 +61,12 @@ public class Patient implements Serializable {
 
 	/**
 	 * @param idSensor The sensor
-	 * @param status The new status
+	 * @param enable The new status
 	 * @return The response code
 	 */
-	public static int setSensorStatus(int idSensor, boolean status)
+	public static int setSensorStatus(int idSensor, boolean enable)
 	{
-		if (status)
+		if (enable)
 		{
 			User.getCurrent().getClient().sendData("ON " + idSensor);
 		}
@@ -72,6 +74,42 @@ public class Patient implements Serializable {
 		{
 			User.getCurrent().getClient().sendData("OFF " + idSensor);
 		}
-		return User.getCurrent().getClient().getInputCode();
+		String response = User.getCurrent().getClient().getInputData();
+		System.out.println(response);
+		return User.getCurrent().getClient().getInputCode(response);
+	}
+
+	/**
+	 * @param enable The new status
+	 * @return The response code
+	 */
+	public static int setGPSStatus(boolean enable)
+	{
+		if (enable)
+		{
+			User.getCurrent().getClient().sendData("ONGPS");
+		}
+		else
+		{
+			User.getCurrent().getClient().sendData("OFFGPS");
+		}
+		String response = User.getCurrent().getClient().getInputData();
+		System.out.println(response);
+		return User.getCurrent().getClient().getInputCode(response);
+	}
+
+	/**
+	 * @param idSensor The sensor
+	 * @return The response data
+	 */
+	public static String getSensorValue(int idSensor)
+	{
+		User.getCurrent().getClient().sendData("GET_VALACT " + idSensor);
+		return User.getCurrent().getClient().getInputData();
+	}
+
+	public static ImageIcon getFoto()
+	{
+		return null;
 	}
 }

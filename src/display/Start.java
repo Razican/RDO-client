@@ -17,7 +17,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import utilities.StringUtils;
 import utils.Client;
 import utils.Lang;
 import utils.Properties;
@@ -157,7 +156,7 @@ public class Start extends IPanel implements ActionListener {
 	{
 		if (btnEnter == e.getSource())
 		{
-			String ip = "88.2.185.40:1099"; // CHANGE
+			String ip = textField_ip_port.getText().trim();
 
 			String regex = "^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).)"
 			+ "{3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(10"
@@ -171,13 +170,15 @@ public class Start extends IPanel implements ActionListener {
 
 				if (ip.equals(""))
 				{
-					JOptionPane.showMessageDialog(this,
+					JOptionPane.showMessageDialog(Window.getInstance(),
 					"Introduce la dirección IP y el puerto.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 				}
 				else if ( ! ip.matches(regex))
 				{
-					JOptionPane.showMessageDialog(this, "", "Error",
+					JOptionPane.showMessageDialog(Window.getInstance(),
+					"La dirección ip y el puerto no tienen el formato adecuado.\n"
+					+ "Ejemplo: 127.0.0.1:5000", "Error",
 					JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -185,52 +186,39 @@ public class Start extends IPanel implements ActionListener {
 			{
 				String name = textField_user.getText().trim();
 				char[] password = passwordField.getPassword();
-
 				String[] array = ip.split(":");
-
 				client = new Client(array[0], Integer.parseInt(array[1]));
 
-				// Envio usuario
-				client.sendData("USUARIO " + name);
-				int code1 = client.getInputCode();
-				if (code1 == 501)
+				User.load(name, client);
+				System.out.println("SOCKET CLIENTE: "
+				+ User.getCurrent().getClient().getClientSocket());
+				if (User.checkUser() == 501)
 				{
 					JOptionPane.showMessageDialog(this,
 					"Falta el nombre de usuario", "Error",
 					JOptionPane.ERROR_MESSAGE);
 				}
-				else if (code1 == 301)
+				else if (User.checkUser() == 301)
 				{
-					// Envio contraseña
-					client.sendData("CLAVE " + StringUtils.sha1(password));
-					int code2 = client.getInputCode();
-					if (code2 == 502)
+					if (User.checkPassword(password) == 502)
 					{
 						JOptionPane.showMessageDialog(this,
 						"La contraseña es incorrecta.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 					}
-					else if (code2 == 503)
+					else if (User.checkPassword(password) == 503)
 					{
 						JOptionPane.showMessageDialog(this, "Falta la clave.",
 						"Error", JOptionPane.ERROR_MESSAGE);
 					}
-					else if (code2 == 302)
+					else if (User.checkPassword(password) == 302)
 					{
-						User.load(name, client);
 						Window.getInstance().setContentPane(new UserPanel());
 						Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
 						((JPanel) Window.getInstance().getContentPane())
 						.updateUI();
 					}
 				}
-
-				// Cierro conexion
-				// client.sendData("SALIR");
-				// if (client.getInputCode() == 318)
-				// {
-				// client.closeConnection();
-				// }
 			}
 		}
 	}
@@ -257,9 +245,9 @@ public class Start extends IPanel implements ActionListener {
 					e.printStackTrace();
 				}
 
-				User.load("Admin", new Client("127.0.0.1", 5000));
-				Window.getInstance().setContentPane(new UserPanel());
-				Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
+				// User.load("Admin", new Client("127.0.0.1", 5000));
+				Window.getInstance().setContentPane(new Start());
+				// Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
 				Window.getInstance().setVisible(true);
 				SwingUtilities.updateComponentTreeUI(Window.getInstance());
 			}
