@@ -116,6 +116,37 @@ public class Client {
 	}
 
 	/**
+	 * Method to get data from the server.
+	 * 
+	 * @param endmark The end mark
+	 * @return Data from the server.
+	 */
+	public String getInputData(String endmark)
+	{
+		String result = null;
+		try
+		{
+			if (endmark == null)
+			{
+				result = input.readLine();
+			}
+			else
+			{
+				String line = "";
+				while ( ! (line = input.readLine()).equals(endmark))
+				{
+					result += line + "#";
+				}
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
 	 * @return Input data code
 	 */
 

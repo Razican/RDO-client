@@ -13,7 +13,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
 import utils.Lang;
-import entities.User;
 
 /**
  * @author Jordan Aranda Tejada
@@ -73,8 +72,6 @@ public class Menu extends JMenuBar implements ActionListener {
 		sensors.setForeground(Color.GREEN);
 		sensors.setMargin(new Insets(5, 5, 5, 10));
 
-		loadSensors();
-
 		devices = new JMenu("Dispositivos");
 		devices.setFont(new Font("Calibri", Font.PLAIN, 18));
 		devices.setForeground(Color.GREEN);
@@ -90,30 +87,9 @@ public class Menu extends JMenuBar implements ActionListener {
 		camera.setMargin(new Insets(5, 5, 5, 5));
 		devices.add(camera);
 
-		view = new JMenu("Ver");
-		view.setFont(new Font("Calibri", Font.PLAIN, 18));
-		view.setForeground(Color.GREEN);
-		view.setMargin(new Insets(5, 5, 5, 10));
-
-		consoleMode = new JMenuItem("Modo consola");
-		consoleMode.addActionListener(this);
-		consoleMode.setMargin(new Insets(5, 5, 5, 5));
-		view.add(consoleMode);
-
-		wimpMode = new JMenuItem("Modo estándar");
-		wimpMode.addActionListener(this);
-		wimpMode.setMargin(new Insets(5, 5, 5, 5));
-		view.add(wimpMode);
-
 		add(user);
 		add(sensors);
 		add(devices);
-		add(view);
-	}
-
-	public void loadSensors()
-	{
-		User.getCurrent().getClient().sendData("LIST_SENSORS");
 	}
 
 	@Override
@@ -129,6 +105,5 @@ public class Menu extends JMenuBar implements ActionListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
 		g2d.fillRect(1, 1, getWidth() - 2, getHeight() - 1);
-
 	}
 }

@@ -183,13 +183,8 @@ public class Start extends IPanel implements ActionListener {
 			}
 			else
 			{
-				String name = textField_user.getText().trim(); // = "admin"; //
-																// CHANGE
-				char[] password = passwordField.getPassword(); // = new char[]
-																// {'1', '2',
-																// '3', '4',
-																// '5'}; //
-				// CHANGE
+				String name = textField_user.getText().trim();
+				char[] password = passwordField.getPassword();
 
 				String[] array = ip.split(":");
 
@@ -262,6 +257,7 @@ public class Start extends IPanel implements ActionListener {
 					e.printStackTrace();
 				}
 
+				User.load("Admin", new Client("127.0.0.1", 5000));
 				Window.getInstance().setContentPane(new UserPanel());
 				Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
 				Window.getInstance().setVisible(true);
