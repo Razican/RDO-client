@@ -183,8 +183,13 @@ public class Start extends IPanel implements ActionListener {
 			}
 			else
 			{
-				String name = "admin"; // CHANGE
-				char[] password = new char[] {'1', '2', '3', '4', '5'}; // CHANGE
+				String name = textField_user.getText().trim(); // = "admin"; //
+																// CHANGE
+				char[] password = passwordField.getPassword(); // = new char[]
+																// {'1', '2',
+																// '3', '4',
+																// '5'}; //
+				// CHANGE
 
 				String[] array = ip.split(":");
 

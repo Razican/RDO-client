@@ -67,6 +67,7 @@ public class Client {
 	private void connectToServer() throws UnknownHostException, IOException
 	{
 		clientSocket = new Socket(ip, port);
+		clientSocket.setSoTimeout(2000);
 	}
 
 	private void getStreams() throws IOException
