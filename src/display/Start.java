@@ -190,28 +190,29 @@ public class Start extends IPanel implements ActionListener {
 				client = new Client(array[0], Integer.parseInt(array[1]));
 
 				User.load(name, client);
-				System.out.println("SOCKET CLIENTE: "
-				+ User.getCurrent().getClient().getClientSocket());
-				if (User.checkUser() == 501)
+				int code1 = User.checkUser();
+				int code2 = User.checkPassword(password);
+
+				if (code1 == 501)
 				{
 					JOptionPane.showMessageDialog(this,
 					"Falta el nombre de usuario", "Error",
 					JOptionPane.ERROR_MESSAGE);
 				}
-				else if (User.checkUser() == 301)
+				else if (code1 == 301)
 				{
-					if (User.checkPassword(password) == 502)
+					if (code2 == 502)
 					{
 						JOptionPane.showMessageDialog(this,
 						"La contraseña es incorrecta.", "Error",
 						JOptionPane.ERROR_MESSAGE);
 					}
-					else if (User.checkPassword(password) == 503)
+					else if (code2 == 503)
 					{
 						JOptionPane.showMessageDialog(this, "Falta la clave.",
 						"Error", JOptionPane.ERROR_MESSAGE);
 					}
-					else if (User.checkPassword(password) == 302)
+					else if (code2 == 302)
 					{
 						Window.getInstance().setContentPane(new UserPanel());
 						Window.getInstance().setJMenuBar(new Menu(Color.BLACK));

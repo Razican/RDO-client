@@ -49,10 +49,6 @@ public class User {
 	 */
 	public static void load(String username, Client client)
 	{
-		if (user != null)
-		{
-			client.closeConnection();
-		}
 		user = new User(username, client);
 	}
 

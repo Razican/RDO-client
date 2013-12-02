@@ -7,13 +7,17 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 import utils.Lang;
+import display.SensorPanel;
 import entities.Patient;
+import entities.Sensor;
 
 /**
  * @author Jordan Aranda Tejada
@@ -23,9 +27,9 @@ public class Menu extends JMenuBar implements ActionListener {
 	private static final long	serialVersionUID	= - 2674054941368737779L;
 
 	private Color				color;
-	private JMenu				user, language, sensors, devices, view;
-	private JMenuItem			print, logout, camera, gps, consoleMode,
-	wimpMode;
+	private Vector<Sensor>		vSensors;
+	private JMenu				user, language, sensors, devices;
+	private JMenuItem			print, logout, camera, gps;
 	private JMenuItem[]			langItems, sensorsItems;
 
 	/**
@@ -37,7 +41,9 @@ public class Menu extends JMenuBar implements ActionListener {
 	{
 		super();
 		this.color = color;
+		this.vSensors = Patient.getSensors();
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
+		this.sensorsItems = new JMenuItem[vSensors.size()];
 
 		user = new JMenu("Admin");
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
@@ -73,9 +79,9 @@ public class Menu extends JMenuBar implements ActionListener {
 		sensors.setForeground(Color.GREEN);
 		sensors.setMargin(new Insets(5, 5, 5, 10));
 
-		for (int i = 0; i < Patient.getSensors().size(); i++)
+		for (int i = 0; i < vSensors.size(); i++)
 		{
-			JMenuItem sensorItem = new JMenuItem(Patient.getSensors().get(i)
+			JMenuItem sensorItem = new JMenuItem(vSensors.get(i)
 			.getDescription());
 			sensorItem.addActionListener(this);
 			sensorItem.setMargin(new Insets(5, 5, 5, 5));
@@ -106,7 +112,16 @@ public class Menu extends JMenuBar implements ActionListener {
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-
+		//@formatter:off
+		for (int i = 0; i<sensorsItems.length; i++)
+		{
+			if (sensorsItems[i] == e.getSource())
+			{
+				Window.getInstance().setContentPane(new SensorPanel(vSensors.get(i), SensorPanel.tableMode));
+				((JPanel) Window.getInstance().getContentPane()).updateUI();
+			}
+		}
+		//@formatter:on
 	}
 
 	@Override

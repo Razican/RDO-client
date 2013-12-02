@@ -166,7 +166,7 @@ public class Client {
 
 	public String getInputDescription(String data)
 	{
-		return getInputData().substring(3, data.length());
+		return data.substring(3, data.length());
 	}
 
 	/**
