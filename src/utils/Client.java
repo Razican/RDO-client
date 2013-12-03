@@ -1,9 +1,12 @@
 package utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -148,42 +151,41 @@ public class Client {
 	 */
 	public void getInputFile()
 	{
-		// String line = null;
-		// try
-		// {
-		// line = input.readLine();
-		// int length = Integer.parseInt(line.split(" ")[1]);
-		// System.out.println("Tamaño: " + length);
-		//
-		// byte[] buffer = new byte[length];
-		//
-//			//@formatter:off
-//			for(int i=0; i<buffer.length; i++)
-//			{
-//				buffer[i] = (byte)input.read();
-//			}
-//			//@formatter:on
-		//
-		// System.out.println("Recibidos: " + length + " bytes");
-		//
-		// FileOutputStream fos = new FileOutputStream("downloads/test.png");
-		// BufferedOutputStream out = new BufferedOutputStream(fos);
-		//
-		// BufferedImage bufferedImage = ImageIO.read(clientSocket
-		// .getInputStream());
-		// ImageIO.write(bufferedImage, "png", new FileOutputStream(
-		// "downloads/test.png"));
-		//
-		// out.write(buffer);
-		//
-		// fos.close();
-		// out.close();
-		// }
-		// catch (IOException e)
-		// {
-		// e.printStackTrace();
-		// }
+		try
+		{
+			String line = input.readLine();
+			int length = Integer.parseInt(line.split(" ")[1]);
+			System.out.println("Tamaño: " + length);
 
+			InputStream iStream = clientSocket.getInputStream();
+			ByteArrayOutputStream imgStream = new ByteArrayOutputStream(length);
+
+			byte buffer[] = new byte[4092];
+			int read_count = 0;
+			int i = 0;
+
+			while (i < length - 1
+			&& (read_count = iStream.read(buffer, 0, buffer.length)) != - 1)
+			{
+				imgStream.write(buffer, 0, read_count);
+				i += read_count;
+			}
+
+			if (i < length - 1)
+			{
+				// TODO reenviar foto
+				System.out.println("Foto a la mitad :(");
+			}
+
+			FileOutputStream fos = new FileOutputStream("downloads/test.png");
+			fos.write(imgStream.toByteArray());
+			fos.close();
+			imgStream.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
