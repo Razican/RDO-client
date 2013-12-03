@@ -43,7 +43,9 @@ public class Menu extends JMenuBar implements ActionListener {
 	{
 		super();
 		this.color = color;
+
 		Patient.getSensors(this);
+
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
 		this.sensorsItems = new JMenuItem[vSensors.size()];
 

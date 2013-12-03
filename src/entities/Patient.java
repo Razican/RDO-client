@@ -19,23 +19,31 @@ public class Patient implements Serializable {
 	 * 
 	 * @param menu - The menu to load
 	 */
-	public static void getSensors(Menu menu)
+	public static void getSensors(final Menu menu)
 	{
 		//@formatter:off
-		Vector<Sensor> vSensors = new Vector<Sensor>();
-		
-		User.getCurrent().getClient().sendData("LISTSENSOR");
-		String sensorString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
-		System.out.println(sensorString);
-		
-		String [] sensors = sensorString.split("#");
-		for (int i = 1; i < sensors.length; i++)
+		(new Thread()
 		{
-			System.out.println("Sensor " + i +":" + sensors[i]);
-			String [] attributes = sensors[i].split(";");
-			vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
-		}
-		menu.notify(vSensors);
+
+			@Override
+			public void run()
+			{
+				Vector<Sensor> vSensors = new Vector<Sensor>();
+				
+				User.getCurrent().getClient().sendData("LISTSENSOR");
+				String sensorString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
+				System.out.println(sensorString);
+				
+				String [] sensors = sensorString.split("#");
+				for (int i = 1; i < sensors.length; i++)
+				{
+					System.out.println("Sensor " + i +":" + sensors[i]);
+					String [] attributes = sensors[i].split(";");
+					vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
+				}
+				menu.notify(vSensors);
+			}
+		}).start();
 		//@formatter:on
 	}
 
