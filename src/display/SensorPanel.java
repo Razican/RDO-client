@@ -18,6 +18,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+
 import components.IPanel;
 import components.TableModel;
 import components.Window;
@@ -31,23 +37,32 @@ import entities.User;
  */
 public class SensorPanel extends IPanel implements ActionListener {
 
-	private static final long	serialVersionUID	= - 3523156860414714504L;
+	private static final long		serialVersionUID	= - 3523156860414714504L;
 
-	private Sensor				sensor;
-	private TableModel			modelTable;
-	private JTable				table;
-	private JButton				btnGetValue;
-	private JButton				btnPrint;
-	private JButton				btnChangeMode;
-	private int					mode;
+	private Sensor					sensor;
+	private TableModel				modelTable;
+	private JTable					table;
+	private DefaultCategoryDataset	dataset;
+	private JButton					btnGetValue;
+	private JButton					btnPrint;
+	private JButton					btnChangeMode;
+	private int						mode;
+	private ChartPanel				panelGraph;
 
-	public static int			tableMode			= - 1;
-	public static int			graphMode			= 1;
+	/**
+	 * Table mode
+	 */
+	public static int				tableMode			= - 1;
+	/**
+	 * Graph mode
+	 */
+	public static int				graphMode			= 1;
 
 	/**
 	 * Create the panel.
 	 * 
 	 * @param sensor The sensor
+	 * @param mode The panel mode
 	 */
 	public SensorPanel(Sensor sensor, int mode)
 	{
@@ -117,40 +132,61 @@ public class SensorPanel extends IPanel implements ActionListener {
 		gbc_btnPrint.gridy = 0;
 		add(btnPrint, gbc_btnPrint);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setOpaque(false);
-		GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-		gbc_scrollPane.gridwidth = 4;
-		gbc_scrollPane.insets = new Insets(0, 20, 20, 20);
-		gbc_scrollPane.fill = GridBagConstraints.BOTH;
-		gbc_scrollPane.gridx = 0;
-		gbc_scrollPane.gridy = 1;
-		add(scrollPane, gbc_scrollPane);
+		if (mode == SensorPanel.tableMode)
+		{
+			JScrollPane scrollPane = new JScrollPane();
+			scrollPane.setOpaque(false);
+			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+			gbc_scrollPane.gridwidth = 4;
+			gbc_scrollPane.insets = new Insets(0, 20, 20, 20);
+			gbc_scrollPane.fill = GridBagConstraints.BOTH;
+			gbc_scrollPane.gridx = 0;
+			gbc_scrollPane.gridy = 1;
+			add(scrollPane, gbc_scrollPane);
 
-		modelTable = new TableModel();
-		loadTable();
+			modelTable = new TableModel();
+			loadTable();
 
-		table = new JTable(modelTable);
-		table.setRowSelectionAllowed(false);
-		table.setRequestFocusEnabled(false);
-		table.setFocusTraversalKeysEnabled(false);
-		table.setFocusable(false);
-		table.setEnabled(false);
-		table.setGridColor(new Color(135, 206, 250));
-		table.getTableHeader().setReorderingAllowed(false);
-		table.setDragEnabled(false);
-		table.setOpaque(false);
-		table.setSelectionForeground(Color.WHITE);
-		table.setSelectionBackground(Color.BLUE);
-		table.setForeground(Color.BLACK);
-		table.setBackground(Color.WHITE);
-		table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
-		table.setRowHeight(22);
-		table.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 15));
-		scrollPane.setViewportView(table);
+			table = new JTable(modelTable);
+			table.setRowSelectionAllowed(false);
+			table.setRequestFocusEnabled(false);
+			table.setFocusTraversalKeysEnabled(false);
+			table.setFocusable(false);
+			table.setEnabled(false);
+			table.setGridColor(new Color(135, 206, 250));
+			table.getTableHeader().setReorderingAllowed(false);
+			table.setDragEnabled(false);
+			table.setOpaque(false);
+			table.setSelectionForeground(Color.WHITE);
+			table.setSelectionBackground(Color.BLUE);
+			table.setForeground(Color.BLACK);
+			table.setBackground(Color.WHITE);
+			table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
+			table.setRowHeight(22);
+			table.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 15));
+			scrollPane.setViewportView(table);
 
-		// table.getColumnModel().getColumn(0).setMinWidth(100);
-		// table.getColumnModel().getColumn(0).setMaxWidth(100);
+			// table.getColumnModel().getColumn(0).setMinWidth(100);
+			// table.getColumnModel().getColumn(0).setMaxWidth(100);
+		}
+		else if (mode == SensorPanel.graphMode)
+		{
+			dataset = new DefaultCategoryDataset();
+			loadDataSet();
+
+			JFreeChart chart = ChartFactory.createLineChart("", "Date",
+			"Value", dataset, PlotOrientation.VERTICAL, false, true, false);
+
+			panelGraph = new ChartPanel(chart, false);
+			panelGraph.setOpaque(false);
+			GridBagConstraints gbc_panelGraph = new GridBagConstraints();
+			gbc_panelGraph.gridwidth = 4;
+			gbc_panelGraph.insets = new Insets(0, 20, 20, 20);
+			gbc_panelGraph.fill = GridBagConstraints.BOTH;
+			gbc_panelGraph.gridx = 0;
+			gbc_panelGraph.gridy = 1;
+			add(panelGraph, gbc_panelGraph);
+		}
 	}
 
 	private void loadTable()
@@ -176,6 +212,18 @@ public class SensorPanel extends IPanel implements ActionListener {
 			content[i - 1][4] = fields[4];
 		}
 		modelTable.setDataVector(content, header);
+	}
+
+	private void loadDataSet()
+	{
+		Vector<String> historic = Patient.getHistoric(sensor.getId());
+		for (int i = 1; i < historic.size(); i++)
+		{
+			String line = historic.get(i);
+			String[] fields = line.split(";");
+			dataset.addValue(Double.parseDouble(fields[4]), fields[0],
+			fields[4]);
+		}
 	}
 
 	@Override
