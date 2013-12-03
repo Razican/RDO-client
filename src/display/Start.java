@@ -157,7 +157,7 @@ public class Start extends IPanel implements ActionListener {
 	{
 		if (btnEnter == e.getSource())
 		{
-			String ip = textField_ip_port.getText().trim();
+			final String ip = textField_ip_port.getText().trim();
 
 			String regex = "^(([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]).)"
 			+ "{3}([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(10"
@@ -185,42 +185,53 @@ public class Start extends IPanel implements ActionListener {
 			}
 			else
 			{
-				String name = textField_user.getText().trim();
-				char[] password = passwordField.getPassword();
-				String[] array = ip.split(":");
-				client = new Client(array[0], Integer.parseInt(array[1]));
-
-				User.load(name, client);
-				int code1 = User.checkUser();
-				int code2 = User.checkPassword(password);
-
-				if (code1 == 501)
+				(new Thread()
 				{
-					JOptionPane.showMessageDialog(this,
-					"Falta el nombre de usuario", "Error",
-					JOptionPane.ERROR_MESSAGE);
-				}
-				else if (code1 == 301)
-				{
-					if (code2 == 502)
+
+					@Override
+					public void run()
 					{
-						JOptionPane.showMessageDialog(this,
-						"La contraseña es incorrecta.", "Error",
-						JOptionPane.ERROR_MESSAGE);
+						String name = textField_user.getText().trim();
+						char[] password = passwordField.getPassword();
+						String[] array = ip.split(":");
+						client = new Client(array[0],
+						Integer.parseInt(array[1]));
+						User.load(name, client);
+						int code1 = User.checkUser();
+						int code2 = User.checkPassword(password);
+
+						if (code1 == 501)
+						{
+							JOptionPane.showMessageDialog(Start.this,
+							"Falta el nombre de usuario", "Error",
+							JOptionPane.ERROR_MESSAGE);
+						}
+						else if (code1 == 301)
+						{
+							if (code2 == 502)
+							{
+								JOptionPane.showMessageDialog(Start.this,
+								"La contraseña es incorrecta.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+							}
+							else if (code2 == 503)
+							{
+								JOptionPane.showMessageDialog(Start.this,
+								"Falta la clave.", "Error",
+								JOptionPane.ERROR_MESSAGE);
+							}
+							else if (code2 == 302)
+							{
+								Window.getInstance().setContentPane(
+								new UserPanel());
+								Window.getInstance().setJMenuBar(
+								new Menu(Color.BLACK));
+								((JPanel) Window.getInstance().getContentPane())
+								.updateUI();
+							}
+						}
 					}
-					else if (code2 == 503)
-					{
-						JOptionPane.showMessageDialog(this, "Falta la clave.",
-						"Error", JOptionPane.ERROR_MESSAGE);
-					}
-					else if (code2 == 302)
-					{
-						Window.getInstance().setContentPane(new UserPanel());
-						Window.getInstance().setJMenuBar(new Menu(Color.BLACK));
-						((JPanel) Window.getInstance().getContentPane())
-						.updateUI();
-					}
-				}
+				}).start();
 			}
 		}
 	}

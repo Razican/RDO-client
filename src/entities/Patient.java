@@ -5,6 +5,8 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import components.Menu;
+
 /**
  * @author Jordan Aranda Tejada
  */
@@ -13,9 +15,11 @@ public class Patient implements Serializable {
 	private static final long	serialVersionUID	= - 7186367905563055140L;
 
 	/**
-	 * @return The vector with sensors
+	 * Gets the sensors from the server
+	 * 
+	 * @param menu - The menu to load
 	 */
-	public static Vector<Sensor> getSensors()
+	public static void getSensors(Menu menu)
 	{
 		//@formatter:off
 		Vector<Sensor> vSensors = new Vector<Sensor>();
@@ -31,7 +35,7 @@ public class Patient implements Serializable {
 			String [] attributes = sensors[i].split(";");
 			vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
 		}
-		return vSensors;
+		menu.notify(vSensors);
 		//@formatter:on
 	}
 

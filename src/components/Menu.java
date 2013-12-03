@@ -43,7 +43,7 @@ public class Menu extends JMenuBar implements ActionListener {
 	{
 		super();
 		this.color = color;
-		this.vSensors = Patient.getSensors();
+		Patient.getSensors(this);
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
 		this.sensorsItems = new JMenuItem[vSensors.size()];
 
@@ -80,16 +80,6 @@ public class Menu extends JMenuBar implements ActionListener {
 		sensors.setFont(new Font("Calibri", Font.PLAIN, 18));
 		sensors.setForeground(Color.GREEN);
 		sensors.setMargin(new Insets(5, 5, 5, 10));
-
-		for (int i = 0; i < vSensors.size(); i++)
-		{
-			JMenuItem sensorItem = new JMenuItem(vSensors.get(i)
-			.getDescription());
-			sensorItem.addActionListener(this);
-			sensorItem.setMargin(new Insets(5, 5, 5, 5));
-			sensorsItems[i] = sensorItem;
-			sensors.add(sensorItem);
-		}
 
 		devices = new JMenu("Dispositivos");
 		devices.setFont(new Font("Calibri", Font.PLAIN, 18));
@@ -148,5 +138,24 @@ public class Menu extends JMenuBar implements ActionListener {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(color);
 		g2d.fillRect(1, 1, getWidth() - 2, getHeight() - 1);
+	}
+
+	/**
+	 * Notifies the new sensors
+	 * 
+	 * @param vSensors - Sensor list
+	 */
+	public void notify(Vector<Sensor> vSensors)
+	{
+		this.vSensors = vSensors;
+		for (int i = 0; i < vSensors.size(); i++)
+		{
+			JMenuItem sensorItem = new JMenuItem(vSensors.get(i)
+			.getDescription());
+			sensorItem.addActionListener(this);
+			sensorItem.setMargin(new Insets(5, 5, 5, 5));
+			sensorsItems[i] = sensorItem;
+			sensors.add(sensorItem);
+		}
 	}
 }
