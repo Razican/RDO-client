@@ -12,12 +12,12 @@ import entities.Sensor;
 public interface Loadable {
 
 	/**
-	 * @param sensors The new text to set
+	 * @param sensors The new sensors to set
 	 */
 	public void notifySensors(Vector<Sensor> sensors);
 
 	/**
 	 * @param sensors The new text to set
 	 */
-	public void notifySensors(Vector<Sensor> sensors);
+	public void notifyHistoric(Vector<String> historic);
 }
