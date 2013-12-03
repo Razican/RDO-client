@@ -12,13 +12,14 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import razican.utils.StringUtils;
+
 import components.Internationalizable;
 
 /**
  * @author Razican (Iban Eguia)
  */
-public class Lang 
-{
+public class Lang {
 
 	private static Vector<Locale>						locales;
 	private static Lang									currentLang;
@@ -48,13 +49,15 @@ public class Lang
 
 		try
 		{
-			st = new ObjectInputStream(new FileInputStream("lang/" + locale.getLanguage() + "_" + locale.getCountry() + ".lang"));
+			st = new ObjectInputStream(new FileInputStream("lang/"
+			+ locale.getLanguage() + "_" + locale.getCountry() + ".lang"));
 			lines = (HashMap<String, String>) st.readObject();
 			st.close();
 		}
 		catch (IOException | ClassNotFoundException e)
 		{
-			JOptionPane.showMessageDialog(null, "Error loading language file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE,null);
+			JOptionPane.showMessageDialog(null, "Error loading language file: "
+			+ e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE, null);
 		}
 	}
 
@@ -73,7 +76,9 @@ public class Lang
 
 			try
 			{
-				st = new ObjectInputStream(new FileInputStream("lang/" + newLocale.getLanguage() + "_" + newLocale.getCountry() + ".lang"));
+				st = new ObjectInputStream(new FileInputStream("lang/"
+				+ newLocale.getLanguage() + "_" + newLocale.getCountry()
+				+ ".lang"));
 				lines = (HashMap<String, String>) st.readObject();
 				st.close();
 			}

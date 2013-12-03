@@ -17,7 +17,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import utils.Client;
+import network.Client;
+
 import utils.Lang;
 import utils.Properties;
 

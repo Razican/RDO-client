@@ -1,4 +1,4 @@
-package utils;
+package network;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -13,6 +13,9 @@ import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+
+import utils.Lang;
+import utils.Utilities;
 
 import components.Window;
 

@@ -1,7 +1,7 @@
 package entities;
 
-import utilities.StringUtils;
-import utils.Client;
+import network.Client;
+import razican.utils.StringUtils;
 
 /**
  * @author Jordan Aranda Tejada
