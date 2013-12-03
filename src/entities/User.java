@@ -74,6 +74,27 @@ public class User {
 	}
 
 	/**
+	 * Method to logout user from server
+	 */
+	public void logout()
+	{
+		client.sendData("SALIR");
+		if (client.getInputCode(client.getInputData()) == 318)
+		{
+			client.closeConnection();
+			user = null;
+		}
+	}
+
+	/**
+	 * @return If user is loaded
+	 */
+	public static boolean isLoaded()
+	{
+		return user != null;
+	}
+
+	/**
 	 * @return The current user
 	 */
 	public static User getCurrent()

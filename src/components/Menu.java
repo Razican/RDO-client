@@ -16,8 +16,10 @@ import javax.swing.JPanel;
 
 import utils.Lang;
 import display.SensorPanel;
+import display.Start;
 import entities.Patient;
 import entities.Sensor;
+import entities.User;
 
 /**
  * @author Jordan Aranda Tejada
@@ -122,6 +124,21 @@ public class Menu extends JMenuBar implements ActionListener {
 			}
 		}
 		//@formatter:on
+		if (logout == e.getSource())
+		{
+			User.getCurrent().logout();
+			Window.getInstance().getJMenuBar().setVisible(false);
+			Start start = new Start();
+			Window.getInstance().setContentPane(start);
+			start.updateUI();
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
+		}
+		else if (camera == e.getSource())
+		{
+			Patient.getFoto();
+			// Window.getInstance().setContentPane(new CameraPanel());
+			// ((JPanel) Window.getInstance().getContentPane()).updateUI();
+		}
 	}
 
 	@Override

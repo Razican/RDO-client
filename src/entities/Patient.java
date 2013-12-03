@@ -113,6 +113,8 @@ public class Patient implements Serializable {
 	 */
 	public static ImageIcon getFoto()
 	{
+		User.getCurrent().getClient().sendData("GET_FOTO");
+		User.getCurrent().getClient().getInputFile();
 		return null;
 	}
 }

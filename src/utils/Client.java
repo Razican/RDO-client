@@ -67,7 +67,6 @@ public class Client {
 	private void connectToServer() throws UnknownHostException, IOException
 	{
 		clientSocket = new Socket(ip, port);
-		clientSocket.setSoTimeout(2000);
 	}
 
 	private void getStreams() throws IOException
@@ -85,6 +84,7 @@ public class Client {
 	 */
 	public void sendData(String command)
 	{
+		System.out.println("Client sending --> " + command);
 		if (clientSocket != null)
 		{
 			try
@@ -110,6 +110,7 @@ public class Client {
 		try
 		{
 			result = input.readLine();
+			System.out.println("Client receiving --> " + result);
 		}
 		catch (IOException e)
 		{
@@ -129,17 +130,10 @@ public class Client {
 		String result = null;
 		try
 		{
-			if (endmark == null)
+			String line = "";
+			while ( ! (line = input.readLine()).equals(endmark))
 			{
-				result = input.readLine();
-			}
-			else
-			{
-				String line = "";
-				while ( ! (line = input.readLine()).equals(endmark))
-				{
-					result += line + "#";
-				}
+				result += line + "#";
 			}
 		}
 		catch (IOException e)
@@ -147,6 +141,49 @@ public class Client {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	/**
+	 * Method to get files from server.
+	 */
+	public void getInputFile()
+	{
+		// String line = null;
+		// try
+		// {
+		// line = input.readLine();
+		// int length = Integer.parseInt(line.split(" ")[1]);
+		// System.out.println("Tamaño: " + length);
+		//
+		// byte[] buffer = new byte[length];
+		//
+//			//@formatter:off
+//			for(int i=0; i<buffer.length; i++)
+//			{
+//				buffer[i] = (byte)input.read();
+//			}
+//			//@formatter:on
+		//
+		// System.out.println("Recibidos: " + length + " bytes");
+		//
+		// FileOutputStream fos = new FileOutputStream("downloads/test.png");
+		// BufferedOutputStream out = new BufferedOutputStream(fos);
+		//
+		// BufferedImage bufferedImage = ImageIO.read(clientSocket
+		// .getInputStream());
+		// ImageIO.write(bufferedImage, "png", new FileOutputStream(
+		// "downloads/test.png"));
+		//
+		// out.write(buffer);
+		//
+		// fos.close();
+		// out.close();
+		// }
+		// catch (IOException e)
+		// {
+		// e.printStackTrace();
+		// }
+
 	}
 
 	/**

@@ -87,10 +87,6 @@ public class Start extends IPanel implements ActionListener {
 		gbc_comboBox_lang.gridy = 0;
 		add(comboBox_lang, gbc_comboBox_lang);
 
-		btnEnter = new IButton();
-		Lang.setLine(btnEnter, "start_btn_connect");
-		btnEnter.addActionListener(this);
-
 		textField_ip_port = new ITextField("", new ImageIcon(
 		"img/network-icon.png"));
 		Lang.setLine(textField_ip_port, "start_textfield_ip_port");
@@ -123,6 +119,11 @@ public class Start extends IPanel implements ActionListener {
 		gbc_passwordField.gridx = 1;
 		gbc_passwordField.gridy = 4;
 		add(passwordField, gbc_passwordField);
+
+		btnEnter = new IButton(Lang.getLine("start_btn_connect"));
+		btnEnter.setMargin(new Insets(2, 15, 2, 15));
+		Lang.setLine(btnEnter, "start_btn_connect");
+		btnEnter.addActionListener(this);
 		btnEnter.setBorder(null);
 		btnEnter.setBackground(Color.BLACK);
 		btnEnter.setFocusPainted(false);
