@@ -9,7 +9,7 @@ import java.awt.Insets;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import components.IPanel;
+import display.components.IPanel;
 
 /**
  * @author Jordan Aranda Tejada

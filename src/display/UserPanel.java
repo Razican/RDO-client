@@ -4,7 +4,7 @@ import java.awt.BorderLayout;
 
 import javax.swing.ImageIcon;
 
-import components.IPanel;
+import display.components.IPanel;
 
 /**
  * @author Jordan Aranda Tejada

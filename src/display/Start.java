@@ -22,13 +22,13 @@ import network.Client;
 import utils.Lang;
 import utils.Properties;
 
-import components.IButton;
-import components.ILabel;
-import components.IPanel;
-import components.IPasswordField;
-import components.ITextField;
-import components.Menu;
-import components.Window;
+import display.components.IButton;
+import display.components.ILabel;
+import display.components.IPanel;
+import display.components.IPasswordField;
+import display.components.ITextField;
+import display.components.Menu;
+import display.components.Window;
 
 import entities.User;
 

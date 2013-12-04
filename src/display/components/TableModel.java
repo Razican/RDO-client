@@ -1,4 +1,4 @@
-package components;
+package display.components;
 
 import javax.swing.table.DefaultTableModel;
 

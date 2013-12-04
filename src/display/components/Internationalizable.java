@@ -1,4 +1,4 @@
-package components;
+package display.components;
 
 /**
  * Simple way to change the language of the component.

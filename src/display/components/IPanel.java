@@ -1,4 +1,4 @@
-package components;
+package display.components;
 
 import java.awt.Font;
 import java.awt.Graphics;

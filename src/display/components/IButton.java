@@ -1,4 +1,4 @@
-package components;
+package display.components;
 
 import javax.swing.Action;
 import javax.swing.Icon;

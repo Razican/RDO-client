@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
-import components.Menu;
+import display.components.Menu;
 
 /**
  * @author Jordan Aranda Tejada

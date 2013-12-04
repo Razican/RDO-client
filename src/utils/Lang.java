@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 import razican.utils.StringUtils;
 
-import components.Internationalizable;
+import display.components.Internationalizable;
 
 /**
  * @author Razican (Iban Eguia)

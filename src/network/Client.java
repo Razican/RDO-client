@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import utils.Lang;
 import utils.Utilities;
 
-import components.Window;
+import display.components.Window;
 
 /**
  * @author Jordan Aranda Tejada

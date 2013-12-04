@@ -24,9 +24,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import components.IPanel;
-import components.TableModel;
-import components.Window;
+import display.components.IPanel;
+import display.components.TableModel;
+import display.components.Window;
 
 import entities.Patient;
 import entities.Sensor;
