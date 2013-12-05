@@ -44,7 +44,8 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		super();
 		this.color = color;
 
-		Patient.getSensors(this);
+		// Patient.getCurrent().addLoadable(this);
+		Patient.getCurrent().getSensors(this);
 
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
 		this.sensorsItems = new JMenuItem[vSensors.size()];
@@ -167,7 +168,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		//@formatter:off
 		if (object instanceof Vector<?> && ((Vector<?>) object).elementAt(0) instanceof Sensor)
 		{
-			System.out.println("Actualizando lista sensores");
+			System.out.println("Actualizada lista sensores");
 			
 		}
 		//@formatter:on

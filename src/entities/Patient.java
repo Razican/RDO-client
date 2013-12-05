@@ -8,7 +8,6 @@ import javax.swing.ImageIcon;
 
 import display.components.Loadable;
 import display.components.Loader;
-import display.components.Menu;
 
 /**
  * @author Jordan Aranda Tejada
@@ -28,9 +27,9 @@ public class Patient implements Serializable, Loader {
 	/**
 	 * Gets the sensors from the server
 	 * 
-	 * @param menu - The menu to load
+	 * @param loadable The loadable component
 	 */
-	public void getSensors(final Menu menu)
+	public void getSensors(final Loadable loadable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -52,7 +51,7 @@ public class Patient implements Serializable, Loader {
 					String [] attributes = sensors[i].split(";");
 					vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
 				}
-				notifyLoadables(vSensors);
+				notifyLoadables(loadable, vSensors);
 				// menu.notify(vSensors);
 			}
 		}).start();
@@ -60,9 +59,10 @@ public class Patient implements Serializable, Loader {
 	}
 
 	/**
+	 * @param loadable The loadable component
 	 * @param idSensor The sensor id
 	 */
-	public void getHistoric(final int idSensor)
+	public void getHistoric(final Loadable loadable, final int idSensor)
 	{
 		//@formatter:off
 		(new Thread()
@@ -83,7 +83,7 @@ public class Patient implements Serializable, Loader {
 					System.out.println(i + ":" + historicLines[i]);
 					vHistoric.add(historicLines[i]);
 				}
-				notifyLoadables(vHistoric);
+				notifyLoadables(loadable, vHistoric);
 				// return vHistoric;
 				//@formatter:on
 			}
@@ -91,11 +91,13 @@ public class Patient implements Serializable, Loader {
 	}
 
 	/**
+	 * @param loadable The loadable component
 	 * @param idSensor The sensor
 	 * @param enable The new status
 	 * @return The response code
 	 */
-	public void setSensorStatus(final int idSensor, final boolean enable)
+	public void setSensorStatus(final Loadable loadable, final int idSensor,
+	final boolean enable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -115,7 +117,7 @@ public class Patient implements Serializable, Loader {
 				String response = User.getCurrent().getClient().getInputData();
 				System.out.println(response);
 				int code = User.getCurrent().getClient().getInputCode(response);
-				notifyLoadables(code);
+				notifyLoadables(loadable, code);
 			}
 		}).start();
 	}
@@ -184,11 +186,12 @@ public class Patient implements Serializable, Loader {
 	}
 
 	@Override
-	public void notifyLoadables(Object object)
+	public void notifyLoadables(Loadable loadable, Object object)
 	{
-		for (int i = 0; i < loadables.size(); i++)
-		{
-			loadables.get(i).update(object);
-		}
+		loadable.update(object);
+//		for (int i = 0; i < loadables.size(); i++)
+//		{
+//			loadables.get(i).update(object);
+//		}
 	}
 }

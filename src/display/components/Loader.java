@@ -18,7 +18,8 @@ public interface Loader {
 	/**
 	 * Method to notify loadable components.
 	 * 
-	 * @param object The object to notify to components
+	 * @param loadable The loadable component
+	 * @param object The object to notify to component
 	 */
-	public void notifyLoadables(Object object);
+	public void notifyLoadables(Loadable loadable, Object object);
 }
