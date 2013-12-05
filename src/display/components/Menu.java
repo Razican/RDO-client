@@ -24,7 +24,7 @@ import entities.User;
 /**
  * @author Jordan Aranda Tejada
  */
-public class Menu extends JMenuBar implements ActionListener {
+public class Menu extends JMenuBar implements ActionListener, Loadable {
 
 	private static final long	serialVersionUID	= - 2674054941368737779L;
 
@@ -159,5 +159,17 @@ public class Menu extends JMenuBar implements ActionListener {
 			sensorsItems[i] = sensorItem;
 			sensors.add(sensorItem);
 		}
+	}
+
+	@Override
+	public void update(Object object)
+	{
+		//@formatter:off
+		if (object instanceof Vector<?> && ((Vector<?>) object).elementAt(0) instanceof Sensor)
+		{
+			System.out.println("Actualizando lista sensores");
+			
+		}
+		//@formatter:on
 	}
 }

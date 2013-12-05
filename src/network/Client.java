@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import utils.Lang;
-import utils.Utilities;
-
 import display.components.Window;
 
 /**
@@ -42,7 +42,7 @@ public class Client {
 		this.ip = ip;
 		this.port = port;
 
-		if (Utilities.internetConnection())
+		if (internetConnection())
 		{
 			try
 			{
@@ -235,6 +235,24 @@ public class Client {
 	public Socket getClientSocket()
 	{
 		return clientSocket;
+	}
+
+	/**
+	 * @return if there is connected to internet
+	 */
+	public boolean internetConnection()
+	{
+		try
+		{
+			URL url = new URL("http://www.google.es");
+			URLConnection urlConnection = url.openConnection();
+			urlConnection.connect();
+			return true;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
 	}
 
 	/**

@@ -25,9 +25,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import display.components.IPanel;
+import display.components.Loadable;
 import display.components.TableModel;
 import display.components.Window;
-
 import entities.Patient;
 import entities.Sensor;
 import entities.User;
@@ -35,7 +35,7 @@ import entities.User;
 /**
  * @author Jordan Aranda Tejada
  */
-public class SensorPanel extends IPanel implements ActionListener {
+public class SensorPanel extends IPanel implements ActionListener, Loadable {
 
 	private static final long		serialVersionUID	= - 3523156860414714504L;
 
@@ -291,5 +291,11 @@ public class SensorPanel extends IPanel implements ActionListener {
 				e1.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void update(Object object)
+	{
+
 	}
 }

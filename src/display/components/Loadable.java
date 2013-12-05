@@ -1,9 +1,5 @@
 package display.components;
 
-import java.util.Vector;
-
-import entities.Sensor;
-
 /**
  * Simple way to change the data of the component.
  * 
@@ -12,12 +8,8 @@ import entities.Sensor;
 public interface Loadable {
 
 	/**
-	 * @param sensors The new sensors to set
+	 * @param object The new object to set
 	 */
-	public void notifySensors(Vector<Sensor> sensors);
+	public void update(Object object);
 
-	/**
-	 * @param sensors The new text to set
-	 */
-	public void notifyHistoric(Vector<String> historic);
 }

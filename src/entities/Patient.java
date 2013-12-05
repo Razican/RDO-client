@@ -1,25 +1,36 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import display.components.Loadable;
+import display.components.Loader;
 import display.components.Menu;
 
 /**
  * @author Jordan Aranda Tejada
  */
-public class Patient implements Serializable {
+public class Patient implements Serializable, Loader {
 
-	private static final long	serialVersionUID	= - 7186367905563055140L;
+	private static final long			serialVersionUID	= - 7186367905563055140L;
+
+	private static Patient				currentPatient;
+	private static ArrayList<Loadable>	loadables			= new ArrayList<Loadable>();
+
+	private Patient()
+	{
+
+	}
 
 	/**
 	 * Gets the sensors from the server
 	 * 
 	 * @param menu - The menu to load
 	 */
-	public static void getSensors(final Menu menu)
+	public void getSensors(final Menu menu)
 	{
 		//@formatter:off
 		(new Thread()
@@ -41,7 +52,8 @@ public class Patient implements Serializable {
 					String [] attributes = sensors[i].split(";");
 					vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
 				}
-				menu.notify(vSensors);
+				notifyLoadables(vSensors);
+				// menu.notify(vSensors);
 			}
 		}).start();
 		//@formatter:on
@@ -49,26 +61,33 @@ public class Patient implements Serializable {
 
 	/**
 	 * @param idSensor The sensor id
-	 * @return The vector with historic lines (the first position has the
-	 *         response code).
 	 */
-	public static Vector<String> getHistoric(int idSensor)
+	public void getHistoric(final int idSensor)
 	{
 		//@formatter:off
-		Vector<String> vHistoric = new Vector<String>();
-
-		User.getCurrent().getClient().sendData("HISTORICO " + idSensor);
-		String historicString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
-		System.out.println(historicString);
-		
-		String[] historicLines = historicString.split("#");
-		for (int i = 0; i < historicLines.length; i++)
+		(new Thread()
 		{
-			System.out.println(i + ":" + historicLines[i]);
-			vHistoric.add(historicLines[i]);
-		}
-		return vHistoric;
-		//@formatter:on
+
+			@Override
+			public void run()
+			{
+				Vector<String> vHistoric = new Vector<String>();
+		
+				User.getCurrent().getClient().sendData("HISTORICO " + idSensor);
+				String historicString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
+				System.out.println(historicString);
+				
+				String[] historicLines = historicString.split("#");
+				for (int i = 0; i < historicLines.length; i++)
+				{
+					System.out.println(i + ":" + historicLines[i]);
+					vHistoric.add(historicLines[i]);
+				}
+				notifyLoadables(vHistoric);
+				// return vHistoric;
+				//@formatter:on
+			}
+		}).start();
 	}
 
 	/**
@@ -76,19 +95,29 @@ public class Patient implements Serializable {
 	 * @param enable The new status
 	 * @return The response code
 	 */
-	public static int setSensorStatus(int idSensor, boolean enable)
+	public void setSensorStatus(final int idSensor, final boolean enable)
 	{
-		if (enable)
+		//@formatter:off
+		(new Thread()
 		{
-			User.getCurrent().getClient().sendData("ON " + idSensor);
-		}
-		else
-		{
-			User.getCurrent().getClient().sendData("OFF " + idSensor);
-		}
-		String response = User.getCurrent().getClient().getInputData();
-		System.out.println(response);
-		return User.getCurrent().getClient().getInputCode(response);
+
+			@Override
+			public void run()
+			{
+				if (enable)
+				{
+					User.getCurrent().getClient().sendData("ON " + idSensor);
+				}
+				else
+				{
+					User.getCurrent().getClient().sendData("OFF " + idSensor);
+				}
+				String response = User.getCurrent().getClient().getInputData();
+				System.out.println(response);
+				int code = User.getCurrent().getClient().getInputCode(response);
+				notifyLoadables(code);
+			}
+		}).start();
 	}
 
 	/**
@@ -128,5 +157,38 @@ public class Patient implements Serializable {
 		User.getCurrent().getClient().sendData("GET_FOTO");
 		User.getCurrent().getClient().getInputFile();
 		return null;
+	}
+
+	/**
+	 * @return The current patient
+	 */
+	public static Patient getCurrent()
+	{
+		if (currentPatient == null)
+		{
+			currentPatient = new Patient();
+		}
+		return currentPatient;
+	}
+
+	@Override
+	public void addLoadable(Loadable loadable)
+	{
+		loadables.add(loadable);
+	}
+
+	@Override
+	public void deleteLoadable(Loadable loadable)
+	{
+		loadables.remove(loadable);
+	}
+
+	@Override
+	public void notifyLoadables(Object object)
+	{
+		for (int i = 0; i < loadables.size(); i++)
+		{
+			loadables.get(i).update(object);
+		}
 	}
 }
