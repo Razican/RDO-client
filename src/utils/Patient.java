@@ -1,13 +1,13 @@
-package entities;
+package utils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-
 import display.components.Loadable;
 import display.components.Loader;
+import entities.Sensor;
+import entities.User;
 
 /**
  * @author Jordan Aranda Tejada
@@ -152,13 +152,22 @@ public class Patient implements Serializable, Loader {
 	}
 
 	/**
-	 * @return The foto
+	 * @param loadable The loadable component
 	 */
-	public static ImageIcon getFoto()
+	public void getFoto(Loadable loadable)
 	{
-		User.getCurrent().getClient().sendData("GET_FOTO");
-		User.getCurrent().getClient().getInputFile();
-		return null;
+		//@formatter:off
+		(new Thread()
+		{
+
+			@Override
+			public void run()
+			{
+				User.getCurrent().getClient().sendData("GET_FOTO");
+				User.getCurrent().getClient().getInputFile();
+			}
+		}).start();
+		//@formatter:on
 	}
 
 	/**
@@ -189,9 +198,5 @@ public class Patient implements Serializable, Loader {
 	public void notifyLoadables(Loadable loadable, Object object)
 	{
 		loadable.update(object);
-//		for (int i = 0; i < loadables.size(); i++)
-//		{
-//			loadables.get(i).update(object);
-//		}
 	}
 }

@@ -15,9 +15,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import utils.Lang;
+import utils.Patient;
 import display.SensorPanel;
 import display.Start;
-import entities.Patient;
 import entities.Sensor;
 import entities.User;
 
@@ -48,7 +48,6 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		Patient.getCurrent().getSensors(this);
 
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
-		this.sensorsItems = new JMenuItem[vSensors.size()];
 
 		user = new JMenu("Admin");
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
@@ -128,7 +127,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		}
 		else if (camera == e.getSource())
 		{
-			Patient.getFoto();
+			Patient.getCurrent().getFoto(this);
 			// Window.getInstance().setContentPane(new CameraPanel());
 			// ((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
@@ -169,7 +168,17 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		if (object instanceof Vector<?> && ((Vector<?>) object).elementAt(0) instanceof Sensor)
 		{
 			System.out.println("Actualizada lista sensores");
-			
+			vSensors = (Vector<Sensor>)object;
+			this.sensorsItems = new JMenuItem[vSensors.size()];
+			for (int i = 0; i < vSensors.size(); i++)
+			{
+				JMenuItem sensorItem = new JMenuItem(vSensors.get(i)
+				.getDescription());
+				sensorItem.addActionListener(this);
+				sensorItem.setMargin(new Insets(5, 5, 5, 5));
+				sensorsItems[i] = sensorItem;
+				sensors.add(sensorItem);
+			}
 		}
 		//@formatter:on
 	}

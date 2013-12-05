@@ -110,7 +110,7 @@ public class Client {
 	 * 
 	 * @return Data from the server.
 	 */
-	public String getInputData()
+	public synchronized String getInputData()
 	{
 		String result = null;
 		try

@@ -24,11 +24,11 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import utils.Patient;
 import display.components.IPanel;
 import display.components.Loadable;
 import display.components.TableModel;
 import display.components.Window;
-import entities.Patient;
 import entities.Sensor;
 import entities.User;
 
@@ -40,6 +40,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	private static final long		serialVersionUID	= - 3523156860414714504L;
 
 	private Sensor					sensor;
+	private JScrollPane				scrollPane;
 	private TableModel				modelTable;
 	private JTable					table;
 	private DefaultCategoryDataset	dataset;
@@ -70,6 +71,9 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		this.mode = mode;
 		setOpaque(false);
 		setBackgroundImage(new ImageIcon("img/background.jpg"));
+
+		Patient.getCurrent().getSensors(this);
+		Patient.getCurrent().getHistoric(this, sensor.getId());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0, 0, 0, 0};
@@ -131,99 +135,6 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		gbc_btnPrint.gridx = 3;
 		gbc_btnPrint.gridy = 0;
 		add(btnPrint, gbc_btnPrint);
-
-		if (mode == SensorPanel.tableMode)
-		{
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setOpaque(false);
-			GridBagConstraints gbc_scrollPane = new GridBagConstraints();
-			gbc_scrollPane.gridwidth = 4;
-			gbc_scrollPane.insets = new Insets(0, 20, 20, 20);
-			gbc_scrollPane.fill = GridBagConstraints.BOTH;
-			gbc_scrollPane.gridx = 0;
-			gbc_scrollPane.gridy = 1;
-			add(scrollPane, gbc_scrollPane);
-
-			modelTable = new TableModel();
-			loadTable();
-
-			table = new JTable(modelTable);
-			table.setRowSelectionAllowed(false);
-			table.setRequestFocusEnabled(false);
-			table.setFocusTraversalKeysEnabled(false);
-			table.setFocusable(false);
-			table.setEnabled(false);
-			table.setGridColor(new Color(135, 206, 250));
-			table.getTableHeader().setReorderingAllowed(false);
-			table.setDragEnabled(false);
-			table.setOpaque(false);
-			table.setSelectionForeground(Color.WHITE);
-			table.setSelectionBackground(Color.BLUE);
-			table.setForeground(Color.BLACK);
-			table.setBackground(Color.WHITE);
-			table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
-			table.setRowHeight(22);
-			table.getTableHeader().setFont(new Font("Arial", Font.PLAIN, 15));
-			scrollPane.setViewportView(table);
-
-			// table.getColumnModel().getColumn(0).setMinWidth(100);
-			// table.getColumnModel().getColumn(0).setMaxWidth(100);
-		}
-		else if (mode == SensorPanel.graphMode)
-		{
-			dataset = new DefaultCategoryDataset();
-			loadDataSet();
-
-			JFreeChart chart = ChartFactory.createLineChart("", "Date",
-			"Value", dataset, PlotOrientation.VERTICAL, false, true, false);
-
-			panelGraph = new ChartPanel(chart, false);
-			panelGraph.setOpaque(false);
-			GridBagConstraints gbc_panelGraph = new GridBagConstraints();
-			gbc_panelGraph.gridwidth = 4;
-			gbc_panelGraph.insets = new Insets(0, 20, 20, 20);
-			gbc_panelGraph.fill = GridBagConstraints.BOTH;
-			gbc_panelGraph.gridx = 0;
-			gbc_panelGraph.gridy = 1;
-			add(panelGraph, gbc_panelGraph);
-		}
-	}
-
-	private void loadTable()
-	{
-		Vector<String> historic = Patient.getHistoric(sensor.getId());
-
-		String[] header = {"Fecha", "Hora", "Latitud", "Longitud", "Valor"};
-		String[][] content = new String[historic.size() - 1][5];
-
-		for (int i = 1; i < historic.size(); i++)
-		{
-			String line = historic.get(i);
-			String[] fields = line.split(";");
-			// Fecha
-			content[i - 1][0] = fields[0];
-			// Hora
-			content[i - 1][1] = fields[1];
-			// Latitud
-			content[i - 1][2] = fields[2];
-			// Longitud
-			content[i - 1][3] = fields[3];
-			// Valor
-			content[i - 1][4] = fields[4];
-		}
-		modelTable.setDataVector(content, header);
-	}
-
-	private void loadDataSet()
-	{
-		Vector<String> historic = Patient.getHistoric(sensor.getId());
-		for (int i = 1; i < historic.size(); i++)
-		{
-			String line = historic.get(i);
-			String[] fields = line.split(";");
-			dataset.addValue(Double.parseDouble(fields[4]), fields[0],
-			fields[4]);
-		}
 	}
 
 	@Override
@@ -254,8 +165,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 				//@formatter:on
 
 				Window.getInstance().setContentPane(
-				new SensorPanel(Patient.getSensors().get(sensor.getId() - 1),
-				mode));
+				new SensorPanel(sensor, mode));
 				((JPanel) Window.getInstance().getContentPane()).updateUI();
 
 				JOptionPane.showMessageDialog(Window.getInstance(), values,
@@ -269,14 +179,12 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 			if (mode == SensorPanel.graphMode)
 			{
 				Window.getInstance().setContentPane(
-				new SensorPanel(Patient.getSensors().get(sensor.getId() - 1),
-				SensorPanel.graphMode));
+				new SensorPanel(sensor, SensorPanel.graphMode));
 			}
 			else if (mode == SensorPanel.tableMode)
 			{
 				Window.getInstance().setContentPane(
-				new SensorPanel(Patient.getSensors().get(sensor.getId() - 1),
-				SensorPanel.tableMode));
+				new SensorPanel(sensor, SensorPanel.tableMode));
 			}
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
@@ -293,9 +201,97 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		}
 	}
 
+	@SuppressWarnings ("unchecked")
 	@Override
 	public void update(Object object)
 	{
+		if (object instanceof Vector<?>
+		&& ((Vector<?>) object).elementAt(0) instanceof String)
+		{
+			Vector<String> historic = (Vector<String>) object;
+			if (mode == SensorPanel.tableMode)
+			{
+				scrollPane = new JScrollPane();
+				scrollPane.setOpaque(false);
+				GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+				gbc_scrollPane.gridwidth = 4;
+				gbc_scrollPane.insets = new Insets(0, 20, 20, 20);
+				gbc_scrollPane.fill = GridBagConstraints.BOTH;
+				gbc_scrollPane.gridx = 0;
+				gbc_scrollPane.gridy = 1;
+				add(scrollPane, gbc_scrollPane);
 
+				modelTable = new TableModel();
+
+				String[] header = {"Fecha", "Hora", "Latitud", "Longitud",
+				"Valor"};
+				String[][] content = new String[historic.size() - 1][5];
+
+				for (int i = 1; i < historic.size(); i++)
+				{
+					String line = historic.get(i);
+					String[] fields = line.split(";");
+					// Fecha
+					content[i - 1][0] = fields[0];
+					// Hora
+					content[i - 1][1] = fields[1];
+					// Latitud
+					content[i - 1][2] = fields[2];
+					// Longitud
+					content[i - 1][3] = fields[3];
+					// Valor
+					content[i - 1][4] = fields[4];
+				}
+				modelTable.setDataVector(content, header);
+
+				table = new JTable(modelTable);
+				table.setRowSelectionAllowed(false);
+				table.setRequestFocusEnabled(false);
+				table.setFocusTraversalKeysEnabled(false);
+				table.setFocusable(false);
+				table.setEnabled(false);
+				table.setGridColor(new Color(135, 206, 250));
+				table.getTableHeader().setReorderingAllowed(false);
+				table.setDragEnabled(false);
+				table.setOpaque(false);
+				table.setSelectionForeground(Color.WHITE);
+				table.setSelectionBackground(Color.BLUE);
+				table.setForeground(Color.BLACK);
+				table.setBackground(Color.WHITE);
+				table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
+				table.setRowHeight(22);
+				table.getTableHeader().setFont(
+				new Font("Arial", Font.PLAIN, 15));
+				// table.getColumnModel().getColumn(0).setMinWidth(100);
+				// table.getColumnModel().getColumn(0).setMaxWidth(100);
+				scrollPane.setViewportView(table);
+			}
+			else if (mode == SensorPanel.graphMode)
+			{
+				dataset = new DefaultCategoryDataset();
+
+				for (int i = 1; i < historic.size(); i++)
+				{
+					String line = historic.get(i);
+					String[] fields = line.split(";");
+					dataset.addValue(Double.parseDouble(fields[4]), fields[0],
+					fields[4]);
+				}
+
+				JFreeChart chart = ChartFactory.createLineChart("", "Date",
+				"Value", dataset, PlotOrientation.VERTICAL, false, true, false);
+
+				panelGraph = new ChartPanel(chart, false);
+				panelGraph.setOpaque(false);
+				GridBagConstraints gbc_panelGraph = new GridBagConstraints();
+				gbc_panelGraph.gridwidth = 4;
+				gbc_panelGraph.insets = new Insets(0, 20, 20, 20);
+				gbc_panelGraph.fill = GridBagConstraints.BOTH;
+				gbc_panelGraph.gridx = 0;
+				gbc_panelGraph.gridy = 1;
+				add(panelGraph, gbc_panelGraph);
+			}
+		}
+		((JPanel) Window.getInstance().getContentPane()).updateUI();
 	}
 }
