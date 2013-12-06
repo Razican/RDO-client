@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+
 import display.components.Loadable;
 import display.components.Loader;
 import entities.Sensor;
@@ -173,7 +175,7 @@ public class Patient implements Serializable, Loader {
 			{
 				User.getCurrent().getClient().sendData("GET_FOTO");
 				File photo = User.getCurrent().getClient().getInputFile();
-				notifyLoadables(loadable, photo);
+				notifyLoadables(loadable, new ImageIcon(photo.getPath()));
 			}
 		}).start();
 		//@formatter:on

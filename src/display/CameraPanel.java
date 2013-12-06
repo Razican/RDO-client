@@ -43,7 +43,7 @@ public class CameraPanel extends IPanel implements ActionListener, Loadable {
 		gridBagLayout.rowWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
 
-		JLabel lblDescription = new JLabel("Camera");
+		JLabel lblDescription = new JLabel("Cámara");
 		lblDescription.setForeground(Color.GREEN);
 		lblDescription.setFont(new Font("Calibri", Font.PLAIN, 40));
 		GridBagConstraints gbc_lblDescription = new GridBagConstraints();
@@ -67,6 +67,7 @@ public class CameraPanel extends IPanel implements ActionListener, Loadable {
 		add(btnPhoto, gbc_btnPhoto);
 
 		JPanel panel_content = new JPanel();
+		panel_content.setOpaque(false);
 		GridBagConstraints gbc_panel_content = new GridBagConstraints();
 		gbc_panel_content.gridwidth = 2;
 		gbc_panel_content.insets = new Insets(0, 20, 20, 20);
@@ -109,6 +110,5 @@ public class CameraPanel extends IPanel implements ActionListener, Loadable {
 		{
 			Patient.getCurrent().getFoto(this);
 		}
-
 	}
 }

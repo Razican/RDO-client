@@ -78,7 +78,6 @@ public class Client {
 		clientSocket = new Socket(ip, port);
 		this.connected = true;
 		System.out.println("Correctly connected to server: " + ip + ":" + port);
-		clientSocket.setSoTimeout(2000);
 	}
 
 	private void getStreams() throws IOException
@@ -188,7 +187,7 @@ public class Client {
 				System.out.println("Foto a la mitad :(");
 			}
 
-			FileOutputStream fos = new FileOutputStream("downloads/test.png");
+			FileOutputStream fos = new FileOutputStream("downloads/photo.png");
 			fos.write(imgStream.toByteArray());
 			fos.close();
 			imgStream.close();

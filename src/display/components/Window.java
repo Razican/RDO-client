@@ -28,6 +28,7 @@ public class Window extends JFrame implements Internationalizable {
 		setSize(new Dimension(800, 600));
 		setMinimumSize(new Dimension(800, 600));
 		setResizable(true);
+		setIconImage((new ImageIcon("img/app-icon.png")).getImage());
 		setLocationRelativeTo(null);
 		Lang.setLine(this, "application_name");
 		addWindowListener(new WindowAdapter()
@@ -44,7 +45,7 @@ public class Window extends JFrame implements Internationalizable {
 					final int selection = JOptionPane.showOptionDialog(
 					Window.getInstance(), "¿Estas seguro de querer salir?",
 					"Salir", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, 
-					new ImageIcon("img/warning.png"), options, options[1]);
+					new ImageIcon("img/warning-icon.png"), options, options[1]);
 
 					if (selection == 0)
 					{
