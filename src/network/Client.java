@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,7 @@ public class Client {
 	private Socket				clientSocket;
 	private DataOutputStream	output;
 	private BufferedReader		input;
+	private boolean				connected;
 
 	/**
 	 * Default constructor
@@ -72,7 +74,11 @@ public class Client {
 
 	private void connectToServer() throws UnknownHostException, IOException
 	{
+		System.out.println("Conecting to server: " + ip + ":" + port);
 		clientSocket = new Socket(ip, port);
+		this.connected = true;
+		System.out.println("Correctly connected to server: " + ip + ":" + port);
+		clientSocket.setSoTimeout(2000);
 	}
 
 	private void getStreams() throws IOException
@@ -151,8 +157,10 @@ public class Client {
 
 	/**
 	 * Method to get files from server.
+	 * 
+	 * @return A file with photo from server.
 	 */
-	public void getInputFile()
+	public File getInputFile()
 	{
 		try
 		{
@@ -184,11 +192,14 @@ public class Client {
 			fos.write(imgStream.toByteArray());
 			fos.close();
 			imgStream.close();
+
+			return new File("downloads/photo.png");
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	/**
@@ -218,6 +229,7 @@ public class Client {
 	{
 		try
 		{
+			this.connected = false;
 			output.close();
 			input.close();
 			clientSocket.close();
@@ -235,6 +247,14 @@ public class Client {
 	public Socket getClientSocket()
 	{
 		return clientSocket;
+	}
+
+	/**
+	 * @return if client is connected to server
+	 */
+	public boolean isConnected()
+	{
+		return connected;
 	}
 
 	/**

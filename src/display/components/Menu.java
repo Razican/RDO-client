@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import utils.Lang;
 import utils.Patient;
+import display.CameraPanel;
 import display.SensorPanel;
 import display.Start;
 import entities.Sensor;
@@ -31,7 +32,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 	private Color				color;
 	private Vector<Sensor>		vSensors;
 	private JMenu				user, language, sensors, devices;
-	private JMenuItem			print, logout, camera, gps;
+	private JMenuItem			logout, camera, gps;
 	private JMenuItem[]			langItems, sensorsItems;
 
 	/**
@@ -44,7 +45,6 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		super();
 		this.color = color;
 
-		// Patient.getCurrent().addLoadable(this);
 		Patient.getCurrent().getSensors(this);
 
 		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
@@ -52,11 +52,11 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		user = new JMenu("Admin");
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
 		user.setForeground(Color.GREEN);
-		user.setMargin(new Insets(5, 5, 5, 10));
+		user.setMargin(new Insets(10, 10, 10, 10));
 
 		language = new JMenu("Idioma");
 		language.addActionListener(this);
-		language.setMargin(new Insets(5, 5, 5, 5));
+		language.setMargin(new Insets(10, 10, 10, 10));
 		user.add(language);
 
 		for (int i = 0; i < Lang.getAvailableLocales().size(); i++)
@@ -68,34 +68,29 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 			language.add(langItem);
 		}
 
-		print = new JMenuItem("Imprimir");
-		print.addActionListener(this);
-		print.setMargin(new Insets(5, 5, 5, 5));
-		user.add(print);
-
 		logout = new JMenuItem("Cerrar sesión");
 		logout.addActionListener(this);
-		logout.setMargin(new Insets(5, 5, 5, 5));
+		logout.setMargin(new Insets(10, 10, 10, 10));
 		user.add(logout);
 
 		sensors = new JMenu("Sensores");
 		sensors.setFont(new Font("Calibri", Font.PLAIN, 18));
 		sensors.setForeground(Color.GREEN);
-		sensors.setMargin(new Insets(5, 5, 5, 10));
+		sensors.setMargin(new Insets(10, 10, 10, 10));
 
 		devices = new JMenu("Dispositivos");
 		devices.setFont(new Font("Calibri", Font.PLAIN, 18));
 		devices.setForeground(Color.GREEN);
-		devices.setMargin(new Insets(5, 5, 5, 10));
+		devices.setMargin(new Insets(10, 10, 10, 10));
 
 		gps = new JMenuItem("GPS");
 		gps.addActionListener(this);
-		gps.setMargin(new Insets(5, 5, 5, 5));
+		gps.setMargin(new Insets(10, 10, 10, 10));
 		devices.add(gps);
 
 		camera = new JMenuItem("Cámara");
 		camera.addActionListener(this);
-		camera.setMargin(new Insets(5, 5, 5, 5));
+		camera.setMargin(new Insets(10, 10, 10, 10));
 		devices.add(camera);
 
 		add(user);
@@ -122,14 +117,12 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 			Window.getInstance().getJMenuBar().setVisible(false);
 			Start start = new Start();
 			Window.getInstance().setContentPane(start);
-			start.updateUI();
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 		else if (camera == e.getSource())
 		{
-			Patient.getCurrent().getFoto(this);
-			// Window.getInstance().setContentPane(new CameraPanel());
-			// ((JPanel) Window.getInstance().getContentPane()).updateUI();
+			Window.getInstance().setContentPane(new CameraPanel());
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 	}
 

@@ -18,10 +18,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import network.Client;
-
 import utils.Lang;
 import utils.Properties;
-
 import display.components.IButton;
 import display.components.ILabel;
 import display.components.IPanel;
@@ -29,7 +27,6 @@ import display.components.IPasswordField;
 import display.components.ITextField;
 import display.components.Menu;
 import display.components.Window;
-
 import entities.User;
 
 /**
@@ -197,38 +194,41 @@ public class Start extends IPanel implements ActionListener {
 						String[] array = ip.split(":");
 						client = new Client(array[0],
 						Integer.parseInt(array[1]));
-						User.load(name, client);
-						int code1 = User.checkUser();
-						int code2 = User.checkPassword(password);
+						if (client.isConnected())
+						{
+							User.load(name, client);
+							int code1 = User.checkUser();
+							int code2 = User.checkPassword(password);
 
-						if (code1 == 501)
-						{
-							JOptionPane.showMessageDialog(Start.this,
-							"Falta el nombre de usuario", "Error",
-							JOptionPane.ERROR_MESSAGE);
-						}
-						else if (code1 == 301)
-						{
-							if (code2 == 502)
+							if (code1 == 501)
 							{
 								JOptionPane.showMessageDialog(Start.this,
-								"La contraseña es incorrecta.", "Error",
+								"Falta el nombre de usuario", "Error",
 								JOptionPane.ERROR_MESSAGE);
 							}
-							else if (code2 == 503)
+							else if (code1 == 301)
 							{
-								JOptionPane.showMessageDialog(Start.this,
-								"Falta la clave.", "Error",
-								JOptionPane.ERROR_MESSAGE);
-							}
-							else if (code2 == 302)
-							{
-								Window.getInstance().setContentPane(
-								new UserPanel());
-								Window.getInstance().setJMenuBar(
-								new Menu(Color.BLACK));
-								((JPanel) Window.getInstance().getContentPane())
-								.updateUI();
+								if (code2 == 502)
+								{
+									JOptionPane.showMessageDialog(Start.this,
+									"La contraseña es incorrecta.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+								}
+								else if (code2 == 503)
+								{
+									JOptionPane.showMessageDialog(Start.this,
+									"Falta la clave.", "Error",
+									JOptionPane.ERROR_MESSAGE);
+								}
+								else if (code2 == 302)
+								{
+									Window.getInstance().setContentPane(
+									new UserPanel());
+									Window.getInstance().setJMenuBar(
+									new Menu(Color.BLACK));
+									((JPanel) Window.getInstance()
+									.getContentPane()).updateUI();
+								}
 							}
 						}
 					}

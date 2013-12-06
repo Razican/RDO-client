@@ -5,22 +5,28 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import utils.Patient;
 import display.components.IPanel;
+import display.components.Loadable;
 
 /**
  * @author Jordan Aranda Tejada
  */
-public class CameraPanel extends IPanel {
+public class CameraPanel extends IPanel implements ActionListener, Loadable {
 
 	private static final long	serialVersionUID	= 1275344895165783345L;
 
 	private JLabel				lblImage;
+
+	private JButton				btnPhoto;
 
 	/**
 	 * Create the panel.
@@ -47,7 +53,8 @@ public class CameraPanel extends IPanel {
 		gbc_lblDescription.gridy = 0;
 		add(lblDescription, gbc_lblDescription);
 
-		JButton btnPhoto = new JButton("Hacer foto");
+		btnPhoto = new JButton("Hacer foto");
+		btnPhoto.addActionListener(this);
 		btnPhoto.setForeground(Color.GREEN);
 		btnPhoto.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnPhoto.setBorderPainted(false);
@@ -74,11 +81,34 @@ public class CameraPanel extends IPanel {
 		gbl_panel_content.rowWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
 		panel_content.setLayout(gbl_panel_content);
 
-		lblImage = new JLabel("New label");
+		lblImage = new JLabel(new ImageIcon("img/loading.gif"));
 		GridBagConstraints gbc_lblImage = new GridBagConstraints();
 		gbc_lblImage.insets = new Insets(0, 0, 5, 0);
 		gbc_lblImage.gridx = 0;
 		gbc_lblImage.gridy = 0;
 		panel_content.add(lblImage, gbc_lblImage);
+	}
+
+	@Override
+	public void update(Object object)
+	{
+		if (object instanceof ImageIcon)
+		{
+			ImageIcon photo = (ImageIcon) object;
+			if (photo != null)
+			{
+				lblImage.setIcon(photo);
+			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if (btnPhoto == e.getSource())
+		{
+			Patient.getCurrent().getFoto(this);
+		}
+
 	}
 }

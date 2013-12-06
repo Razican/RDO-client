@@ -129,10 +129,5 @@ public class Properties implements Serializable {
 		System.out.println("LECTURA DE DATOS");
 		System.out.println("LANGUAGE = " + Properties.getLocale().toString());
 		System.out.println("VERSION = " + Properties.getVersion());
-
-		// System.out.println("\nMODIFICACION DE DATOS");
-		// Server s = new Server("127.0.0.1", 3000, "Jordan", "1234",
-		// "Servidor del paciente Jordan Aranda");
-		// Properties.addServer(s);
 	}
 }

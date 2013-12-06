@@ -1,7 +1,7 @@
 package utils;
 
+import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import display.components.Loadable;
@@ -14,10 +14,9 @@ import entities.User;
  */
 public class Patient implements Serializable, Loader {
 
-	private static final long			serialVersionUID	= - 7186367905563055140L;
+	private static final long	serialVersionUID	= - 7186367905563055140L;
 
-	private static Patient				currentPatient;
-	private static ArrayList<Loadable>	loadables			= new ArrayList<Loadable>();
+	private static Patient		currentPatient;
 
 	private Patient()
 	{
@@ -163,7 +162,7 @@ public class Patient implements Serializable, Loader {
 	/**
 	 * @param loadable The loadable component
 	 */
-	public void getFoto(Loadable loadable)
+	public void getFoto(final Loadable loadable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -173,7 +172,8 @@ public class Patient implements Serializable, Loader {
 			public void run()
 			{
 				User.getCurrent().getClient().sendData("GET_FOTO");
-				User.getCurrent().getClient().getInputFile();
+				File photo = User.getCurrent().getClient().getInputFile();
+				notifyLoadables(loadable, photo);
 			}
 		}).start();
 		//@formatter:on
@@ -189,18 +189,6 @@ public class Patient implements Serializable, Loader {
 			currentPatient = new Patient();
 		}
 		return currentPatient;
-	}
-
-	@Override
-	public void addLoadable(Loadable loadable)
-	{
-		loadables.add(loadable);
-	}
-
-	@Override
-	public void deleteLoadable(Loadable loadable)
-	{
-		loadables.remove(loadable);
 	}
 
 	@Override
