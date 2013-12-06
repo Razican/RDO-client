@@ -94,7 +94,6 @@ public class Patient implements Serializable, Loader {
 	 * @param loadable The loadable component
 	 * @param idSensor The sensor
 	 * @param enable The new status
-	 * @return The response code
 	 */
 	public void setSensorStatus(final Loadable loadable, final int idSensor,
 	final boolean enable)
@@ -142,13 +141,23 @@ public class Patient implements Serializable, Loader {
 	}
 
 	/**
+	 * @param loadable The loadable component
 	 * @param idSensor The sensor
-	 * @return The response data
 	 */
-	public static String getSensorValue(int idSensor)
+	public void getSensorValue(final Loadable loadable, final int idSensor)
 	{
-		User.getCurrent().getClient().sendData("GET_VALACT " + idSensor);
-		return User.getCurrent().getClient().getInputData();
+		//@formatter:off
+		(new Thread()
+		{
+
+			@Override
+			public void run()
+			{
+				User.getCurrent().getClient().sendData("GET_VALACT " + idSensor);
+				String value = User.getCurrent().getClient().getInputData();
+				notifyLoadables(loadable, value);
+			}
+		}).start();
 	}
 
 	/**

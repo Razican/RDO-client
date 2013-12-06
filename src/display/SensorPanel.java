@@ -58,6 +58,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	 * Graph mode
 	 */
 	public static int				graphMode			= 1;
+	private JLabel					lblLoading;
 
 	/**
 	 * Create the panel.
@@ -70,9 +71,8 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		this.sensor = sensor;
 		this.mode = mode;
 		setOpaque(false);
-		setBackgroundImage(new ImageIcon("img/background.jpg"));
+		// setBackgroundImage(new ImageIcon("img/background.jpg"));
 
-		Patient.getCurrent().getSensors(this);
 		Patient.getCurrent().getHistoric(this, sensor.getId());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -85,7 +85,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 
 		JLabel lblDescription = new JLabel(sensor.getDescription());
 		lblDescription.setForeground(Color.GREEN);
-		lblDescription.setFont(new Font("Calibri", Font.PLAIN, 50));
+		lblDescription.setFont(new Font("Calibri", Font.PLAIN, 40));
 		GridBagConstraints gbc_lblDescription = new GridBagConstraints();
 		gbc_lblDescription.fill = GridBagConstraints.HORIZONTAL;
 		gbc_lblDescription.insets = new Insets(20, 20, 20, 10);
@@ -101,7 +101,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnGetValue.setFont(new Font("Calibri", Font.PLAIN, 18));
 		GridBagConstraints gbc_btnGetValue = new GridBagConstraints();
 		gbc_btnGetValue.anchor = GridBagConstraints.SOUTH;
-		gbc_btnGetValue.insets = new Insets(0, 0, 20, 5);
+		gbc_btnGetValue.insets = new Insets(0, 0, 20, 20);
 		gbc_btnGetValue.gridx = 1;
 		gbc_btnGetValue.gridy = 0;
 		add(btnGetValue, gbc_btnGetValue);
@@ -114,7 +114,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnChangeMode.setBackground(Color.BLACK);
 		GridBagConstraints gbc_btnGraph = new GridBagConstraints();
 		gbc_btnGraph.anchor = GridBagConstraints.SOUTH;
-		gbc_btnGraph.insets = new Insets(0, 0, 20, 5);
+		gbc_btnGraph.insets = new Insets(0, 0, 20, 20);
 		gbc_btnGraph.gridx = 2;
 		gbc_btnGraph.gridy = 0;
 		add(btnChangeMode, gbc_btnGraph);
@@ -135,6 +135,14 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		gbc_btnPrint.gridx = 3;
 		gbc_btnPrint.gridy = 0;
 		add(btnPrint, gbc_btnPrint);
+
+		lblLoading = new JLabel(new ImageIcon("img/loading.gif"));
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.gridwidth = 4;
+		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 1;
+		add(lblLoading, gbc_lblNewLabel);
 	}
 
 	@Override
@@ -142,36 +150,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	{
 		if (btnGetValue == e.getSource())
 		{
-			String response = Patient.getSensorValue(sensor.getId());
-			int code = User.getCurrent().getClient().getInputCode(response);
-			if (code != 224)
-			{
-				JOptionPane.showMessageDialog(Window.getInstance(), response,
-				"Error", JOptionPane.ERROR_MESSAGE);
-			}
-			else
-			{
-				String content = User.getCurrent().getClient()
-				.getInputDescription(response);
-				content = content.substring(3, content.length());
-
-				String[] valArray = content.split(";");
-				//@formatter:off
-				String values = "Fecha: \t\t" + valArray[0] + "\n" +
-								"Hora: \t\t" + valArray[1]+"\n" +
-								"Latitud: \t\t" +valArray[2]+"\n" +
-								"Longitud:  \t\t" +valArray[3]+"\n" +
-								"Valor:  \t\t"+valArray[4];
-				//@formatter:on
-
-				Window.getInstance().setContentPane(
-				new SensorPanel(sensor, mode));
-				((JPanel) Window.getInstance().getContentPane()).updateUI();
-
-				JOptionPane.showMessageDialog(Window.getInstance(), values,
-				"Sensor " + sensor.getDescription(), JOptionPane.PLAIN_MESSAGE);
-			}
-
+			Patient.getCurrent().getHistoric(this, sensor.getId());
 		}
 		else if (btnChangeMode == e.getSource())
 		{
@@ -209,6 +188,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		&& ((Vector<?>) object).elementAt(0) instanceof String)
 		{
 			Vector<String> historic = (Vector<String>) object;
+			lblLoading.setVisible(false);
 			if (mode == SensorPanel.tableMode)
 			{
 				scrollPane = new JScrollPane();
@@ -268,6 +248,8 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 			}
 			else if (mode == SensorPanel.graphMode)
 			{
+				btnPrint.setVisible(false);
+
 				dataset = new DefaultCategoryDataset();
 
 				for (int i = 1; i < historic.size(); i++)
@@ -290,6 +272,38 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 				gbc_panelGraph.gridx = 0;
 				gbc_panelGraph.gridy = 1;
 				add(panelGraph, gbc_panelGraph);
+			}
+		}
+		else if (object instanceof String)
+		{
+			String response = (String) object;
+			int code = User.getCurrent().getClient().getInputCode(response);
+			if (code != 224)
+			{
+				JOptionPane.showMessageDialog(Window.getInstance(), response,
+				"Error", JOptionPane.ERROR_MESSAGE);
+			}
+			else
+			{
+				String content = User.getCurrent().getClient()
+				.getInputDescription(response);
+				content = content.substring(3, content.length());
+
+				String[] valArray = content.split(";");
+				//@formatter:off
+				String values = "Fecha: \t\t" + valArray[0] + "\n" +
+								"Hora: \t\t" + valArray[1]+"\n" +
+								"Latitud: \t\t" +valArray[2]+"\n" +
+								"Longitud:  \t\t" +valArray[3]+"\n" +
+								"Valor:  \t\t"+valArray[4];
+				//@formatter:on
+
+				Window.getInstance().setContentPane(
+				new SensorPanel(sensor, mode));
+				((JPanel) Window.getInstance().getContentPane()).updateUI();
+
+				JOptionPane.showMessageDialog(Window.getInstance(), values,
+				"Sensor " + sensor.getDescription(), JOptionPane.PLAIN_MESSAGE);
 			}
 		}
 		((JPanel) Window.getInstance().getContentPane()).updateUI();

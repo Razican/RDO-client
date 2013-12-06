@@ -161,6 +161,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		}
 	}
 
+	@SuppressWarnings ("unchecked")
 	@Override
 	public void update(Object object)
 	{
