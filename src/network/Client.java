@@ -279,9 +279,17 @@ public class Client {
 	 */
 	public static void main(String ... args)
 	{
-		Client client = new Client("88.2.185.40", 1099);
-		client.sendData("USUARIO ");
+		Client client = new Client("192.168.1.12", 1099);
+		client.sendData("USUARIO admin");
 		String result = client.getInputData();
+		System.out.println("Respuesta: " + result);
+
+		client.sendData("CLAVE 8cb2237d0679ca88db6464eac60da96345513964");
+		result = client.getInputData();
+		System.out.println("Respuesta: " + result);
+
+		client.sendData("GET_VALACT 1");
+		result = client.getInputData();
 		System.out.println("Respuesta: " + result);
 
 		client.sendData("SALIR");
