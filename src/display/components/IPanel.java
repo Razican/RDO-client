@@ -46,16 +46,11 @@ public class IPanel extends JPanel implements Internationalizable {
 	@Override
 	public void paint(Graphics g)
 	{
-
-		// Pintamos la imagen de fondo...
 		if (bgImage != null)
 		{
 			g
 			.drawImage(bgImage.getImage(), 0, 0, getWidth(), getHeight(), null);
 		}
-
-		// Y pintamos el resto de cosas que pueda tener el panel
 		super.paint(g);
-
 	}
 }

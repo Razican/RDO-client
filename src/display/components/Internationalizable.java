@@ -3,10 +3,10 @@ package display.components;
 /**
  * Simple way to change the language of the component.
  * 
- * @author Jordan Aranda Tejada
+ * @author Razican (Iban Eguia)
  */
-public interface Internationalizable 
-{
+public interface Internationalizable {
+
 	/**
 	 * Changes the text of the component to reflect the new language setting.
 	 * 

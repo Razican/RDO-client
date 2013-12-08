@@ -12,8 +12,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import razican.utils.StringUtils;
-
 import display.components.Internationalizable;
 
 /**
@@ -179,7 +177,7 @@ public class Lang {
 
 		for (final Locale l: locales)
 		{
-			combo.add(StringUtils.firstToUpper(l.getDisplayLanguage()) + " ("
+			combo.add(Utils.formatString(l.getDisplayLanguage()) + " ("
 			+ l.getDisplayCountry() + ")");
 		}
 

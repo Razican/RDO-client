@@ -70,8 +70,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	{
 		this.sensor = sensor;
 		this.mode = mode;
-		setOpaque(false);
-		// setBackgroundImage(new ImageIcon("img/background.jpg"));
+		setBackgroundImage(new ImageIcon("img/background.jpg"));
 
 		Patient.getCurrent().getHistoric(this, sensor.getId());
 

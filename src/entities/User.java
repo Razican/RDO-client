@@ -1,7 +1,7 @@
 package entities;
 
 import network.Client;
-import razican.utils.StringUtils;
+import utils.Utils;
 
 /**
  * @author Jordan Aranda Tejada
@@ -68,7 +68,7 @@ public class User {
 	 */
 	public static int checkPassword(char[] password)
 	{
-		user.client.sendData("CLAVE " + StringUtils.sha1(password));
+		user.client.sendData("CLAVE " + Utils.sha1(password));
 		String response = user.client.getInputData();
 		return user.client.getInputCode(response);
 	}
