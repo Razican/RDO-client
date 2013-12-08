@@ -53,24 +53,22 @@ public class User {
 	}
 
 	/**
-	 * @return Server response code
+	 * @return Server response data
 	 */
-	public static int checkUser()
+	public static String checkUser()
 	{
 		user.client.sendData("USUARIO " + user.username);
-		String response = user.client.getInputData();
-		return user.client.getInputCode(response);
+		return user.client.getInputData();
 	}
 
 	/**
 	 * @param password The user password
-	 * @return Server response code
+	 * @return Server response data
 	 */
-	public static int checkPassword(char[] password)
+	public static String checkPassword(char[] password)
 	{
 		user.client.sendData("CLAVE " + Utils.sha1(password));
-		String response = user.client.getInputData();
-		return user.client.getInputCode(response);
+		return user.client.getInputData();
 	}
 
 	/**

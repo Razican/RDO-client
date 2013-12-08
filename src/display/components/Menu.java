@@ -48,7 +48,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 
 		Patient.getCurrent().getSensors(this);
 
-		user = new JMenu("Admin");
+		user = new JMenu(User.getCurrent().getUsername());
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
 		user.setForeground(Color.GREEN);
 		user.setMargin(new Insets(10, 10, 10, 10));
@@ -127,10 +127,10 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 	@Override
 	public void update(Object object)
 	{
-		//@formatter:off
-		if (object instanceof Vector<?> && ((Vector<?>) object).elementAt(0) instanceof Sensor)
+		if (object instanceof Vector<?>
+		&& ((Vector<?>) object).elementAt(0) instanceof Sensor)
 		{
-			vSensors = (Vector<Sensor>)object;
+			vSensors = (Vector<Sensor>) object;
 			this.sensorsItems = new JMenuItem[vSensors.size()];
 			for (int i = 0; i < vSensors.size(); i++)
 			{
@@ -142,6 +142,5 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 				sensors.add(sensorItem);
 			}
 		}
-		//@formatter:on
 	}
 }

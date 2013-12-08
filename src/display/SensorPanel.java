@@ -74,8 +74,6 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		this.mode = mode;
 		setBackgroundImage(new ImageIcon("img/background.jpg"));
 
-		Patient.getCurrent().getHistoric(this, sensor.getId());
-
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] {0, 0};
 		gridBagLayout.rowHeights = new int[] {0, 0, 0, 0};
@@ -100,10 +98,6 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		gbc_lblDescription.gridx = 0;
 		gbc_lblDescription.gridy = 0;
 		add(lblDescription, gbc_lblDescription);
-		if (this.mode == SensorPanel.graphMode)
-		{
-			btnChangeMode.setText("Tabla");
-		}
 
 		JPanel panel_btns = new JPanel();
 		panel_btns.setOpaque(false);
@@ -161,6 +155,10 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnChangeMode.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnChangeMode.setBorderPainted(false);
 		btnChangeMode.setBackground(Color.BLACK);
+		if (this.mode == SensorPanel.graphMode)
+		{
+			btnChangeMode.setText("Tabla");
+		}
 
 		btnPrint = new JButton("Imprimir");
 		GridBagConstraints gbc_btnPrint = new GridBagConstraints();
@@ -172,6 +170,8 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnPrint.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnPrint.setBorderPainted(false);
 		btnPrint.setBackground(Color.BLACK);
+
+		Patient.getCurrent().getHistoric(this, sensor.getId());
 	}
 
 	@Override
@@ -312,12 +312,12 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		{
 			String response = (String) object;
 			int code = User.getCurrent().getClient().getInputCode(response);
-			if (code != 224)
+			if (code == 524 || code == 525 || code == 526)
 			{
 				JOptionPane.showMessageDialog(Window.getInstance(), response,
 				"Error", JOptionPane.ERROR_MESSAGE);
 			}
-			else
+			else if (code == 224)
 			{
 				String content = User.getCurrent().getClient()
 				.getInputDescription(response);
@@ -338,6 +338,22 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 
 				JOptionPane.showMessageDialog(Window.getInstance(), values,
 				"Sensor " + sensor.getDescription(), JOptionPane.PLAIN_MESSAGE);
+			}
+		}
+		else if (object instanceof Integer)
+		{
+			int code = (Integer) object;
+			if (code == 313 || code == 314)
+			{
+				sensor.setConnected( ! sensor.isConnected());
+				if (sensor.isConnected())
+				{
+					btnEnable.setText("Conectar");
+				}
+				else
+				{
+					btnEnable.setText("Desconectar");
+				}
 			}
 		}
 		((JPanel) Window.getInstance().getContentPane()).updateUI();

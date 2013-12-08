@@ -184,30 +184,28 @@ public class Start extends IPanel implements ActionListener {
 						if (client.isConnected())
 						{
 							User.load(name, client);
-							int code1 = User.checkUser();
-							int code2 = User.checkPassword(password);
+							String response = User.checkUser();
 
-							if (code1 == 501)
+							if (User.getCurrent().getClient()
+							.getInputCode(response) != 301)
 							{
 								JOptionPane.showMessageDialog(Start.this,
-								"Falta el nombre de usuario", "Error",
+								response, Lang.getLine("error"),
 								JOptionPane.ERROR_MESSAGE);
+								User.getCurrent().logout();
 							}
-							else if (code1 == 301)
+							else
 							{
-								if (code2 == 502)
+								response = User.checkPassword(password);
+								if (User.getCurrent().getClient()
+								.getInputCode(response) != 302)
 								{
 									JOptionPane.showMessageDialog(Start.this,
-									"La contraseña es incorrecta.", "Error",
+									response, Lang.getLine("error"),
 									JOptionPane.ERROR_MESSAGE);
+									User.getCurrent().logout();
 								}
-								else if (code2 == 503)
-								{
-									JOptionPane.showMessageDialog(Start.this,
-									"Falta la clave.", "Error",
-									JOptionPane.ERROR_MESSAGE);
-								}
-								else if (code2 == 302)
+								else
 								{
 									Window.getInstance().setContentPane(
 									new UserPanel());
