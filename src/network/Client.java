@@ -93,7 +93,7 @@ public class Client {
 	 * 
 	 * @param command The command.
 	 */
-	public void sendData(String command)
+	public synchronized void sendData(String command)
 	{
 		System.out.println("Client sending --> " + command);
 		if (clientSocket != null)
@@ -136,7 +136,7 @@ public class Client {
 	 * @param endmark The end mark
 	 * @return Data from the server.
 	 */
-	public String getInputData(String endmark)
+	public synchronized String getInputData(String endmark)
 	{
 		String result = "";
 		try
@@ -160,7 +160,7 @@ public class Client {
 	 * 
 	 * @return A file with photo from server.
 	 */
-	public File getInputFile()
+	public synchronized File getInputFile()
 	{
 		try
 		{
@@ -258,7 +258,7 @@ public class Client {
 	}
 
 	/**
-	 * @return if there is connected to internet
+	 * @return if there is connection to the Internet
 	 */
 	public boolean internetConnection()
 	{

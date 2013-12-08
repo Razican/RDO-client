@@ -180,6 +180,7 @@ public class Start extends IPanel implements ActionListener {
 						String[] array = ip.split(":");
 						client = new Client(array[0],
 						Integer.parseInt(array[1]));
+
 						if (client.isConnected())
 						{
 							User.load(name, client);

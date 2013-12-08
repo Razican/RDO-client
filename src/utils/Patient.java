@@ -18,67 +18,81 @@ import entities.User;
 public class Patient implements Serializable, Loader {
 
 	private static final long	serialVersionUID	= - 7186367905563055140L;
+	private static Patient		currentPatient		= new Patient();
 
-	private static Patient		currentPatient;
+	private static boolean		transmitting		= false;
 
 	private Patient()
 	{
-
 	}
 
 	/**
 	 * Gets the sensors from the server
 	 * 
-	 * @param loadable The loadable component
+	 * @param loadable - The loadable component
 	 */
 	public synchronized void getSensors(final Loadable loadable)
 	{
-		//@formatter:off
 		(new Thread()
 		{
 
 			@Override
 			public void run()
 			{
+				while (transmitting)
+				{
+					;
+				}
+
 				Vector<Sensor> vSensors = new Vector<Sensor>();
-				
+
+				transmitting = true;
 				User.getCurrent().getClient().sendData("LISTSENSOR");
-				String sensorString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
+				String sensorString = User.getCurrent().getClient()
+				.getInputData("322 OK Lista finalizada.");
 				System.out.println(sensorString);
-				
-				String [] sensors = sensorString.split("#");
+				transmitting = false;
+
+				String[] sensors = sensorString.split("#");
 				for (int i = 1; i < sensors.length; i++)
 				{
-					System.out.println("Sensor " + i +":" + sensors[i]);
-					String [] attributes = sensors[i].split(";");
-					vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
+					System.out.println("Sensor " + i + ":" + sensors[i]);
+					String[] attributes = sensors[i].split(";");
+					vSensors.add(new Sensor(Integer.parseInt(attributes[0]),
+					attributes[1], attributes[2].equals("ON")));
 				}
 				notifyLoadables(loadable, vSensors);
 			}
 		}).start();
-		//@formatter:on
 	}
 
 	/**
-	 * @param loadable The loadable component
-	 * @param idSensor The sensor id
+	 * @param loadable - The loadable component
+	 * @param idSensor - The sensor id
 	 */
 	public synchronized void getHistoric(final Loadable loadable,
 	final int idSensor)
 	{
-		//@formatter:off
 		(new Thread()
 		{
 
 			@Override
 			public void run()
 			{
+				while (transmitting)
+				{
+					;
+				}
+
 				Vector<String> vHistoric = new Vector<String>();
-		
+
+				transmitting = true;
 				User.getCurrent().getClient().sendData("HISTORICO " + idSensor);
-				String historicString = User.getCurrent().getClient().getInputData("322 OK Lista finalizada.");
+				String historicString = User.getCurrent().getClient()
+				.getInputData("322 OK Lista finalizada.");
 				System.out.println(historicString);
-				
+				transmitting = false;
+
 				String[] historicLines = historicString.split("#");
 				for (int i = 0; i < historicLines.length; i++)
 				{
@@ -86,27 +100,30 @@ public class Patient implements Serializable, Loader {
 					vHistoric.add(historicLines[i]);
 				}
 				notifyLoadables(loadable, vHistoric);
-				// return vHistoric;
-				//@formatter:on
 			}
 		}).start();
 	}
 
 	/**
-	 * @param loadable The loadable component
-	 * @param idSensor The sensor
-	 * @param enable The new status
+	 * @param loadable - The loadable component
+	 * @param idSensor - The sensor
+	 * @param enable - The new status
 	 */
 	public synchronized void setSensorStatus(final Loadable loadable,
 	final int idSensor, final boolean enable)
 	{
-		//@formatter:off
 		(new Thread()
 		{
 
 			@Override
 			public void run()
 			{
+				while (transmitting)
+				{
+					;
+				}
+
+				transmitting = true;
 				if (enable)
 				{
 					User.getCurrent().getClient().sendData("ON " + idSensor);
@@ -119,16 +136,23 @@ public class Patient implements Serializable, Loader {
 				System.out.println(response);
 				int code = User.getCurrent().getClient().getInputCode(response);
 				notifyLoadables(loadable, code);
+				transmitting = false;
 			}
 		}).start();
 	}
 
 	/**
-	 * @param enable The new status
+	 * @param enable - The new status
 	 * @return The response code
 	 */
 	public synchronized static int setGPSStatus(boolean enable)
 	{
+		while (transmitting)
+		{
+			;
+		}
+
+		transmitting = true;
 		if (enable)
 		{
 			User.getCurrent().getClient().sendData("ONGPS");
@@ -139,47 +163,63 @@ public class Patient implements Serializable, Loader {
 		}
 		String response = User.getCurrent().getClient().getInputData();
 		System.out.println(response);
-		return User.getCurrent().getClient().getInputCode(response);
+		int r = User.getCurrent().getClient().getInputCode(response);
+		transmitting = false;
+
+		return r;
 	}
 
 	/**
-	 * @param loadable The loadable component
-	 * @param idSensor The sensor
+	 * @param loadable - The loadable component
+	 * @param idSensor - The sensor
 	 */
-	public synchronized void getSensorValue(final Loadable loadable, final int idSensor)
+	public synchronized void getSensorValue(final Loadable loadable,
+	final int idSensor)
 	{
-		//@formatter:off
 		(new Thread()
 		{
 
 			@Override
 			public void run()
 			{
-				User.getCurrent().getClient().sendData("GET_VALACT " + idSensor);
+				while (transmitting)
+				{
+					;
+				}
+
+				transmitting = true;
+				User.getCurrent().getClient()
+				.sendData("GET_VALACT " + idSensor);
 				String value = User.getCurrent().getClient().getInputData();
 				notifyLoadables(loadable, value);
+				transmitting = false;
 			}
 		}).start();
 	}
 
 	/**
-	 * @param loadable The loadable component
+	 * @param loadable - The loadable component
 	 */
 	public synchronized void getFoto(final Loadable loadable)
 	{
-		//@formatter:off
 		(new Thread()
 		{
 
 			@Override
 			public void run()
 			{
+				while (transmitting)
+				{
+					;
+				}
+
+				transmitting = true;
 				User.getCurrent().getClient().sendData("GET_FOTO");
 				File photo = User.getCurrent().getClient().getInputFile();
 				notifyLoadables(loadable, new ImageIcon(photo.getPath()));
+				transmitting = false;
 			}
 		}).start();
-		//@formatter:on
 	}
 
 	/**
@@ -187,10 +227,6 @@ public class Patient implements Serializable, Loader {
 	 */
 	public static Patient getCurrent()
 	{
-		if (currentPatient == null)
-		{
-			currentPatient = new Patient();
-		}
 		return currentPatient;
 	}
 
