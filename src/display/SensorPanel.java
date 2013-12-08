@@ -45,6 +45,8 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	private TableModel				modelTable;
 	private JTable					table;
 	private DefaultCategoryDataset	dataset;
+	private JLabel					lblLoading;
+	private JButton					btnEnable;
 	private JButton					btnGetValue;
 	private JButton					btnPrint;
 	private JButton					btnChangeMode;
@@ -59,7 +61,6 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	 * Graph mode
 	 */
 	public static int				graphMode			= 1;
-	private JLabel					lblLoading;
 
 	/**
 	 * Create the panel.
@@ -76,12 +77,19 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		Patient.getCurrent().getHistoric(this, sensor.getId());
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] {0, 0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[] {0, 0, 0};
-		gridBagLayout.columnWeights = new double[] {1.0, 0.0, 0.0, 0.0,
+		gridBagLayout.columnWidths = new int[] {0, 0};
+		gridBagLayout.rowHeights = new int[] {0, 0, 0, 0};
+		gridBagLayout.columnWeights = new double[] {1.0, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[] {0.0, 1.0, 0.0,
 		Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
+
+		lblLoading = new JLabel(new ImageIcon("img/loading.gif"));
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 0);
+		gbc_lblNewLabel.gridx = 0;
+		gbc_lblNewLabel.gridy = 1;
+		add(lblLoading, gbc_lblNewLabel);
 
 		JLabel lblDescription = new JLabel(sensor.getDescription());
 		lblDescription.setForeground(Color.GREEN);
@@ -92,63 +100,89 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		gbc_lblDescription.gridx = 0;
 		gbc_lblDescription.gridy = 0;
 		add(lblDescription, gbc_lblDescription);
-
-		btnGetValue = new JButton("Consultar");
-		btnGetValue.addActionListener(this);
-		btnGetValue.setBorderPainted(false);
-		btnGetValue.setBackground(Color.BLACK);
-		btnGetValue.setForeground(Color.GREEN);
-		btnGetValue.setFont(new Font("Calibri", Font.PLAIN, 18));
-		GridBagConstraints gbc_btnGetValue = new GridBagConstraints();
-		gbc_btnGetValue.anchor = GridBagConstraints.SOUTH;
-		gbc_btnGetValue.insets = new Insets(0, 0, 20, 20);
-		gbc_btnGetValue.gridx = 1;
-		gbc_btnGetValue.gridy = 0;
-		add(btnGetValue, gbc_btnGetValue);
-
-		btnChangeMode = new JButton("Gráfica");
-		btnChangeMode.addActionListener(this);
-		btnChangeMode.setForeground(Color.GREEN);
-		btnChangeMode.setFont(new Font("Calibri", Font.PLAIN, 18));
-		btnChangeMode.setBorderPainted(false);
-		btnChangeMode.setBackground(Color.BLACK);
-		GridBagConstraints gbc_btnGraph = new GridBagConstraints();
-		gbc_btnGraph.anchor = GridBagConstraints.SOUTH;
-		gbc_btnGraph.insets = new Insets(0, 0, 20, 20);
-		gbc_btnGraph.gridx = 2;
-		gbc_btnGraph.gridy = 0;
-		add(btnChangeMode, gbc_btnGraph);
 		if (this.mode == SensorPanel.graphMode)
 		{
 			btnChangeMode.setText("Tabla");
 		}
 
+		JPanel panel_btns = new JPanel();
+		panel_btns.setOpaque(false);
+		GridBagConstraints gbc_panel_btns = new GridBagConstraints();
+		gbc_panel_btns.insets = new Insets(0, 20, 10, 20);
+		gbc_panel_btns.fill = GridBagConstraints.BOTH;
+		gbc_panel_btns.gridx = 0;
+		gbc_panel_btns.gridy = 2;
+		add(panel_btns, gbc_panel_btns);
+		GridBagLayout gbl_panel_btns = new GridBagLayout();
+		gbl_panel_btns.columnWidths = new int[] {0, 0, 0, 0, 0};
+		gbl_panel_btns.rowHeights = new int[] {0, 0};
+		gbl_panel_btns.columnWeights = new double[] {1.0, 0.0, 0.0, 0.0,
+		Double.MIN_VALUE};
+		gbl_panel_btns.rowWeights = new double[] {0.0, Double.MIN_VALUE};
+		panel_btns.setLayout(gbl_panel_btns);
+
+		btnEnable = new JButton("Desconectar");
+		btnEnable.addActionListener(this);
+		btnEnable.setForeground(Color.GREEN);
+		btnEnable.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnEnable.setBorderPainted(false);
+		btnEnable.setBackground(Color.BLACK);
+		GridBagConstraints gbc_btnEnable = new GridBagConstraints();
+		gbc_btnEnable.anchor = GridBagConstraints.EAST;
+		gbc_btnEnable.insets = new Insets(0, 0, 0, 20);
+		gbc_btnEnable.gridx = 0;
+		gbc_btnEnable.gridy = 0;
+		panel_btns.add(btnEnable, gbc_btnEnable);
+		if ( ! sensor.isConnected())
+		{
+			btnEnable.setText("Conectar");
+		}
+
+		btnGetValue = new JButton("Consultar");
+		GridBagConstraints gbc_btnGetValue = new GridBagConstraints();
+		gbc_btnGetValue.insets = new Insets(0, 0, 0, 20);
+		gbc_btnGetValue.gridx = 1;
+		gbc_btnGetValue.gridy = 0;
+		panel_btns.add(btnGetValue, gbc_btnGetValue);
+		btnGetValue.addActionListener(this);
+		btnGetValue.setBorderPainted(false);
+		btnGetValue.setBackground(Color.BLACK);
+		btnGetValue.setForeground(Color.GREEN);
+		btnGetValue.setFont(new Font("Calibri", Font.PLAIN, 18));
+
+		btnChangeMode = new JButton("Gráfica");
+		GridBagConstraints gbc_btnChangeMode = new GridBagConstraints();
+		gbc_btnChangeMode.insets = new Insets(0, 0, 0, 20);
+		gbc_btnChangeMode.gridx = 2;
+		gbc_btnChangeMode.gridy = 0;
+		panel_btns.add(btnChangeMode, gbc_btnChangeMode);
+		btnChangeMode.addActionListener(this);
+		btnChangeMode.setForeground(Color.GREEN);
+		btnChangeMode.setFont(new Font("Calibri", Font.PLAIN, 18));
+		btnChangeMode.setBorderPainted(false);
+		btnChangeMode.setBackground(Color.BLACK);
+
 		btnPrint = new JButton("Imprimir");
+		GridBagConstraints gbc_btnPrint = new GridBagConstraints();
+		gbc_btnPrint.gridx = 3;
+		gbc_btnPrint.gridy = 0;
+		panel_btns.add(btnPrint, gbc_btnPrint);
 		btnPrint.addActionListener(this);
 		btnPrint.setForeground(Color.GREEN);
 		btnPrint.setFont(new Font("Calibri", Font.PLAIN, 18));
 		btnPrint.setBorderPainted(false);
 		btnPrint.setBackground(Color.BLACK);
-		GridBagConstraints gbc_btnPrint = new GridBagConstraints();
-		gbc_btnPrint.anchor = GridBagConstraints.SOUTH;
-		gbc_btnPrint.insets = new Insets(0, 0, 20, 20);
-		gbc_btnPrint.gridx = 3;
-		gbc_btnPrint.gridy = 0;
-		add(btnPrint, gbc_btnPrint);
-
-		lblLoading = new JLabel(new ImageIcon("img/loading.gif"));
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.gridwidth = 4;
-		gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel.gridx = 0;
-		gbc_lblNewLabel.gridy = 1;
-		add(lblLoading, gbc_lblNewLabel);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		if (btnGetValue == e.getSource())
+		if (btnEnable == e.getSource())
+		{
+			Patient.getCurrent().setSensorStatus(this, sensor.getId(),
+			! sensor.isConnected());
+		}
+		else if (btnGetValue == e.getSource())
 		{
 			Patient.getCurrent().getSensorValue(this, sensor.getId());
 		}
