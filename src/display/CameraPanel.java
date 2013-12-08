@@ -1,5 +1,7 @@
 package display;
 
+import interfaces.Loadable;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -15,7 +17,6 @@ import javax.swing.JPanel;
 
 import utils.Patient;
 import display.components.IPanel;
-import display.components.Loadable;
 
 /**
  * @author Jordan Aranda Tejada

@@ -1,5 +1,7 @@
 package display.components;
 
+import interfaces.Internationalizable;
+
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.JButton;

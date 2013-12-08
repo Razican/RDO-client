@@ -1,5 +1,7 @@
 package display.components;
 
+import interfaces.Loadable;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -16,7 +18,6 @@ import javax.swing.JPanel;
 
 import utils.Lang;
 import utils.Patient;
-import display.CameraPanel;
 import display.SensorPanel;
 import display.Start;
 import entities.Sensor;
@@ -31,9 +32,9 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 
 	private Color				color;
 	private Vector<Sensor>		vSensors;
-	private JMenu				user, language, sensors, devices;
-	private JMenuItem			logout, camera, gps;
-	private JMenuItem[]			langItems, sensorsItems;
+	private JMenu				user, sensors, devices, camera;
+	private JMenuItem			logout, gps, takePhoto;
+	private JMenuItem[]			sensorsItems;
 
 	/**
 	 * Create the menu.
@@ -47,51 +48,39 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 
 		Patient.getCurrent().getSensors(this);
 
-		this.langItems = new JMenuItem[Lang.getAvailableLocales().size()];
-
 		user = new JMenu("Admin");
 		user.setFont(new Font("Calibri", Font.PLAIN, 18));
 		user.setForeground(Color.GREEN);
 		user.setMargin(new Insets(10, 10, 10, 10));
 
-		language = new JMenu("Idioma");
-		language.addActionListener(this);
-		language.setMargin(new Insets(10, 10, 10, 10));
-		user.add(language);
-
-		for (int i = 0; i < Lang.getAvailableLocales().size(); i++)
-		{
-			JMenuItem langItem = new JMenuItem(Lang.getCombableLocales().get(i));
-			langItem.addActionListener(this);
-			langItem.setMargin(new Insets(5, 5, 5, 5));
-			langItems[i] = langItem;
-			language.add(langItem);
-		}
-
-		logout = new JMenuItem("Cerrar sesión");
+		logout = new JMenuItem(Lang.getLine("menu_logout"));
 		logout.addActionListener(this);
 		logout.setMargin(new Insets(10, 10, 10, 10));
 		user.add(logout);
 
-		sensors = new JMenu("Sensores");
+		sensors = new JMenu(Lang.getLine("menu_sensors"));
 		sensors.setFont(new Font("Calibri", Font.PLAIN, 18));
 		sensors.setForeground(Color.GREEN);
 		sensors.setMargin(new Insets(10, 10, 10, 10));
 
-		devices = new JMenu("Dispositivos");
+		devices = new JMenu(Lang.getLine("menu_devices"));
 		devices.setFont(new Font("Calibri", Font.PLAIN, 18));
 		devices.setForeground(Color.GREEN);
 		devices.setMargin(new Insets(10, 10, 10, 10));
 
-		gps = new JMenuItem("GPS");
+		gps = new JMenuItem(Lang.getLine("menu_gps"));
 		gps.addActionListener(this);
 		gps.setMargin(new Insets(10, 10, 10, 10));
 		devices.add(gps);
 
-		camera = new JMenuItem("Cámara");
-		camera.addActionListener(this);
+		camera = new JMenu(Lang.getLine("menu_camera"));
 		camera.setMargin(new Insets(10, 10, 10, 10));
 		devices.add(camera);
+
+		takePhoto = new JMenuItem(Lang.getLine("menu_take_photo"));
+		takePhoto.addActionListener(this);
+		takePhoto.setMargin(new Insets(10, 10, 10, 10));
+		camera.add(takePhoto);
 
 		add(user);
 		add(sensors);
@@ -119,10 +108,9 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 			Window.getInstance().setContentPane(start);
 			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
-		else if (camera == e.getSource())
+		else if (takePhoto == e.getSource())
 		{
-			Window.getInstance().setContentPane(new CameraPanel());
-			((JPanel) Window.getInstance().getContentPane()).updateUI();
+			Patient.getCurrent().getFoto(this);
 		}
 	}
 
@@ -135,25 +123,6 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		g2d.fillRect(1, 1, getWidth() - 2, getHeight() - 1);
 	}
 
-	/**
-	 * Notifies the new sensors
-	 * 
-	 * @param vSensors - Sensor list
-	 */
-	public void notify(Vector<Sensor> vSensors)
-	{
-		this.vSensors = vSensors;
-		for (int i = 0; i < vSensors.size(); i++)
-		{
-			JMenuItem sensorItem = new JMenuItem(vSensors.get(i)
-			.getDescription());
-			sensorItem.addActionListener(this);
-			sensorItem.setMargin(new Insets(5, 5, 5, 5));
-			sensorsItems[i] = sensorItem;
-			sensors.add(sensorItem);
-		}
-	}
-
 	@SuppressWarnings ("unchecked")
 	@Override
 	public void update(Object object)
@@ -161,7 +130,6 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		//@formatter:off
 		if (object instanceof Vector<?> && ((Vector<?>) object).elementAt(0) instanceof Sensor)
 		{
-			System.out.println("Actualizada lista sensores");
 			vSensors = (Vector<Sensor>)object;
 			this.sensorsItems = new JMenuItem[vSensors.size()];
 			for (int i = 0; i < vSensors.size(); i++)

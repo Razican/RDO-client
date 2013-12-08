@@ -12,7 +12,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -21,7 +20,6 @@ import network.Client;
 import utils.Lang;
 import utils.Properties;
 import display.components.IButton;
-import display.components.ILabel;
 import display.components.IPanel;
 import display.components.IPasswordField;
 import display.components.ITextField;
@@ -135,19 +133,6 @@ public class Start extends IPanel implements ActionListener {
 		gbc_btnEnter.gridx = 1;
 		gbc_btnEnter.gridy = 5;
 		add(btnEnter, gbc_btnEnter);
-
-		ILabel lblVersion = new ILabel();
-		lblVersion.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblVersion.setText("Version " + Properties.getVersion());
-		lblVersion.setFont(new Font("Calibri", Font.PLAIN, 14));
-		lblVersion.setForeground(Color.GREEN);
-		GridBagConstraints gbc_lblVersion = new GridBagConstraints();
-		gbc_lblVersion.insets = new Insets(0, 0, 10, 10);
-		gbc_lblVersion.anchor = GridBagConstraints.EAST;
-		gbc_lblVersion.fill = GridBagConstraints.VERTICAL;
-		gbc_lblVersion.gridx = 3;
-		gbc_lblVersion.gridy = 7;
-		add(lblVersion, gbc_lblVersion);
 	}
 
 	@Override
@@ -170,15 +155,16 @@ public class Start extends IPanel implements ActionListener {
 				if (ip.equals(""))
 				{
 					JOptionPane.showMessageDialog(Window.getInstance(),
-					"Introduce la dirección IP y el puerto.", "Error",
-					JOptionPane.ERROR_MESSAGE);
+					Lang.getLine("start_error_empty_ip_port"),
+					Lang.getLine("error"), JOptionPane.ERROR_MESSAGE);
 				}
 				else if ( ! ip.matches(regex))
 				{
-					JOptionPane.showMessageDialog(Window.getInstance(),
-					"La dirección ip y el puerto no tienen el formato adecuado.\n"
-					+ "Ejemplo: 127.0.0.1:5000", "Error",
-					JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(
+					Window.getInstance(),
+					Lang.getLine("start_error_ip_port") + "\n"
+					+ Lang.getLine("start_error_ip_port_example"),
+					Lang.getLine("error"), JOptionPane.ERROR_MESSAGE);
 				}
 			}
 			else

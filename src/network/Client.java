@@ -58,9 +58,9 @@ public class Client {
 			catch (IOException excepcionES)
 			{
 				JOptionPane.showMessageDialog(Window.getInstance(),
-				"No se ha podido conectar con el servidor " + ip + ":" + port,
-				"Fallo en la conexión", JOptionPane.ERROR_MESSAGE,
-				new ImageIcon("img/error-icon.png"));
+				Lang.getLine("client_connection_failed") + " " + ip + ":"
+				+ port, Lang.getLine("client_connection_failed_title"),
+				JOptionPane.ERROR_MESSAGE, new ImageIcon("img/error-icon.png"));
 			}
 		}
 		else
@@ -138,7 +138,7 @@ public class Client {
 	 */
 	public String getInputData(String endmark)
 	{
-		String result = null;
+		String result = "";
 		try
 		{
 			String line = "";
@@ -146,6 +146,7 @@ public class Client {
 			{
 				result += line + "#";
 			}
+			System.out.println("Client receiving --> " + result);
 		}
 		catch (IOException e)
 		{

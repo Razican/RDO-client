@@ -1,5 +1,7 @@
 package display;
 
+import interfaces.Loadable;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -26,7 +28,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import utils.Patient;
 import display.components.IPanel;
-import display.components.Loadable;
 import display.components.TableModel;
 import display.components.Window;
 import entities.Sensor;
@@ -149,7 +150,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 	{
 		if (btnGetValue == e.getSource())
 		{
-			Patient.getCurrent().getHistoric(this, sensor.getId());
+			Patient.getCurrent().getSensorValue(this, sensor.getId());
 		}
 		else if (btnChangeMode == e.getSource())
 		{
@@ -236,7 +237,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 				table.setSelectionForeground(Color.WHITE);
 				table.setSelectionBackground(Color.BLUE);
 				table.setForeground(Color.BLACK);
-				table.setBackground(Color.WHITE);
+				table.setBackground(new Color(0, 0, 0, 0));
 				table.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
 				table.setRowHeight(22);
 				table.getTableHeader().setFont(

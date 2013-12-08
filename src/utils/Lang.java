@@ -1,5 +1,7 @@
 package utils;
 
+import interfaces.Internationalizable;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -12,7 +14,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import display.components.Internationalizable;
 
 /**
  * @author Razican (Iban Eguia)

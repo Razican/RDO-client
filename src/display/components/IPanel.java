@@ -1,5 +1,7 @@
 package display.components;
 
+import interfaces.Internationalizable;
+
 import java.awt.Font;
 import java.awt.Graphics;
 

@@ -1,13 +1,14 @@
 package utils;
 
+import interfaces.Loadable;
+import interfaces.Loader;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
-import display.components.Loadable;
-import display.components.Loader;
 import entities.Sensor;
 import entities.User;
 
@@ -30,7 +31,7 @@ public class Patient implements Serializable, Loader {
 	 * 
 	 * @param loadable The loadable component
 	 */
-	public void getSensors(final Loadable loadable)
+	public synchronized void getSensors(final Loadable loadable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -53,7 +54,6 @@ public class Patient implements Serializable, Loader {
 					vSensors.add(new Sensor(Integer.parseInt(attributes[0]), attributes[1], attributes[2].equals("ON")));
 				}
 				notifyLoadables(loadable, vSensors);
-				// menu.notify(vSensors);
 			}
 		}).start();
 		//@formatter:on
@@ -63,7 +63,8 @@ public class Patient implements Serializable, Loader {
 	 * @param loadable The loadable component
 	 * @param idSensor The sensor id
 	 */
-	public void getHistoric(final Loadable loadable, final int idSensor)
+	public synchronized void getHistoric(final Loadable loadable,
+	final int idSensor)
 	{
 		//@formatter:off
 		(new Thread()
@@ -96,8 +97,8 @@ public class Patient implements Serializable, Loader {
 	 * @param idSensor The sensor
 	 * @param enable The new status
 	 */
-	public void setSensorStatus(final Loadable loadable, final int idSensor,
-	final boolean enable)
+	public synchronized void setSensorStatus(final Loadable loadable,
+	final int idSensor, final boolean enable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -126,7 +127,7 @@ public class Patient implements Serializable, Loader {
 	 * @param enable The new status
 	 * @return The response code
 	 */
-	public static int setGPSStatus(boolean enable)
+	public synchronized static int setGPSStatus(boolean enable)
 	{
 		if (enable)
 		{
@@ -145,7 +146,7 @@ public class Patient implements Serializable, Loader {
 	 * @param loadable The loadable component
 	 * @param idSensor The sensor
 	 */
-	public void getSensorValue(final Loadable loadable, final int idSensor)
+	public synchronized void getSensorValue(final Loadable loadable, final int idSensor)
 	{
 		//@formatter:off
 		(new Thread()
@@ -164,7 +165,7 @@ public class Patient implements Serializable, Loader {
 	/**
 	 * @param loadable The loadable component
 	 */
-	public void getFoto(final Loadable loadable)
+	public synchronized void getFoto(final Loadable loadable)
 	{
 		//@formatter:off
 		(new Thread()
@@ -194,7 +195,7 @@ public class Patient implements Serializable, Loader {
 	}
 
 	@Override
-	public void notifyLoadables(Loadable loadable, Object object)
+	public synchronized void notifyLoadables(Loadable loadable, Object object)
 	{
 		loadable.update(object);
 	}

@@ -1,4 +1,4 @@
-package display.components;
+package interfaces;
 
 /**
  * Simple way to change the data of the component.

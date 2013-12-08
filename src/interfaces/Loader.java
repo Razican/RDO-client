@@ -1,4 +1,4 @@
-package display.components;
+package interfaces;
 
 /**
  * @author Jordan Aranda Tejada

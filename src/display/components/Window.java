@@ -1,5 +1,7 @@
 package display.components;
 
+import interfaces.Internationalizable;
+
 import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -76,7 +78,7 @@ public class Window extends JFrame implements Internationalizable {
 	@Override
 	public void changeLanguage(String newText)
 	{
-		setTitle(newText + " [" + Lang.getLine("version") + " "
+		setTitle(newText + " [" + Lang.getLine("application_version") + " "
 		+ Properties.getVersion() + "]");
 	}
 }

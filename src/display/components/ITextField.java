@@ -1,5 +1,7 @@
 package display.components;
 
+import interfaces.Internationalizable;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -73,9 +75,11 @@ Internationalizable {
 	@Override
 	public void changeLanguage(String newText)
 	{
-
 		this.hint = newText;
-		super.setText(hint);
+		if (getText().equals(""))
+		{
+			super.setText(hint);
+		}
 	}
 
 	/**
