@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.EOFException;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -160,7 +158,7 @@ public class Client {
 	 * 
 	 * @return A file with photo from server.
 	 */
-	public synchronized File getInputFile()
+	public synchronized ByteArrayOutputStream getInputByteArray()
 	{
 		try
 		{
@@ -184,16 +182,12 @@ public class Client {
 
 			if (i < length - 1)
 			{
-				// TODO reenviar foto
 				System.out.println("Foto a la mitad :(");
 			}
 
-			FileOutputStream fos = new FileOutputStream("downloads/photo.png");
-			fos.write(imgStream.toByteArray());
-			fos.close();
 			imgStream.close();
 
-			return new File("downloads/photo.png");
+			return imgStream;
 		}
 		catch (IOException e)
 		{

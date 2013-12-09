@@ -26,6 +26,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import utils.Lang;
 import utils.Patient;
 import display.components.IPanel;
 import display.components.TableModel;
@@ -115,7 +116,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		gbl_panel_btns.rowWeights = new double[] {0.0, Double.MIN_VALUE};
 		panel_btns.setLayout(gbl_panel_btns);
 
-		btnEnable = new JButton("Desconectar");
+		btnEnable = new JButton(Lang.getLine("sensor_panel_btn_enable_off"));
 		btnEnable.addActionListener(this);
 		btnEnable.setForeground(Color.GREEN);
 		btnEnable.setFont(new Font("Calibri", Font.PLAIN, 18));
@@ -129,10 +130,10 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		panel_btns.add(btnEnable, gbc_btnEnable);
 		if ( ! sensor.isConnected())
 		{
-			btnEnable.setText("Conectar");
+			btnEnable.setText(Lang.getLine("sensor_panel_btn_enable_on"));
 		}
 
-		btnGetValue = new JButton("Consultar");
+		btnGetValue = new JButton(Lang.getLine("sensor_panel_btn_consult"));
 		GridBagConstraints gbc_btnGetValue = new GridBagConstraints();
 		gbc_btnGetValue.insets = new Insets(0, 0, 0, 20);
 		gbc_btnGetValue.gridx = 1;
@@ -144,7 +145,8 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnGetValue.setForeground(Color.GREEN);
 		btnGetValue.setFont(new Font("Calibri", Font.PLAIN, 18));
 
-		btnChangeMode = new JButton("Gráfica");
+		btnChangeMode = new JButton(
+		Lang.getLine("sensor_panel_btn_mode_graphic"));
 		GridBagConstraints gbc_btnChangeMode = new GridBagConstraints();
 		gbc_btnChangeMode.insets = new Insets(0, 0, 0, 20);
 		gbc_btnChangeMode.gridx = 2;
@@ -157,10 +159,10 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 		btnChangeMode.setBackground(Color.BLACK);
 		if (this.mode == SensorPanel.graphMode)
 		{
-			btnChangeMode.setText("Tabla");
+			btnChangeMode.setText(Lang.getLine("sensor_panel_btn_mode_table"));
 		}
 
-		btnPrint = new JButton("Imprimir");
+		btnPrint = new JButton(Lang.getLine("sensor_panel_btn_print"));
 		GridBagConstraints gbc_btnPrint = new GridBagConstraints();
 		gbc_btnPrint.gridx = 3;
 		gbc_btnPrint.gridy = 0;
@@ -237,8 +239,9 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 
 				modelTable = new TableModel();
 
-				String[] header = {"Fecha", "Hora", "Latitud", "Longitud",
-				"Valor"};
+				String[] header = {Lang.getLine("sensor_panel_date"),
+				Lang.getLine("sensor_panel_hour"), Lang.getLine("latitude"),
+				Lang.getLine("longitude"), Lang.getLine("sensor_panel_value")};
 				String[][] content = new String[historic.size() - 1][5];
 
 				for (int i = 1; i < historic.size(); i++)
@@ -276,8 +279,7 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 				table.setRowHeight(22);
 				table.getTableHeader().setFont(
 				new Font("Arial", Font.PLAIN, 15));
-				// table.getColumnModel().getColumn(0).setMinWidth(100);
-				// table.getColumnModel().getColumn(0).setMaxWidth(100);
+
 				scrollPane.setViewportView(table);
 			}
 			else if (mode == SensorPanel.graphMode)
@@ -291,11 +293,15 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 					String line = historic.get(i);
 					String[] fields = line.split(";");
 					dataset.addValue(Double.parseDouble(fields[4]), fields[0],
-					fields[4]);
+					fields[0] + " - " + fields[1]);
 				}
 
-				JFreeChart chart = ChartFactory.createLineChart("", "Date",
-				"Value", dataset, PlotOrientation.VERTICAL, false, true, false);
+				JFreeChart chart = ChartFactory.createLineChart("",
+				Lang.getLine("sensor_panel_date"),
+				Lang.getLine("sensor_panel_value"), dataset,
+				PlotOrientation.VERTICAL, false, true, false);
+
+				chart.setBackgroundImageAlpha(0);
 
 				panelGraph = new ChartPanel(chart, false);
 				panelGraph.setOpaque(false);
@@ -325,11 +331,11 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 
 				String[] valArray = content.split(";");
 				//@formatter:off
-				String values = "Fecha: \t\t" + valArray[0] + "\n" +
-								"Hora: \t\t" + valArray[1]+"\n" +
-								"Latitud: \t\t" +valArray[2]+"\n" +
-								"Longitud:  \t\t" +valArray[3]+"\n" +
-								"Valor:  \t\t"+valArray[4];
+				String values = Lang.getLine("sensor_panel_date")+": \t\t" + valArray[0] + "\n" +
+								Lang.getLine("sensor_panel_hour")+": \t\t" + valArray[1]+"\n" +
+								Lang.getLine("latitude")+": \t\t" +valArray[2]+"\n" +
+								Lang.getLine("longitude")+":  \t\t" +valArray[3]+"\n" +
+								Lang.getLine("sensor_panel_value")+":  \t\t"+valArray[4];
 				//@formatter:on
 
 				Window.getInstance().setContentPane(
@@ -348,11 +354,13 @@ public class SensorPanel extends IPanel implements ActionListener, Loadable {
 				sensor.setConnected( ! sensor.isConnected());
 				if (sensor.isConnected())
 				{
-					btnEnable.setText("Conectar");
+					btnEnable.setText(Lang
+					.getLine("sensor_panel_btn_enable_off"));
 				}
 				else
 				{
-					btnEnable.setText("Desconectar");
+					btnEnable.setText(Lang
+					.getLine("sensor_panel_btn_enable_on"));
 				}
 			}
 		}

@@ -9,15 +9,22 @@ import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import utils.Lang;
 import utils.Patient;
+import utils.Utils;
+import display.CameraPanel;
+import display.GPSPanel;
 import display.SensorPanel;
 import display.Start;
 import entities.Sensor;
@@ -90,16 +97,15 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 	@Override
 	public void actionPerformed(final ActionEvent e)
 	{
-		//@formatter:off
-		for (int i = 0; i<sensorsItems.length; i++)
+		for (int i = 0; i < sensorsItems.length; i++)
 		{
 			if (sensorsItems[i] == e.getSource())
 			{
-				Window.getInstance().setContentPane(new SensorPanel(vSensors.get(i), SensorPanel.tableMode));
+				Window.getInstance().setContentPane(
+				new SensorPanel(vSensors.get(i), SensorPanel.tableMode));
 				((JPanel) Window.getInstance().getContentPane()).updateUI();
 			}
 		}
-		//@formatter:on
 		if (logout == e.getSource())
 		{
 			User.getCurrent().logout();
@@ -111,6 +117,11 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 		else if (takePhoto == e.getSource())
 		{
 			Patient.getCurrent().getFoto(this);
+		}
+		else if (gps == e.getSource())
+		{
+			Window.getInstance().setContentPane(new GPSPanel());
+			((JPanel) Window.getInstance().getContentPane()).updateUI();
 		}
 	}
 
@@ -141,6 +152,56 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 				sensorsItems[i] = sensorItem;
 				sensors.add(sensorItem);
 			}
+		}
+		else if (object instanceof ByteArrayOutputStream)
+		{
+			ByteArrayOutputStream imgStream = (ByteArrayOutputStream) object;
+			final CameraPanel panel = new CameraPanel();
+			panel.getLblImage().setIcon(new ImageIcon(imgStream.toByteArray()));
+
+			final String[] options = {Lang.getLine("dialog_camera_exit"),
+			Lang.getLine("dialog_camera_save")};
+			final JOptionPane pane = new JOptionPane(panel,
+			JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null,
+			options, options[1]);
+			final JDialog dialog = pane.createDialog(Lang
+			.getLine("dialog_camera_title"));
+			dialog.setLocationRelativeTo(Window.getInstance());
+			dialog.setVisible(true);
+
+			if (pane.getValue() == options[1])
+			{
+				Utils
+				.saveByteArrayFile(imgStream, "Photo from patient", ".png");
+			}
+
+			dialog.dispose();
+
+			String[] options2 = {Lang.getLine("yes_option"),
+			Lang.getLine("no_option")};
+
+			int selection = JOptionPane.showOptionDialog(Window.getInstance(),
+			Lang.getLine("obtain_coordinates_question"),
+			Lang.getLine("obtain_coordinates_title"),
+			JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+			options2, options2[0]);
+
+			if (selection == 0)
+			{
+				Patient.getCurrent().getCoordinates(this);
+			}
+		}
+		else if (object instanceof String)
+		{
+			String coordinates = (String) object;
+			coordinates = coordinates.substring(7, coordinates.length());
+			String[] coord = coordinates.split(";");
+
+			JOptionPane.showMessageDialog(
+			Window.getInstance(),
+			Lang.getLine("longitude") + ": " + coord[0] + "\n"
+			+ Lang.getLine("latitude") + ":" + coord[1],
+			Lang.getLine("coordinates_title"), JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 }

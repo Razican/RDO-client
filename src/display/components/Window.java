@@ -41,12 +41,12 @@ public class Window extends JFrame implements Internationalizable {
 			{
 				if (User.isLoaded())
 				{
-					System.out.println("Usuario cargado");
-					final String[] options = {"Yes", "No"};
+					final String[] options = {Lang.getLine("yes_option"),
+					Lang.getLine("no_option")};
 					//@formatter:off
 					final int selection = JOptionPane.showOptionDialog(
-					Window.getInstance(), "¿Estas seguro de querer salir?",
-					"Salir", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, 
+					Window.getInstance(), Lang.getLine("window_question_exit"),
+					Lang.getLine("window_question_exit_title"), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, 
 					new ImageIcon("img/warning-icon.png"), options, options[1]);
 
 					if (selection == 0)

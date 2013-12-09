@@ -3,11 +3,9 @@ package utils;
 import interfaces.Loadable;
 import interfaces.Loader;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.util.Vector;
-
-import javax.swing.ImageIcon;
 
 import entities.Sensor;
 import entities.User;
@@ -143,30 +141,38 @@ public class Patient implements Serializable, Loader {
 
 	/**
 	 * @param enable - The new status
-	 * @return The response code
+	 * @param loadable - Loadable component
 	 */
-	public synchronized static int setGPSStatus(boolean enable)
+	public synchronized void setGPSStatus(final boolean enable,
+	final Loadable loadable)
 	{
-		while (transmitting)
+		(new Thread()
 		{
-			;
-		}
 
-		transmitting = true;
-		if (enable)
-		{
-			User.getCurrent().getClient().sendData("ONGPS");
-		}
-		else
-		{
-			User.getCurrent().getClient().sendData("OFFGPS");
-		}
-		String response = User.getCurrent().getClient().getInputData();
-		System.out.println(response);
-		int r = User.getCurrent().getClient().getInputCode(response);
-		transmitting = false;
+			@Override
+			public void run()
+			{
+				while (transmitting)
+				{
+					;
+				}
 
-		return r;
+				transmitting = true;
+				if (enable)
+				{
+					User.getCurrent().getClient().sendData("ONGPS");
+				}
+				else
+				{
+					User.getCurrent().getClient().sendData("OFFGPS");
+				}
+				String response = User.getCurrent().getClient().getInputData();
+				System.out.println(response);
+				notifyLoadables(loadable, User.getCurrent().getClient()
+				.getInputCode(response));
+				transmitting = false;
+			}
+		}).start();
 	}
 
 	/**
@@ -215,8 +221,34 @@ public class Patient implements Serializable, Loader {
 
 				transmitting = true;
 				User.getCurrent().getClient().sendData("GET_FOTO");
-				File photo = User.getCurrent().getClient().getInputFile();
-				notifyLoadables(loadable, new ImageIcon(photo.getPath()));
+				ByteArrayOutputStream imgStream = User.getCurrent().getClient()
+				.getInputByteArray();
+				notifyLoadables(loadable, imgStream);
+				transmitting = false;
+			}
+		}).start();
+	}
+
+	/**
+	 * @param loadable - The loadable component
+	 */
+	public synchronized void getCoordinates(final Loadable loadable)
+	{
+		(new Thread()
+		{
+
+			@Override
+			public void run()
+			{
+				while (transmitting)
+				{
+					;
+				}
+
+				transmitting = true;
+				User.getCurrent().getClient().sendData("GET_LOC");
+				String response = User.getCurrent().getClient().getInputData();
+				notifyLoadables(loadable, response);
 				transmitting = false;
 			}
 		}).start();
