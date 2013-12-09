@@ -26,15 +26,15 @@ public class GPSPanel extends IPanel implements Loadable {
 	private static final long	serialVersionUID	= 3058995416278746348L;
 	private JButton				btnEnable;
 	private boolean				gpsEnable;
-	private boolean				aux;
+	private boolean				init;
 
 	/**
 	 * Create the panel.
 	 */
 	public GPSPanel()
 	{
-		this.gpsEnable = false;
-		this.aux = false;
+		this.gpsEnable = true;
+		this.init = false;
 
 		setBackgroundImage(new ImageIcon("img/background.jpg"));
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -77,14 +77,21 @@ public class GPSPanel extends IPanel implements Loadable {
 	@Override
 	public void update(Object object)
 	{
-		if (object instanceof Integer && ! aux)
+		if (object instanceof Integer)
 		{
 			int code = (Integer) object;
-			if (code == 315)
+			if (code == 315 && ! init)
 			{
 				Patient.getCurrent().setGPSStatus(false, this);
+				gpsEnable = false;
+				init = true;
 			}
-			else if (code == 529)
+			else if ( ! init)
+			{
+				btnEnable.setText(Lang.getLine("sensor_panel_btn_enable_off"));
+				init = true;
+			}
+			else if (code == 315)
 			{
 				btnEnable.setText(Lang.getLine("sensor_panel_btn_enable_off"));
 				this.gpsEnable = true;
@@ -94,11 +101,6 @@ public class GPSPanel extends IPanel implements Loadable {
 				btnEnable.setText(Lang.getLine("sensor_panel_btn_enable_on"));
 				this.gpsEnable = false;
 			}
-			aux = true;
-		}
-		else
-		{
-			// TO DO
 		}
 	}
 }

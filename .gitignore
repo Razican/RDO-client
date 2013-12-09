@@ -9,3 +9,5 @@
 /downloads
 
 data/config.properties
+
+*.pdf
