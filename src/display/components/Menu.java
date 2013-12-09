@@ -171,8 +171,7 @@ public class Menu extends JMenuBar implements ActionListener, Loadable {
 
 			if (pane.getValue() == options[1])
 			{
-				Utils
-				.saveByteArrayFile(imgStream, "Photo from patient", ".png");
+				Utils.saveByteArrayFile(imgStream, "PNG", "png");
 			}
 
 			dialog.dispose();
